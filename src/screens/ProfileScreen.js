@@ -11,17 +11,17 @@ const ProfileScreen = ({ navigation }) => {
 
     const userToken = useSelector(state => state.authReducer.userToken)
 
-    useEffect(() => {
-        if(userToken) {
-            secretApi(userToken).then(res => {
-                setName(res.data.profile.firstName + '-' + res.data.profile.lastName)
-                // console.log(res.data.profile.firstName)
-            })
-        }
-        else {
-            setName('')
-        }
-    }, [userToken])
+    // useEffect(() => {
+    //     if(userToken) {
+    //         secretApi(userToken).then(res => {
+    //             setName(res.data.profile.firstName + '-' + res.data.profile.lastName)
+    //             // console.log(res.data.profile.firstName)
+    //         })
+    //     }
+    //     else {
+    //         setName('')
+    //     }
+    // }, [userToken])
 
     return (
         <View style={ styles.container }>

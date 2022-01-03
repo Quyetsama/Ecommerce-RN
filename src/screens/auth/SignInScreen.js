@@ -67,8 +67,9 @@ const SignInScreen = ({ navigation }) => {
             // {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
             // <ScrollView contentContainerStyle={{ flexGrow: 1 }}  keyboardShouldPersistTaps='handled'>
             <>
-            <TouchableOpacity style={{ position: 'absolute', top: 0, left: 0, zIndex: 10 }} onPress={() => navigation.goBack()}>
-                <MaterialCommunityIcons name="keyboard-backspace" size={30} color={'#000'} />  
+            <TouchableOpacity style={{ position: 'absolute', top: 10, left: 5, zIndex: 10 }} onPress={() => navigation.goBack()}>
+                <View style={{ position: 'absolute', width: 35, height: 35, backgroundColor: 'gray', borderRadius: 30, opacity: 0.4 }}></View>
+                <MaterialCommunityIcons style={{ padding: 5 }} name="keyboard-backspace" size={25} color={'#fff'} />
             </TouchableOpacity>
             <ScrollView style={{ backgroundColor: '#fff' }}  keyboardShouldPersistTaps='handled' showsVerticalScrollIndicator={false}>
                 <View style={ styles.container }>
@@ -77,9 +78,9 @@ const SignInScreen = ({ navigation }) => {
                             <MaterialCommunityIcons style={{ position: 'relative' }} name="keyboard-backspace" size={30} color={'#fff'} />  
                         </TouchableOpacity> */}
                         {/* <View style={{ flex: 1, justifyContent: 'center' }}> */}
-                            <Text style={{ color: '#fff', fontSize: 50, fontWeight: 'bold', textAlign: 'center', minHeight: 100 }}>Grappe</Text>
+                            <Text style={{ color: '#fff', fontSize: 50, fontWeight: 'bold', textAlign: 'center' }}>Grabee</Text>
                         {/* </View> */}
-                        <View style={{ width: 30 }}></View>
+                        {/* <View style={{ width: 30 }}></View> */}
                     </View>
                     {/* <ScrollView contentContainerStyle={{ flexGrow: 1 }}> */}
                     <View style={ styles.bodyContainer } >
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
         backgroundColor: color
     },
     headerContainer: {
-
+        paddingVertical: 25
     },
     bodyContainer: {
         // flex: 8,

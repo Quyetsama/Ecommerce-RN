@@ -8,7 +8,7 @@ import SplashScreen from "./src/screens/auth/SplashScreen"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
 import { retrieveToken, logout } from './src/redux/actions/authAction'
-
+import DetailScreen from "./src/screens/DetailScreen"
 
 
 const Stack = createNativeStackNavigator()
@@ -53,8 +53,10 @@ const App = () => {
             <Stack.Navigator screenOptions={{
                 headerShown: false
             }}>    
+                {/* <Stack.Screen name='stackAuth' component={ AuthStack }/>  */}
                 <Stack.Screen name='stackMain' component={ BottomTabNavigator }/>
                 <Stack.Screen name='stackSearch' component={ SearchStack } />
+                <Stack.Screen name='stackDetail' component={ DetailScreen } options={{headerShown: true}} />
                 { userToken ? <></> : <Stack.Screen name='stackAuth' component={ AuthStack }/> }
             </Stack.Navigator>
         </NavigationContainer>

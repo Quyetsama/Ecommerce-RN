@@ -1,8 +1,9 @@
 import axios from "axios"
+import { doMain } from "../helpers/configs"
 
 
 const axiosClient = axios.create({
-    baseURL: 'http://192.168.0.106:3000/api/v1',
+    baseURL: `${doMain}api/v1`,
     headers: {
         'Content-Type': 'application/json'
     }

@@ -1,15 +1,18 @@
 import React from "react"
-import { StyleSheet, View, Text, ActivityIndicator } from "react-native"
+import { StyleSheet, View, Text, ActivityIndicator, StatusBar } from "react-native"
 
 
 const SplashScreen = () => {
     return (
         <View style={styles.container}>
-            <Text style={ styles.logo }>Grappe</Text>
-            <ActivityIndicator size={'large'} />
+            <StatusBar backgroundColor={color} />
+            <Text style={ styles.logo }>Grabee</Text>
+            <ActivityIndicator size={'large'} color={'#fff'} />
         </View>
     )
 }
+
+const color = '#34A853'
 
 const styles = StyleSheet.create({
     container: {
