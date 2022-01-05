@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, forwardRef } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity, ScrollView, FlatList, Dimensions } from "react-native"
 import all from '../assets/img/all.png'
 import clothes from '../assets/img/clothes.png'
@@ -11,44 +11,6 @@ import ItemCategories from "./ItemCategories"
 import { doMain } from "../helpers/configs"
 import { getAllCategory } from "../api/categoriesApi"
 
-
-const data = [
-    {
-        id: 1,
-        image: all,
-        text: 'Dành cho bạn'
-    },
-    {
-        id: 2,
-        image: clothes,
-        text: 'Quần áo'
-    },
-    {
-        id: 3,
-        image: shoes,
-        text: 'Giày thể thao'
-    },
-    {
-        id: 4,
-        image: electronic,
-        text: 'Thiết bị điện tử'
-    },
-    {
-        id: 5,
-        image: smarthome,
-        text: 'Gia dụng thông minh'
-    },
-    {
-        id: 6,
-        image: food,
-        text: 'Đồ ăn'
-    },
-    {
-        id: 7,
-        image: accessories,
-        text: 'Phụ kiện cá nhân'
-    }
-]
 
 const Categories = ({ onLayout, onPress }) => {
 
@@ -69,7 +31,7 @@ const Categories = ({ onLayout, onPress }) => {
         .catch(error => console.log(error))
     }, [])
 
-    const handleFlatlist = (index) => {
+    const handleScrollCategory = (index) => {
         Flatlist.current.scrollToIndex({
             animated: true,
             index: index,
@@ -78,8 +40,11 @@ const Categories = ({ onLayout, onPress }) => {
             // -40 vi item width = 80
             viewOffset: (Dimensions.get('window').width / 2) - 40
           })
+          
           setIndexSelected(index)
     }
+
+    // console.log('Categories render')
 
     return (
         <View onLayout={onLayout} style={ styles.container }>
@@ -93,8 +58,8 @@ const Categories = ({ onLayout, onPress }) => {
                 renderItem={({item, index}) => (
                     <ItemCategories
                         onPress={() => {
-                            handleFlatlist(index)
-                            onPress()        
+                            handleScrollCategory(index)
+                            onPress(item._id)        
                         }}
                         image={ doMain + item.image }
                         text={ item.name }
@@ -143,4 +108,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default React.memo(Categories)
+export default Categories

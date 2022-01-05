@@ -3,10 +3,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
 
 
-const DetailScreen = ({ navigation }) => {
+const DetailScreen = ({ route, navigation }) => {
+
+    // const { image, name, sold, price }  = route.params.product
+
     return (
         <View style={ styles.container }>
-            <Text>DetailScreen</Text>
             <TouchableOpacity
                 onPress={() => navigation.push('stackDetail')}
             >

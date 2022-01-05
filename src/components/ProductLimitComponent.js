@@ -68,6 +68,8 @@ const data = [
 
 const ProductLimit = () => {
 
+    console.log('ProductLimit render')
+
     return (
         <View style={ styles.container }>
             <View style={ styles.header }>
@@ -85,25 +87,21 @@ const ProductLimit = () => {
                     <FlatList
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        data={[...data, {id: 'seeAll'}]}
+                        data={data}
                         keyExtractor={(item) => item.id}
-                        renderItem={({item}) => {
-                            return (
-                                item.id !== 'seeAll' ? (
-                                    <ItemProductLimit
-                                        image={item.image}
-                                        name={item.name}
-                                        price={item.price}
-                                        percent={item.percent}
-                                        sold={item.sold}
-                                    />
-                                )
-                                :
-                                (
-                                    <SeeAll />
-                                )
+                        renderItem={({item}) => (
+                            <ItemProductLimit
+                                image={item.image}
+                                name={item.name}
+                                price={item.price}
+                                percent={item.percent}
+                                sold={item.sold}
+                            />
                             )
-                        }}
+                        }
+                        ListFooterComponent={
+                            <SeeAll />
+                        }
                     />
                     {/* <SeeAll /> */}
                 {/* </ScrollView> */}
@@ -143,4 +141,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ProductLimit
+export default React.memo(ProductLimit)

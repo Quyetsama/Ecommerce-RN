@@ -33,31 +33,24 @@ const Header_Min_Height = 60
 
 const HomeScreen = ({ navigation }) => {
 
-    const refProducts = useRef()
+    const refCategories = useRef()
     const [index, setIndex] = useState()
-    const [pageProduct, setPageProduct] = useState(1)
-    // const [products, setProducts] = useState([])
+    const [category, setCategory] = useState({
+        id: 'all',
+        page: 1
+    })
 
-    // useEffect(() => {
-    //     getAllProduct(pageProduct).then(res => {
-    //         console.log('123')
-    //         setProducts(products.concat(res.data.products))
-    //     })
-    //     .catch(error => console.log(error))
-    // }, [pageProduct])
-    // console.log(pageProduct)
-    // useEffect(() => {
-    //     console.log(refProducts.current)
-    // })
-    const executeScroll = () => {
-        refProducts.current.scrollTo({
+    const executeScroll = (idCategory) => {
+        refCategories.current.scrollTo({
             y: index.y,
             animated: true
         })
+        console.log(idCategory)
+        setCategory({id: idCategory, page: 1})
     }
 
     const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
-        const paddingToBottom = 20;
+        const paddingToBottom = 1;
         return layoutMeasurement.height + contentOffset.y >=
           contentSize.height - paddingToBottom;
     }
@@ -91,7 +84,8 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor={color} />
+            <StatusBar hidden />
+            {/* <StatusBar backgroundColor={color} /> */}
             {/* Header */}
             {/* <HeaderHomeComponent navigation={ navigation } /> */}
             <Animated.View style={[
@@ -127,8 +121,9 @@ const HomeScreen = ({ navigation }) => {
 
             {/* Body */}
             <ScrollView
-                ref={refProducts}
+                ref={refCategories}
                 removeClippedSubviews
+                nestedScrollEnabled={true}
                 stickyHeaderIndices={[10]}
                 scrollEventThrottle={16}
                 onScroll={Animated.event(
@@ -136,7 +131,7 @@ const HomeScreen = ({ navigation }) => {
                     {
                         listener: ({nativeEvent}) => {
                             if (isCloseToBottom(nativeEvent)) {
-                                setPageProduct(pageProduct + 1)
+                                setCategory({...category, page: category.page + 1})
                             }
                         },
                         useNativeDriver: false 
@@ -173,7 +168,7 @@ const HomeScreen = ({ navigation }) => {
                 }} onPress={executeScroll} />
 
                 {/* Product */}
-                <Products page={ pageProduct } />
+                <Products category={ category } navigation={navigation} />
                 
             </ScrollView>
         </View>

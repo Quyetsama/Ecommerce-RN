@@ -1,31 +1,39 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity, View, Dimensions, Image, Text } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { doMain } from '../helpers/configs'
 
 
 const WIDTH = Dimensions.get('window').width
 
-const ItemProduct = ({ image, name, sold, price }) => {
+const ItemProduct = ({ data, navigation }) => {
+
+    const goToDetail = () => {
+        navigation.navigate('stackDetail', {
+            product: data
+        })
+    }
+
     return (
-        <TouchableOpacity style={ styles.itemContainer } activeOpacity={ 0.7 }>
+        <TouchableOpacity style={ styles.itemContainer } activeOpacity={ 0.7 } onPress={ goToDetail }>
             <View style={ styles.imageContainer }>
                 <Image
                     style={ styles.image }
-                    source={{ uri: image }}
-                    resizeMode='stretch'
+                    source={{ uri: doMain + '/image/' + data.image[0] }}
+                    // resizeMode='stretch'
                 />
             </View>
             <View style={ styles.detailContainer }>
-                <Text style={ styles.name } numberOfLines={2}>{ name }</Text>
+                <Text style={ styles.name } numberOfLines={2}>{ data.name }</Text>
                 <View style={ styles.rateContainer }>
                     <MaterialCommunityIcons name={ 'star' } size={ 15 } color={ '#fff700' } />
                     <MaterialCommunityIcons name={ 'star' } size={ 15 } color={ '#fff700' } />
                     <MaterialCommunityIcons name={ 'star' } size={ 15 } color={ '#fff700' } />
                     <MaterialCommunityIcons name={ 'star' } size={ 15 } color={ '#fff700' } />
                     <MaterialCommunityIcons name={ 'star-half-full' } size={ 15 } color={ '#fff700' } />
-                    <Text style={ styles.sold }> | Đã bán { sold }</Text>
+                    <Text style={ styles.sold }> | Đã bán { data.sold }</Text>
                 </View>
-                <Text style={ styles.price }>{ price }đ</Text>
+                <Text style={ styles.price }>{ data.price }đ</Text>
             </View>
         </TouchableOpacity>
     )
@@ -75,4 +83,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ItemProduct
+export default React.memo(ItemProduct)

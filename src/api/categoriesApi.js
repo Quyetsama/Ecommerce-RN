@@ -11,7 +11,21 @@ const getAllProduct = (page) => {
     return axiosClient.get(url)
 }
 
+const getProductByCategory = (id, page) => {
+    let url = ''
+    
+    if(id === 'all') {
+        url = `/product?page=${page}`
+    }
+    else {
+        url = `/product/${id}?page=${page}`
+    }
+
+    return axiosClient.get(url)
+}
+
 export { 
     getAllCategory,
-    getAllProduct
+    getAllProduct,
+    getProductByCategory
 }

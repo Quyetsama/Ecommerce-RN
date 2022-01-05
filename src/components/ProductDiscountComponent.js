@@ -8,6 +8,9 @@ import SeeAll from "./SeeAll"
 const WIDTH = Dimensions.get('window').width
 
 const ProductDiscount = () => {
+
+    console.log('ProductDiscount render')
+
     return (
         <View style={ styles.container }>
             <View style={ styles.header }>
@@ -80,4 +83,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ProductDiscount
+export default React.memo(ProductDiscount)

@@ -56,7 +56,7 @@ const App = () => {
                 {/* <Stack.Screen name='stackAuth' component={ AuthStack }/>  */}
                 <Stack.Screen name='stackMain' component={ BottomTabNavigator }/>
                 <Stack.Screen name='stackSearch' component={ SearchStack } />
-                <Stack.Screen name='stackDetail' component={ DetailScreen } options={{headerShown: true}} />
+                <Stack.Screen name='stackDetail' component={ DetailScreen } />
                 { userToken ? <></> : <Stack.Screen name='stackAuth' component={ AuthStack }/> }
             </Stack.Navigator>
         </NavigationContainer>

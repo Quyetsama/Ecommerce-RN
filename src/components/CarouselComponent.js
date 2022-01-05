@@ -62,6 +62,9 @@ const CarouselComponent = () => {
 
         setSelectedIndex(indexSelected)
     }
+
+    // console.log('Carousel render')
+
     return (
         <View style={ styles.carouselContainer }>
             <ScrollView
@@ -131,4 +134,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default CarouselComponent
+export default React.memo(CarouselComponent)

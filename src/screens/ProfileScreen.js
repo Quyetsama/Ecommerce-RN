@@ -27,7 +27,7 @@ const ProfileScreen = ({ navigation }) => {
         <View style={ styles.container }>
             <Text>Hello: { name }</Text>
             <TouchableOpacity
-                onPress={() => navigation.navigate('Order')}
+                onPress={() => navigation.navigate('tabOrder')}
             >
                 <Text style={{ color: '#429ae3' }}>Go To Order</Text>
             </TouchableOpacity>

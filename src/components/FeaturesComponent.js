@@ -17,6 +17,8 @@ const widthScreen = Dimensions.get('window').width
 
 const FeaturesComponent = () => {
 
+    console.log('Features render')
+
     return (
         <View style={ styles.featuresContainer }>
             <Text style={ styles.title }>Tiện ích</Text>
@@ -61,4 +63,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default FeaturesComponent
+export default React.memo(FeaturesComponent)
