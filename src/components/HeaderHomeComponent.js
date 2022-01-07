@@ -4,42 +4,67 @@ import {
     StyleSheet,
     Text, TextInput,
     TouchableOpacity,
-    View
+    View,
+    Dimensions,
+    Animated
 } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 
-const HeaderHomeComponent = ({ navigation }) => {
+const WIDTH = Dimensions.get('window').width
+const Header_Max_Height = 100
+const Header_Min_Height = 60
 
-    const goToSearch= () => {
-        navigation.navigate('stackSearch')
-    }
+const HeaderHomeComponent = ({ navigation, animatedValue }) => {
+    const animatedHeaderHeight = animatedValue.interpolate({
+        inputRange: [0, Header_Max_Height - Header_Min_Height],
+        outputRange: [Header_Max_Height, Header_Min_Height],
+        extrapolate: 'clamp'
+    })
 
-    const goToCart = () => {
-        navigation.navigate('tabOrder')
-    }
+    const animatedHeaderOpacityText = animatedValue.interpolate({
+        inputRange: [0, Header_Max_Height - Header_Min_Height],
+        outputRange: [1, 0],
+        extrapolate: 'clamp'
+    })
+
+    const animatedHeaderInput = animatedValue.interpolate({
+        inputRange: [0, Header_Max_Height - Header_Min_Height],
+        // margin left 20 thif phair truwf 40
+        outputRange: [WIDTH - 20, WIDTH - 55],
+        extrapolate: 'clamp'
+    })
 
     return (
-        <View style={ styles.headerContainer }>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={ styles.logo }>Grabee</Text>
-                <TouchableOpacity 
-                    style={ styles.iconCartHeader }
-                    onPress={ goToCart }
-                >
-                    <View style={ styles.iconBadge }>
-                        <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
-                    </View>
-                    <Ionicons name={ 'cart-outline' } size={ 28 } color={ '#fff' } />
+        <Animated.View style={[
+            styles.headerContainer,
+            {
+                height: animatedHeaderHeight
+            }
+        ]}>
+            <Animated.Text style={[
+                styles.logo,
+                {
+                    opacity: animatedHeaderOpacityText
+                }
+            ]}>
+                Grabee
+            </Animated.Text>
+            <TouchableOpacity
+                style={styles.iconCartHeader}
+            >
+                <View style={styles.iconBadge}>
+                    <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
+                </View>
+                <Ionicons name={'cart-outline'} size={25} color={'#fff'} />
+            </TouchableOpacity>
+            <Animated.View style={{ flexDirection: 'row', width: animatedHeaderInput }}>
+                <TouchableOpacity activeOpacity={1} style={styles.inputSearchContainer}>
+                    <Ionicons name={'search-outline'} size={21} color={'gray'} />
+                    <TextInput editable={false} style={styles.inputSearch} placeholderTextColor={color} placeholder="Search..."></TextInput>
                 </TouchableOpacity>
-            </View>
-            <View style={{ flexDirection: 'row' }}>
-                <TouchableOpacity activeOpacity={1} style={ styles.inputSearchContainer } onPress={ goToSearch }>
-                    <Ionicons name={ 'search-outline' } size={ 21 } color={ 'gray' } />
-                    <TextInput editable={false} style={ styles.inputSearch } placeholderTextColor={ color } placeholder="Search..."></TextInput>
-                </TouchableOpacity>
-            </View>
-        </View>
+            </Animated.View>
+        </Animated.View>
     )
 }
 
@@ -48,15 +73,19 @@ const color = '#34A853'
 const styles = StyleSheet.create({
     headerContainer: {
         backgroundColor: color,
+        justifyContent: 'flex-end',
         // flexDirection: 'row',
-        alignItems: 'center',
+        // alignItems: 'center',
         paddingHorizontal: 10,
         elevation: 5
     },
     logo: {
-        flex: 1, 
-        color: '#fff', 
-        fontSize: 20, 
+        position: 'absolute',
+        top: 5,
+        left: 10,
+        flex: 1,
+        color: '#fff',
+        fontSize: 25,
         fontWeight: 'bold'
     },
     inputSearchContainer: {
@@ -75,22 +104,26 @@ const styles = StyleSheet.create({
         height: 40
     },
     iconCartHeader: {
+        position: 'absolute',
+        top: 10,
+        right: 15,
         marginLeft: 10,
-        marginTop: 10
+        marginTop: 5
     },
     iconBadge: {
         position: 'absolute',
-        bottom: 18,
+        bottom: 15,
         left: 13,
         zIndex: 10,
         backgroundColor: color,
-        width: 20,
-        height: 20,
+        width: 19,
+        height: 19,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 25,
         borderWidth: 1,
-        borderColor: '#fff'
+        borderColor: '#fff',
+        backgroundColor: 'red'
     }
 })
 
