@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useSelector } from 'react-redux'
 import { secretApi } from "../api/authApi"
+import HeaderProfile from "../components/profilescreen/HeaderProfileComponent"
+import Information from "../components/profilescreen/InformationComponent"
+import CoinVoucher from "../components/profilescreen/CoinVoucherComponent"
+import OrderComponent from "../components/profilescreen/OrderComponent"
+import ItemProfile from "../components/profilescreen/ItemProfileComponent"
 
 
 
@@ -25,12 +30,36 @@ const ProfileScreen = ({ navigation }) => {
 
     return (
         <View style={ styles.container }>
-            <Text>Hello: { name }</Text>
-            <TouchableOpacity
-                onPress={() => navigation.navigate('tabOrder')}
+            {/*  */}
+            <HeaderProfile />
+
+
+            {/*  */}
+            <ScrollView
+                showsVerticalScrollIndicator={ false }
             >
-                <Text style={{ color: '#429ae3' }}>Go To Order</Text>
-            </TouchableOpacity>
+                {/*  */}
+                <Information />
+                
+                {/*  */}
+                <CoinVoucher />
+
+                {/*  */}
+                <OrderComponent />
+
+                {/*  */}
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
+                
+            </ScrollView>
         </View>
     )
 }
@@ -38,8 +67,7 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        backgroundColor: '#fff'
     }
 })
 

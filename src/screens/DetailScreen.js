@@ -1,14 +1,23 @@
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import { Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, ScrollView, TextInput, Animated } from "react-native"
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import HeaderDetailProdcut from "../components/HeaderDetailProduct"
 import CarouselProduct from "../components/CarouselProduct"
+import GeneralComponent from "../components/detailscreen/GeneralComponent"
+import ShipComponent from "../components/detailscreen/ShipComponent"
+import TypeProductComponent from "../components/detailscreen/TypeProdcutComponent"
+import ShopComponent from "../components/detailscreen/ShopComponent"
+import UnderLineSection from "../components/UnderLineSection"
 import { doMain } from "../helpers/configs"
 
 
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
+
+const kFormatter = (num) => {
+    return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
+}
 
 const DetailScreen = ({ route, navigation }) => {
 
@@ -27,23 +36,25 @@ const DetailScreen = ({ route, navigation }) => {
                     }
                 )}
             >
-                {/*  */}
+                {/* Carousel */}
                 <CarouselProduct images={ image } />
                 
+                {/* General */}
+                <GeneralComponent name={ name } price={ price } sold={ sold } />
+                <UnderLineSection />
+
+                {/* Ship */}
+                <ShipComponent />
+                <UnderLineSection />
+
                 {/*  */}
-                <View style={ styles.nameProductContainer }>
-                    <View style={{ flex: 1 }}>
-                        <Text>{ name }</Text>                
-                    </View>
-                    <View style={{ marginTop: 5, marginRight: 5 }}>
-                        <View style={{ width: 40, height: 40, backgroundColor: 'yellow' }}></View>
-                        <View style={ styles.triAngle} />
-                        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, marginTop: 5 }}>
-                            <Text style={{ fontSize: 8, textAlign: 'center', color: 'black' }}>Giảm 20k</Text>
-                        </View>
-                    </View>
-                </View>
-                
+                <TypeProductComponent />
+                <UnderLineSection />
+
+                {/*  */}
+                <ShopComponent />
+                <UnderLineSection />
+
             </ScrollView>
         </View>
     )
@@ -53,30 +64,41 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
-    listImageContainer: {
-        width: WIDTH,
-        height: HEIGHT / 3,
-        backgroundColor: '#fff'
+    name_discount_price_rate_sold_favorite: {
+        backgroundColor: '#fff',
+        paddingHorizontal: 10
     },
-    listImage: {
+    name_discount_Container: {
+        flexDirection: 'row',
+        marginVertical: 5
+    },
+    textContainer: {
         flex: 1,
-        width: null,
-        height: null
+        marginRight: 50
     },
-    nameProductContainer: {
+    nameProduct: {
+        color: '#000',
+        fontSize: 15
+    },
+    newPrice: {
+        color: 'tomato',
+        fontSize: 17,
+        fontWeight: '500'
+    },
+    oldPrice: {
+        textDecorationLine: 'line-through'
+    },
+    rate_sold_favorite_Container: {
+        flexDirection: 'row',
+        marginVertical: 10
+    },
+    rate_sold_favorite_left: {
+        flex: 1,
         flexDirection: 'row'
     },
-    triAngle: {
-        width: 0,
-        height: 0,
-        borderLeftWidth: 20,
-        borderRightWidth: 20,
-        borderBottomWidth: 5,
-        borderStyle: 'solid',
-        backgroundColor: 'transparent',
-        borderLeftColor: 'yellow',
-        borderRightColor: 'yellow',
-        borderBottomColor: 'transparent'
+    rate_sold_favorite_right: {
+        flexDirection: 'row',
+        marginHorizontal: 10
     }
 })
 

@@ -56,7 +56,7 @@ const color = '#34A853'
 
 const styles = StyleSheet.create({
     container: {
-        
+        paddingBottom: 10
     },
     header: {
         flexDirection: 'row',

@@ -6,9 +6,12 @@ import {
     TouchableOpacity,
     View,
     Dimensions,
-    Animated
+    Animated,
+    Image
 } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { NAME } from "../helpers/configs"
+import grabee from '../assets/img/grabee.png'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -34,6 +37,20 @@ const HeaderHomeComponent = ({ navigation, animatedValue }) => {
         outputRange: [WIDTH - 20, WIDTH - 55],
         extrapolate: 'clamp'
     })
+    
+    const animatedMascot = animatedValue.interpolate({
+        inputRange: [0, Header_Max_Height - Header_Min_Height],
+        // margin left 20 thif phair truwf 40
+        outputRange: [(WIDTH / 2) + 35, (WIDTH / 4) ],
+        extrapolate: 'clamp'
+    })
+    
+    const animatedWidthMascot = animatedValue.interpolate({
+        inputRange: [0, Header_Max_Height - Header_Min_Height],
+        // margin left 20 thif phair truwf 40
+        outputRange: [70, 0],
+        extrapolate: 'clamp'
+    })
 
     return (
         <Animated.View style={[
@@ -48,8 +65,14 @@ const HeaderHomeComponent = ({ navigation, animatedValue }) => {
                     opacity: animatedHeaderOpacityText
                 }
             ]}>
-                Grabee
+                { NAME }
             </Animated.Text>
+
+            <Animated.View style={{ position: 'absolute', top: 0, left: animatedMascot, opacity: animatedHeaderOpacityText }}>
+                <Animated.Image style={{ width: animatedWidthMascot, height: animatedWidthMascot }} source={ grabee } />
+            </Animated.View>
+
+
             <TouchableOpacity
                 style={styles.iconCartHeader}
             >

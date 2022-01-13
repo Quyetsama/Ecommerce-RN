@@ -21,7 +21,7 @@ const FeaturesComponent = () => {
 
     return (
         <View style={ styles.featuresContainer }>
-            <Text style={ styles.title }>Tiện ích</Text>
+            {/* <Text style={ styles.title }>Tiện ích</Text> */}
             <View style={ styles.listItemFeature }>
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
                     <ItemFeature color={'#9900ff'} icon={'cellphone-wireless'} text={'Mua mã thẻ'} />
@@ -46,7 +46,7 @@ const color = '#34A853'
 const styles = StyleSheet.create({
     featuresContainer: {
         backgroundColor: '#fff',
-        marginTop: 10
+        marginVertical: 10
     },
     title: {
         // fontFamily: 'Entypo',

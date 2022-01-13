@@ -99,9 +99,9 @@ const backgroundIcon = {
     position: 'absolute',
     width: 35, 
     height: 35, 
-    backgroundColor: 'gray', 
+    backgroundColor: 'rgba(52, 52, 52, 0.4)', 
     borderRadius: 30,
-    opacity: 0.4
+    // opacity: 0.4
 }
 
 const styles = StyleSheet.create({

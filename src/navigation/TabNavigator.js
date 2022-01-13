@@ -1,6 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Feather from 'react-native-vector-icons/Feather'
 import { HomeStack, OrderStack, ProfileStack, SearchStack, AuthStack } from './StackNavigator'
 
 
@@ -15,15 +15,15 @@ const BottomTabNavigator = () => {
                 if (route.name === 'tabHome') {
                     iconName = 'home';
                 } else if (route.name === 'tabOrder') {
-                    iconName = 'shopping-cart';
+                    iconName = 'shopping-bag';
                 } else if (route.name === 'tabProfile') {
                     iconName = 'user';
                 }
                 
                 // You can return any component that you like here!
-                return <Icon name={ iconName } size={ 21 } color={ color } />
+                return <Feather name={ iconName } size={ 21 } color={ color } />
             },
-            tabBarActiveTintColor: '#34A853',
+            tabBarActiveTintColor: '#8141ff',
             tabBarInactiveTintColor: 'gray',
             headerShown: false
         })}>

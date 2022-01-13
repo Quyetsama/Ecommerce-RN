@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { NavigationContainer  } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { AuthStack, SearchStack } from "./src/navigation/StackNavigator"
+import { AuthStack, SearchStack, StoreStack } from "./src/navigation/StackNavigator"
 import BottomTabNavigator from "./src/navigation/TabNavigator"
 import SplashScreen from "./src/screens/auth/SplashScreen"
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -57,6 +57,7 @@ const App = () => {
                 <Stack.Screen name='stackMain' component={ BottomTabNavigator }/>
                 <Stack.Screen name='stackSearch' component={ SearchStack } />
                 <Stack.Screen name='stackDetail' component={ DetailScreen } />
+                <Stack.Screen name='stackStore' component={ StoreStack } />
                 { userToken ? <></> : <Stack.Screen name='stackAuth' component={ AuthStack }/> }
             </Stack.Navigator>
         </NavigationContainer>

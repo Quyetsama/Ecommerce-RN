@@ -17,6 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from "../redux/actions/authAction"
+import UnderLineSection from "../components/UnderLineSection"
 import HeaderHomeComponent from "../components/HeaderHomeComponent"
 import CarouselComponent from "../components/CarouselComponent"
 import FeaturesComponent from "../components/FeaturesComponent"
@@ -25,6 +26,9 @@ import ProductDiscount from "../components/ProductDiscountComponent"
 import Categories from "../components/CategoriesComponent"
 import Products from "../components/ProductsComponent"
 import { getAllProduct } from '../api/categoriesApi'
+
+import ViewHeader from "../components/test/ViewHeader"
+import Header from "../components/test/Header"
 
 
 const WIDTH = Dimensions.get('window').width
@@ -64,8 +68,8 @@ const HomeScreen = ({ navigation }) => {
             <StatusBar hidden />
             {/* <StatusBar backgroundColor={color} /> */}
             {/* Header */}
-            <HeaderHomeComponent navigation={ navigation } animatedValue={ offset } />
-
+            {/* <HeaderHomeComponent navigation={ navigation } animatedValue={ offset } /> */}
+            <Header navigation={ navigation } />
 
             {/* Body */}
             <ScrollView
@@ -88,23 +92,25 @@ const HomeScreen = ({ navigation }) => {
             >
                 {/* <View style={ styles.bodyContainer }> */}
                 {/* CarouselImage */}
-                <CarouselComponent />
+                
+                <ViewHeader />
+                {/* <CarouselComponent /> */}
 
                 {/* Features */}
                 <FeaturesComponent />
-                <View style={styles.underLineSection} />
+                <UnderLineSection />
 
                 {/* ProductLimit */}
                 <ProductLimit />
-                <View style={styles.underLineSection} />
+                <UnderLineSection />
 
                 {/* Discount */}
                 <ProductDiscount />
-                <View style={styles.underLineSection} />
+                <UnderLineSection />
 
                 {/* CarouselImage */}
                 <CarouselComponent />
-                <View style={styles.underLineSection} />
+                <UnderLineSection />
 
                 {/* Categories */}
                 <Text style={{ padding: 5, fontSize: 15, fontWeight: 'bold', color: color, marginLeft: 5 }}>Danh Mục Sản Phẩm</Text>

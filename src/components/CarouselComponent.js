@@ -17,11 +17,11 @@ const widthScreen = Dimensions.get('window').width
 const heightScreen = Dimensions.get('window').height
 
 const images = [
-    'https://pbs.twimg.com/media/DMPlnjyVoAA2yDt?format=jpg&name=4096x4096',
-    'https://brands.vn/wp-content/uploads/2020/10/Cach-dang-ky-ban-hang-tren-Grab-Food.png',
-    'http://blog.abit.vn/wp-content/uploads/2020/05/dang-ky-ban-hang-tren-grab-food5.jpeg',
-    'https://muasieunhanh.com/wp-content/uploads/2020/08/ma-khuyen-mai-grab.jpg',
-    'https://websitecuckukvn.misacdn.net/wp-content/uploads/2019/06/1_rR2tfprPZNBEYRBV3PeGrQ-1024x568.jpeg'
+    'https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    'https://images.unsplash.com/photo-1605348532760-6753d2c43329?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+    'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1131&q=80',
+    'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=698&q=80',
+    'https://images.unsplash.com/photo-1606890658317-7d14490b76fd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80'
 ]
 
 const CarouselComponent = () => {
@@ -83,6 +83,13 @@ const CarouselComponent = () => {
                             }}
                             resizeMode='cover'
                         />
+                        <View style={ styles.txtContainer }>
+                            <Text style={ styles.txtTopic }>Introducing</Text>
+                            <Text style={ styles.txtName }>Air Max 2090</Text>
+                            <TouchableOpacity style={ styles.btnContainer }>
+                                <Text style={ styles.buyNow }>Buy Now</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 ))}
             </ScrollView>
@@ -99,6 +106,10 @@ const CarouselComponent = () => {
 }
 
 const color = '#34A853'
+const margin = 20
+const IMG_WIDTH = widthScreen - margin * 2
+const IMG_HEIGHT = heightScreen / 4
+
 
 const styles = StyleSheet.create({
     carouselContainer: {
@@ -107,13 +118,26 @@ const styles = StyleSheet.create({
         // overflow: 'hidden'
     },
     imgContainer: {
-        margin: 10,
+        marginTop: 10,
+        marginBottom: 10,
+        marginLeft: margin,
+        marginRight: margin,
         borderRadius: 15,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        width: IMG_WIDTH,
+        height: IMG_HEIGHT,
+
+        backgroundColor: '#faf9ff',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 10
     },
     imgCarousel: {
-        width: widthScreen - 20,
-        height: 130
+        // flex: 1,
+        width: IMG_WIDTH / 2,
+        height: (IMG_HEIGHT * 2) / 3,
+        borderRadius: 15
     },
     circleDiv: {
         position: 'absolute',
@@ -130,7 +154,31 @@ const styles = StyleSheet.create({
         height: 6,
         borderRadius: 3,
         margin: 5,
-        backgroundColor: '#34A853'
+        backgroundColor: '#ababab'
+    },
+    txtContainer: {
+        alignItems: 'flex-start',
+        marginLeft: 20
+    },
+    txtTopic: {
+        color: '#2c2c2c',
+        fontWeight: '500'
+    },
+    txtName: {
+        color: '#2c2c2c',
+        fontWeight: '800',
+        fontSize: 18
+    },
+    btnContainer: {
+        backgroundColor: '#2c2c2c',
+        alignItems: 'center',
+        borderRadius: 7,
+        marginTop: 10
+    },
+    buyNow: {
+        color: '#fff',
+        paddingVertical: 7,
+        paddingHorizontal: 10
     }
 })
 
