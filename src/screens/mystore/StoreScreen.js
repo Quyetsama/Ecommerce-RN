@@ -1,22 +1,30 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import HeaderStore from '../../components/storescreen/HeaderStore'
 
 
 
 const StoreScreen = ({ navigation }) => {
     return (
         <View style={ styles.container }>
-            <TouchableOpacity style={ styles.btnAddProduct } onPress={() => navigation.navigate('AddProduct')}>
-                <Text>Thêm Sản Phẩm</Text>
-            </TouchableOpacity>
+            <HeaderStore label={'Shop của tôi'} goBack={() => navigation.goBack()} />
+            
+            <ScrollView
+                contentContainerStyle={ styles.bodyContainer }
+            >
+                <TouchableOpacity style={ styles.btnAddProduct } onPress={() => navigation.navigate('AddProductStack')}>
+                    <Text>Thêm Sản Phẩm</Text>
+                </TouchableOpacity>
+            </ScrollView>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
+        flex: 1
+    },
+    bodyContainer: {
         alignItems: 'center'
     },
     btnAddProduct: {

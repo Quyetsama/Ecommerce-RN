@@ -8,7 +8,7 @@ const initialStateAuth = {
 }
 
 const authReducer = (state = initialStateAuth, action) => {
-    console.log(action)
+    // console.log(action)
     switch(action.type) {
         case RETRIEVE_TOKEN:
             return {

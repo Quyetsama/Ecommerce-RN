@@ -4,8 +4,11 @@ import UnderLineSection from '../../components/UnderLineSection'
 import HeaderStore from '../../components/storescreen/HeaderStore'
 import AddImage from '../../components/storescreen/AddImage'
 import NameAndDes from '../../components/storescreen/NameAndDes'
+import NoName from '../../components/storescreen/NoName'
+
 import { violet } from '../../helpers/configs'
 import { useDispatch, useSelector } from 'react-redux'
+import { postProduct, clearProduct } from '../../redux/actions/myStoreAction'
 
 
 const data = [
@@ -19,15 +22,21 @@ const data = [
 const AddProductScreen = ({ navigation }) => {
 
     const [images, setImages] = useState(data)
+    const dispatch = useDispatch()
 
     const removeImage = (id) => {
         const newImages = images.filter((item, index) => index !== id)
         setImages(newImages)
     }
 
+    const handleGoBack = () => {
+        dispatch(clearProduct())
+        navigation.goBack()
+    }
+
     return (
         <View style={ styles.container }>
-            <HeaderStore label={'Thêm sản phẩm'} goBack={() => navigation.goBack()} />
+            <HeaderStore label={'Thêm sản phẩm'} goBack={ handleGoBack } />
 
             <ScrollView
                 keyboardShouldPersistTaps='handled'
@@ -37,14 +46,19 @@ const AddProductScreen = ({ navigation }) => {
                 <UnderLineSection />
 
                 {/*  */}
-                <NameAndDes label={ 'Tên sản phẩm' } maxLength={ 120 } minLength={ 10 } />
+                <NameAndDes label={ 'Tên sản phẩm' } maxLength={ 120 } minLength={ 10 } type={'name'} />
                 <UnderLineSection />
-                <NameAndDes label={ 'Mô tả sản phẩm' } maxLength={ 3000 } minLength={ 100 } multiline={ true } />
+                <NameAndDes label={ 'Mô tả sản phẩm' } maxLength={ 3000 } minLength={ 100 } multiline={ true } type={'des'} />
+                <UnderLineSection />
+
+                {/*  */}
+                <NoName icon={'list-outline'} label={'Danh mục'} onPress={() => navigation.navigate('AddCategoryProduct')} />
+                <NoName icon={'md-layers-outline'} label={'Phân loại hàng'} onPress={() => navigation.navigate('ClassifyProduct')} hideRequired />
                 <UnderLineSection />
 
             </ScrollView>
             
-            <TouchableOpacity style={ styles.button } activeOpacity={0.5}>
+            <TouchableOpacity style={ styles.button } activeOpacity={0.5} onPress={() => dispatch(postProduct())}>
                 <Text style={ styles.txtButton }>Đăng bán</Text>
             </TouchableOpacity>
         </View>

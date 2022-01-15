@@ -1,5 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import Feather from 'react-native-vector-icons/Feather'
 import { HomeStack, OrderStack, ProfileStack, SearchStack, AuthStack } from './StackNavigator'
 
@@ -7,6 +8,18 @@ import { HomeStack, OrderStack, ProfileStack, SearchStack, AuthStack } from './S
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
+
+    const getTabBarVisibility = (route) => {
+        // console.log(route)
+        const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed'
+        // console.log(routeName)
+
+        const routes = ['Detail', 'myStore']
+
+        if(routes.includes(routeName)) return 'none'
+        return 'flex'
+    }
+
     return (
         <Tab.Navigator screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -27,9 +40,9 @@ const BottomTabNavigator = () => {
             tabBarInactiveTintColor: 'gray',
             headerShown: false
         })}>
-            <Tab.Screen name="tabHome" component={ HomeStack } options={{ title: 'Trang chủ' }} />
+            <Tab.Screen name="tabHome" component={ HomeStack } options={({ route }) => ({ title: 'Trang chủ', tabBarStyle: { display: getTabBarVisibility(route) } })} />
             <Tab.Screen name="tabOrder" component={ OrderStack } options={{ title: 'Đơn hàng', tabBarBadge: 3 }} />
-            <Tab.Screen name="tabProfile" component={ ProfileStack } options={{ title: 'Tôi' }} />
+            <Tab.Screen name="tabProfile" component={ ProfileStack } options={({ route }) => ({ title: 'Tôi', tabBarStyle: { display: getTabBarVisibility(route) } })} />
         </Tab.Navigator>
     )
 }

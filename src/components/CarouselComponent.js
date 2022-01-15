@@ -75,20 +75,26 @@ const CarouselComponent = () => {
                 onMomentumScrollEnd={ setImageSelected }
             >
                 {images.map((image, index) => (
-                    <View style={ styles.imgContainer } key={ index }>
-                        <Image
-                            style={styles.imgCarousel}
-                            source={{
-                                uri: image
-                            }}
-                            resizeMode='cover'
-                        />
+                    <View style={ styles.itemContainer } key={ index }>
+                        <View style={ styles.imgContainer }>
+                            <Image
+                                style={styles.imgCarousel}
+                                source={{
+                                    uri: image
+                                }}
+                                resizeMode='cover'
+                            />
+                        </View>
                         <View style={ styles.txtContainer }>
-                            <Text style={ styles.txtTopic }>Introducing</Text>
-                            <Text style={ styles.txtName }>Air Max 2090</Text>
-                            <TouchableOpacity style={ styles.btnContainer }>
-                                <Text style={ styles.buyNow }>Buy Now</Text>
-                            </TouchableOpacity>
+                            <View>
+                                <Text style={ styles.txtTopic }>Introducing</Text>
+                                <Text numberOfLines={2} style={ styles.txtName }>Air Max 2090</Text>
+                            </View>
+                            <View>
+                                <TouchableOpacity style={ styles.btnContainer }>
+                                    <Text style={ styles.buyNow }>Buy Now</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 ))}
@@ -117,7 +123,8 @@ const styles = StyleSheet.create({
         // borderRadius: 20,
         // overflow: 'hidden'
     },
-    imgContainer: {
+    itemContainer: {
+        flex: 1,
         marginTop: 10,
         marginBottom: 10,
         marginLeft: margin,
@@ -132,6 +139,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 10
+    },
+    imgContainer: {
+        flex: 1.3, 
+        width: IMG_WIDTH / 2, 
+        height: (IMG_HEIGHT * 2) / 3, 
+        alignItems: 'center'
     },
     imgCarousel: {
         // flex: 1,
@@ -157,8 +170,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#ababab'
     },
     txtContainer: {
-        alignItems: 'flex-start',
-        marginLeft: 20
+        flex: 1,
+        justifyContent: 'space-between',
+        width: IMG_WIDTH / 2,
+        height: (IMG_HEIGHT * 2) / 3,
+        alignItems: 'flex-start'
     },
     txtTopic: {
         color: '#2c2c2c',

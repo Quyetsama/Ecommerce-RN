@@ -58,4 +58,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ViewHeader
+export default React.memo(ViewHeader)

@@ -7,6 +7,7 @@ import { violet } from '../../helpers/configs'
 
 
 const HeaderStore = ({ label, goBack }) => {
+
     return (
         <View style={ styles.container }>
             <Feather name={'corner-down-left'} size={25} color={violet} onPress={ goBack } />

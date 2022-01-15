@@ -34,7 +34,7 @@ const Products = ({ category, navigation }) => {
 
     return (
         <View removeClippedSubviews={true} style={ styles.container }>
-            <ScrollView horizontal={true}>
+            <ScrollView horizontal={true} scrollEnabled={false}>
                 <FlatList
                     // nestedScrollEnabled={true}
                     removeClippedSubviews

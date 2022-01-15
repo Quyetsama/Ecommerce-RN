@@ -9,7 +9,7 @@ const WIDTH = Dimensions.get('window').width
 const ItemProduct = ({ data, navigation }) => {
 
     const goToDetail = () => {
-        navigation.navigate('stackDetail', {
+        navigation.navigate('Detail', {
             product: data
         })
     }

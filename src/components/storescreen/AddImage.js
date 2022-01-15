@@ -24,6 +24,7 @@ const AddImage = ({ listImage, remove }) => {
     //     setImages(newImages)
     // }
 
+
     return (
         <View style={ styles.container }>
             {/* <ScrollView horizontal> */}

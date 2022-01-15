@@ -31,7 +31,7 @@ const ProfileScreen = ({ navigation }) => {
     return (
         <View style={ styles.container }>
             {/*  */}
-            <HeaderProfile />
+            <HeaderProfile navigation={ navigation } />
 
 
             {/*  */}
@@ -48,15 +48,15 @@ const ProfileScreen = ({ navigation }) => {
                 <OrderComponent />
 
                 {/*  */}
-                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('myStore')} />
                 <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
-                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('myStore')} />
                 <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
-                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('myStore')} />
                 <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
-                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('myStore')} />
                 <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
-                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('stackStore')} />
+                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} onPress={() => navigation.navigate('myStore')} />
                 <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} />
                 
             </ScrollView>

@@ -90,6 +90,7 @@ const HomeScreen = ({ navigation }) => {
                     }
                 )}
             >
+                
                 {/* <View style={ styles.bodyContainer }> */}
                 {/* CarouselImage */}
                 

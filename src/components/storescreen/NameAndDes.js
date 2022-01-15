@@ -2,15 +2,19 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useDispatch, useSelector } from 'react-redux'
-import { setNameProduct } from '../../redux/actions/myStoreAction'
+import { setNameProduct, setDesProduct } from '../../redux/actions/myStoreAction'
 
 
 
-const NameAndDes = ({ label, maxLength, minLength, multiline }) => {
+const NameAndDes = ({ label, maxLength, minLength, multiline, type }) => {
 
     // const [text, setText] = useState('')
     const dispatch = useDispatch()
-    const name = useSelector(state => state.myStoreReducer.name)
+    const text = type === 'name' ? useSelector(state => state.myStoreReducer.name) : useSelector(state => state.myStoreReducer.des)
+
+    const handleDispatch = (text) => {
+        type === 'name' ? dispatch(setNameProduct(text)) : dispatch(setDesProduct(text)) 
+    }
 
     return (
         <View style={ styles.container }>
@@ -19,7 +23,7 @@ const NameAndDes = ({ label, maxLength, minLength, multiline }) => {
                     { label }
                     <Text style={{ color: 'red' }}> *</Text>
                 </Text>
-                <Text>{ name.length }/{ maxLength }</Text>
+                <Text>{ text.length }/{ maxLength }</Text>
             </View>
             
             <View style={ styles.inputContainer }>
@@ -27,13 +31,13 @@ const NameAndDes = ({ label, maxLength, minLength, multiline }) => {
                     style={ styles.input }
                     placeholder={ 'Nhập ' + ('' + label).toLowerCase() }
                     maxLength={ maxLength }
-                    value={ name }
-                    onChangeText={text => dispatch(setNameProduct(text))}
+                    value={ text }
+                    onChangeText={text => handleDispatch(text)}
                     multiline={ multiline }
                 />
 
-                {name.length >= minLength ? (
-                    <TouchableOpacity style={ styles.iconRemove } onPress={() => dispatch(setNameProduct(''))} >
+                {text.length >= minLength ? (
+                    <TouchableOpacity style={ styles.iconRemove } onPress={() => handleDispatch('')} >
                         <Ionicons name={'close-circle'} size={20} color={'rgba(52, 52, 52, 0.4)'} />
                     </TouchableOpacity>
                 ) : (
