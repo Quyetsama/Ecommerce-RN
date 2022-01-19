@@ -1,4 +1,11 @@
-import { POST_PRODUCT, CLEAR_PRODUCT, SET_NAME_PRODUCT, SET_DES_PRODUCT, SET_CATEGORY_PRODUCT } from "./types"
+import { 
+    POST_PRODUCT, 
+    CLEAR_PRODUCT,
+    SET_NAME_PRODUCT, 
+    SET_DES_PRODUCT, 
+    SET_CATEGORY_PRODUCT, 
+    SET_VALUE_CLASSIFY_PRODUCT
+} from "./types"
 
 
 
@@ -32,5 +39,19 @@ export const setCategoryProduct = (category) => (
     {
         type: SET_CATEGORY_PRODUCT,
         category: category
+    }
+)
+
+export const addValueClassifyProduct = (value) => (
+    {
+        type: SET_VALUE_CLASSIFY_PRODUCT,
+        value: value
+    }
+)
+
+export const changeValueClassifyProduct = (type, value) => (
+    {
+        type: type,
+        value: value
     }
 )

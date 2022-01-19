@@ -10,7 +10,7 @@ const HeaderStore = ({ label, goBack }) => {
 
     return (
         <View style={ styles.container }>
-            <Feather name={'corner-down-left'} size={25} color={violet} onPress={ goBack } />
+            <Feather style={{ zIndex: 12 }} name={'corner-down-left'} size={25} color={violet} onPress={ goBack } />
             <View style={ styles.labelContainer }>
                 <Text style={ styles.label }>{ label }</Text>
             </View>
@@ -30,7 +30,8 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        zIndex: 11
     },
     label: {
         color: '#000',

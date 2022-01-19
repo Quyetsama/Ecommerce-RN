@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity, FlatList, TextInput } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useDispatch, useSelector } from 'react-redux'
+import { addValueClassifyProduct, changeValueClassifyProduct } from '../../redux/actions/myStoreAction'
+
 import HeaderStore from '../../components/storescreen/HeaderStore'
 import { violet } from '../../helpers/configs'
 import Dialog from 'react-native-dialog'
@@ -9,7 +12,7 @@ import NoName from '../../components/storescreen/NoName'
 
 
 
-const DialogADD = ({ visible, defaultValue, handleCancel, onPressOK }) => {
+const DialogADD = ({ visible, defaultValue, onPressCancel, onPressOK, type }) => {
 
     const [text, setText] = useState('')
 
@@ -18,7 +21,17 @@ const DialogADD = ({ visible, defaultValue, handleCancel, onPressOK }) => {
     }, [defaultValue])
 
     const handleOK = () => {
-        onPressOK(defaultValue, text)
+        if(type === 'edit') {
+            onPressOK(defaultValue, text)
+        }
+        else {
+            onPressOK(text)
+        }
+        setText('')
+    }
+
+    const handleCancel = () => {
+        onPressCancel()
         setText('')
     }
 
@@ -36,215 +49,265 @@ const DialogADD = ({ visible, defaultValue, handleCancel, onPressOK }) => {
     )
 }
 
-const ItemClassify = ({ label, isSelected, handleSelected, isUpdate, handleRemove }) => {
+const ItemClassify = ({ label, isUpdate, onPress, handleRemove }) => {
     return (
         <View>
-            {isUpdate ? (<MaterialCommunityIcons 
-                            style={{ position: 'absolute', top: -10, right: 0, backgroundColor: '#fff', zIndex: 10 }} 
-                            name={'close-circle-outline'} size={20} color={violet}
-                            onPress={() => handleRemove() }
-                        />)
-                        : null
+            {isUpdate 
+                ? 
+                (<MaterialCommunityIcons 
+                    style={{ position: 'absolute', top: -10, right: 0, backgroundColor: '#fff', zIndex: 10 }} 
+                    name={'close-circle-outline'} size={20} color={violet}
+                    onPress={ handleRemove }
+                />)
+                : 
+                null
             }
             <TouchableOpacity 
-                onPress={ handleSelected } 
+                onPress={ onPress } 
                 activeOpacity={0.8} 
-                style={ isSelected ? styles.itemContainerActive : styles.itemContainerInActive } 
+                style={ styles.itemContainerActive } 
             >
-                <Text style={[ styles.label, { color: isSelected ? violet : '#000' } ]}>{ label }</Text>
+                <Text style={[ styles.label, { color: violet } ]}>{ label }</Text>
             </TouchableOpacity> 
         </View>
     )
 }
 
-const SectionClassify = ({ label, defaultData, removeSection, handleLabelChange }) => {
+const SectionClassify = ({ label, defaultData, removeClassify, handleAddValueClassify, handleChangeNameClassify, handleRemoveValueClassify, handleEditValueClassify }) => {
 
     const [isUpdate, setIsUpdate] = useState(false)
     const [dialog, setDialog] = useState({
         visible: false,
         value: ''
     })
-    const [data, setData] = useState(defaultData)
-    const [selected, setSelected] = useState([])
+    const [nameClassify, setNameClassify] = useState(label)
 
-    // Chọn màu sắc ...
-    const handleSelected = (element) => {
-        if(selected.includes(element.index)) {
-            setSelected(selected.filter(item => item !== element.index))
-        }
-        else {
-            setSelected([...selected, element.index])
-        }
-    }
-
-    // Remove Item
-    const handleRemove = (element) =>{
-        setData(data.filter(item => item.index !== element.index))
-        setSelected(selected.filter(item => item !== element.index))
-        setDialog({ visible: false, value: '' })
-    }
-
-    // Sửa
-    const handleEditItem = (element) => {
-        setDialog({ 
-            visible: true,
-            value: element.value
-        })
-    }
-
-    // Click Ok dialog (Sửa)
-    const handleConfirmEditItem = (oldValue, newValue) => {
-        let newData = data
-        if(newValue !== '') {
-            for(let i = 0; i < newData.length; i++) {
-                if(newData[i].value === oldValue) {
-                    newData[i].value = newValue
-                    break
-                }
-            }
-            setData(newData)
-            // setData([...data.filter(item => item !== oldValue), newValue])
-        }
-        setDialog({ visible: false, value: '' })
-    }
-
-    // Click Ok dialog (Thêm)
-    const handleADD = (defaultValue, text) => {
-        const found = data.some(el => el.value === text)
-        if (!found) setData([...data, { index: Date.now(), value: text }])
-
-        // if(!data.includes(text)) {
-        //     setData([...data, { index: data.length, value: text }])
-        // }
-        setDialog({ visible: false, value: '' })
-    }
+    // useEffect(() => {
+    //     setNameClassify(label)
+    // }, [label])
 
     // Click Cancel dialog
-    const handleCancel = () => {
+    const onPressCancel = () => {
         setDialog({ visible: false, value: '' })
     }
 
-    // handle Thêm when isUpdate
-    const handleADDWhenIsUpdate = () => {
-        setDialog({ ...dialog, visible: true })
+    const ADD = () => {
         setIsUpdate(false)
+        setDialog({ ...dialog, visible: true })
     }
 
+    const confirmADD = (value) => {
+        handleAddValueClassify(value)
+        setDialog({ ...dialog, visible: false })
+    }
 
-    console.log(label)
+    const EDIT = (value) => {
+        setDialog({ visible: true, value: value })
+        console.log(value)
+    }
+
+    const confirmEDIT = (oldValue, newValue) => {
+        handleEditValueClassify(oldValue, newValue)
+        setDialog({ ...dialog, visible: false })
+    }
+
+    const onPressUpdate = () => {
+        if(isUpdate === true) {
+            handleChangeNameClassify(nameClassify)
+        }
+        setIsUpdate(!isUpdate)
+    }
+
+    // console.log(nameClassify)
     return(
         <View style={ styles.sectionContainer }>
 
             <DialogADD 
                 visible={ dialog.visible } 
                 defaultValue={ dialog.value } 
-                handleCancel={ handleCancel } 
-                onPressOK={ isUpdate ? handleConfirmEditItem : handleADD } 
+                onPressCancel={ onPressCancel } 
+                onPressOK={ isUpdate ? confirmEDIT : confirmADD }
+                type={ isUpdate ? 'edit' : null }
             />
 
             <View style={ styles.topContainer }>
-                {isUpdate ? (<MaterialCommunityIcons onPress={ removeSection } name={'minus-circle'} size={20} color={violet} />) : null}
+                {isUpdate
+                    ? <MaterialCommunityIcons onPress={ removeClassify } name={'minus-circle'} size={20} color={violet} />
+                    : null
+                }
                 <TextInput
                     editable={ isUpdate } 
                     style={ styles.titleContainer }
-                    value={ label }
-                    onChangeText={text => handleLabelChange(text)}
+                    value={ nameClassify }
+                    onChangeText={text => setNameClassify(text)}
                 />
-                <TouchableOpacity onPress={() => setIsUpdate(!isUpdate)}>
+                <TouchableOpacity onPress={ onPressUpdate }>
                     <Text style={ styles.updateContainer }>{ isUpdate ? 'Xong' : 'Sửa'}</Text>
                 </TouchableOpacity>
             </View>
 
             <View style={ styles.botContainer }>
-                {data.map((item, index) => (
+                {defaultData.map((item, index) => (
                     <ItemClassify 
-                        key={ index } label={ item.value } 
-                        isSelected={ selected.includes(item.index) } 
-                        handleSelected={() => isUpdate ? handleEditItem(item) : handleSelected(item)}
+                        key={ index } label={ item } 
+                        // handleEditItem={() => isUpdate ? handleEditItem(item) : null}
+                        onPress={() => isUpdate ? EDIT(item) : null}
                         isUpdate={ isUpdate }
-                        handleRemove={ () => handleRemove(item) }
+                        handleRemove={() => handleRemoveValueClassify(item)}
                     />
                 ))}
-                <ItemClassify label={'+ Thêm'} handleSelected={ handleADDWhenIsUpdate } />
+                <ItemClassify 
+                    label={'+ Thêm'} 
+                    onPress={ ADD } 
+                /> 
             </View>
         </View>
     )
 }
 
-
-const data1 = {
-    label: 'Màu sắc',
-    data: [
-        {
-            index: Date.now() + '1',
-            value: 'Đen'
-        },
-        {
-            index: Date.now() + '2',
-            value: 'Trắng'
-        }
-    ]
-}
-const data2 = {
-    label: 'Kích cỡ',
-    data: [
-        {
-            index: Date.now() + '1',
-            value: 'S'
-        },
-        {
-            index: Date.now() + '2',
-            value: 'M'
-        },
-        {
-            index: Date.now() + '3',
-            value: 'L'
-        }
-    ]
-}
-
 const ClassifyProduct = ({ navigation }) => {
 
-    const [classify1, setClassify1] = useState(data1)
-    const [classify2, setClassify2] = useState(data2)
+    const Class = useSelector(state => state.myStoreReducer.classify)
+    const dispatch = useDispatch()
+    const [classify, setClassify] = useState(Class.generalClassification || [])
 
-    const addClassify = () => {
-        if(classify1 === null) {
-            if(classify2 === null) {
-                setClassify1({
-                    label: '',
-                    data: []
-                })
-            }
-            else {
-                setClassify1(classify2)
-                setClassify2({
-                    label: '',
-                    data: []
-                })
-            }
+
+
+    const setPrice_Quantity = () => {
+        // dispatch(addValueClassifyProduct({
+        //     ...Class,
+        //     generalClassification: classify
+        // }))
+        const finalClassify = {
+            generalClassification: [...classify],
+            detailClassification: []
         }
-        else {
-            setClassify2({
-                label: '',
-                data: []
+        
+        classify[0].data.map((item0, index0) => {
+            classify.length === 1
+            ?
+            finalClassify.detailClassification.push({
+                type: [item0],
+                price: null,
+                quantity: null
             })
-        }
+            :
+            classify[1].data.map((item1, index1) => {
+                finalClassify.detailClassification.push({
+                    type: [item0, item1],
+                    price: null,
+                    quantity: null
+                })
+            })
+        })
+
+        navigation.navigate('PriceQuantity', {
+            classify: finalClassify
+        })
     }
 
-    // console.log(classify1 === null, classify2 === null)
+
+
+    const handleAddValueClassify = (position, value) => {
+        const newClassify = [...classify]
+        newClassify[position].data = [...new Set([...newClassify[position].data, value])]
+        setClassify(newClassify)
+    }
+
+    const handleRemoveValueClassify = (position, value) => {
+        const newClassify = [...classify]
+        newClassify[position].data = newClassify[position].data.filter(item => item !== value)
+        setClassify(newClassify)
+    }
+
+    const handleEditValueClassify = (position, oldValue, newValue) => {
+        const newClassify = [...classify]
+        newClassify[position].data.map((item, index) => {
+            if(newClassify[position].data[index] === oldValue ) {
+                newClassify[position].data[index] = newValue
+            }
+        })
+        setClassify(newClassify)
+    }
+
+    const handleChangeNameClassify = (position, value) => {
+        const newClassify = [...classify]
+        newClassify[position].label = value
+        setClassify(newClassify)
+    }
+
+    const addClassify = () =>{
+        const newClassify = classify.filter(item => item !== null)
+        setClassify([
+            ...newClassify,
+            {
+                id: Date.now().toString(),
+                label: 'Phân loại',
+                data: ['Loại 1', 'Loại 2']
+            }
+        ])
+    }
+
+    const removeClassify = (position) =>{
+        const newClassify = classify.filter((item, index) => (index !== position))
+        setClassify(newClassify)
+    }
+
+    const isValid = () => {
+        return (
+            classify.length > 0
+        )
+    }
+
+    // console.log(Class)
 
     return (
         <View style={ styles.container }>
-            <HeaderStore label={'Phân loại hàng'} goBack={() => navigation.goBack()} />
-            
-            <ScrollView keyboardShouldPersistTaps='handled'>
-                {classify1 !== null ? <SectionClassify label={ classify1.label } defaultData={ classify1.data } removeSection={() => setClassify1(null)} handleLabelChange={(text) => setClassify1({...classify1, label: text})} /> : null}
-                <UnderLineSection />
-                {classify2 !== null ? <SectionClassify label={ classify2.label } defaultData={ classify2.data } removeSection={() => setClassify2(null)} handleLabelChange={(text) => setClassify2({...classify2, label: text})} /> : null}
-                <UnderLineSection />
-                {(classify1 === null || classify2 === null) ? <NoName icon={'add-circle-outline'} colorIcon={ violet } label={'Thêm phân loại hàng'} hideRequired hideIconChevron onPress={ addClassify } /> : null }           
-            </ScrollView>
+            <HeaderStore 
+                label={'Phân loại hàng'} 
+                goBack={() => { 
+                    navigation.goBack()
+                    // dispatch({ type: 'REMOVE_VALUE_CLASSIFY_PRODUCT' })
+                }} 
+            />
+
+            <FlatList
+                keyboardShouldPersistTaps='handled'
+                data={classify}
+                renderItem={({item, index}) => (
+                    <SectionClassify
+                        key={item.id}
+                        label={ item.label } 
+                        defaultData={ item.data }
+                        removeClassify={() => removeClassify(index)}
+                        handleAddValueClassify={(value) => handleAddValueClassify(index, value)}
+                        handleChangeNameClassify={(value) => handleChangeNameClassify(index, value)}
+                        handleRemoveValueClassify={(value) => handleRemoveValueClassify(index, value) }
+                        handleEditValueClassify={(oldValue, newValue) => handleEditValueClassify(index, oldValue, newValue) }
+                    />
+                )}
+                ListFooterComponent={
+                    (classify.length < 2)
+                        ? <NoName
+                            onPress={ addClassify }
+                            icon={'add-circle-outline'} 
+                            colorIcon={ violet } 
+                            label={'Thêm phân loại hàng'} 
+                            hideRequired 
+                            hideIconChevron 
+                        /> 
+                        : null 
+                     
+                }
+            />
+            <TouchableOpacity
+                disabled={ !isValid() }
+                style={[ styles.btnNext, { opacity: isValid() ? 1 : 0.5 } ]} 
+                activeOpacity={0.8} 
+                onPress={ setPrice_Quantity }
+            >
+                <Text style={ styles.next }>Tiếp theo</Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -298,6 +361,21 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 20,
         // color: '#000'
+    },
+    btnNext: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: violet,
+        padding: 15
+    },
+    next: {
+        color: '#fff',
+        fontSize: 15,
+        fontWeight: 'bold'
     }
 })
 

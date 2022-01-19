@@ -12,6 +12,7 @@ import StoreScreen from '../screens/mystore/StoreScreen'
 import AddProductScreen from '../screens/mystore/AddProductScreen'
 import AddCategoryProduct from '../screens/mystore/AddCategoryProduct'
 import ClassifyProduct from '../screens/mystore/ClassifyProductScreen'
+import PriceQuantity from '../screens/mystore/PriceQuantityScreen'
 
 import SearchScreen from '../screens/SearchScreen'
 
@@ -85,6 +86,7 @@ const AddProductStack = () => {
             <Stack.Screen name="AddProduct" component={ AddProductScreen } />
             <Stack.Screen name="AddCategoryProduct" component={ AddCategoryProduct } />
             <Stack.Screen name="ClassifyProduct" component={ ClassifyProduct } />
+            <Stack.Screen name="PriceQuantity" component={ PriceQuantity } />
         </Stack.Navigator>
     )
 }
