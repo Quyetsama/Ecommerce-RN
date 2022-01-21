@@ -1,15 +1,14 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, TextInput } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { useSelector } from 'react-redux'
 
 
 
-const NoName = ({ icon, label, onPress, hideRequired, hideIconChevron, colorIcon }) => {
+const NoName = ({ valueDetail, icon, label, onPress, hideRequired, hideIconChevron, colorIcon, showInput, onChangeInput }) => {
 
-    const categorySelected = useSelector(state => state.myStoreReducer.category)
-
+    console.log('render')
     return (
         <TouchableOpacity style={ styles.container } activeOpacity={0.5} onPress={ onPress }>
             <View style={ styles.leftContainer }>
@@ -19,7 +18,18 @@ const NoName = ({ icon, label, onPress, hideRequired, hideIconChevron, colorIcon
                 </Text>
             </View>
             <View style={ styles.rightContainer }>
-                <Text style={ styles.txtDetail }>{ categorySelected.name }</Text>
+                {showInput
+                    ? <TextInput
+                        value={ valueDetail }
+                        onChangeText={text => onChangeInput(text)}
+                        placeholder='Đặt'
+                        keyboardType='numeric'
+                        maxLength={9}
+                    />
+                    : <Text style={ styles.txtDetail }>{ valueDetail }</Text>
+                }
+                
+                {/* <Text style={ styles.txtDetail }>{ valueDetail }</Text> */}
                 { !hideIconChevron ? <Entypo name={ 'chevron-thin-right' } size={ 13 } color={ 'gray' } /> : null }
             </View>
         </TouchableOpacity>
@@ -36,7 +46,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 10,
         alignItems: 'center',
-        borderBottomWidth: 0.5,
+        borderBottomWidth: 1,
         borderBottomColor: '#f2f2f2'
     },
     leftContainer: {
@@ -59,4 +69,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default NoName
+export default React.memo(NoName)

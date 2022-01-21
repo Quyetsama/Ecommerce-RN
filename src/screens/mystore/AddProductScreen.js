@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import UnderLineSection from '../../components/UnderLineSection'
 import HeaderStore from '../../components/storescreen/HeaderStore'
 import AddImage from '../../components/storescreen/AddImage'
 import NameAndDes from '../../components/storescreen/NameAndDes'
 import NoName from '../../components/storescreen/NoName'
+import { isEmpty } from 'lodash'
 
 import { violet } from '../../helpers/configs'
 import { useDispatch, useSelector } from 'react-redux'
-import { postProduct, clearProduct } from '../../redux/actions/myStoreAction'
+import { postProduct, clearProduct, setValuePrice, setValueQuantity } from '../../redux/actions/myStoreAction'
 
 
 const data = [
@@ -21,6 +22,7 @@ const data = [
 
 const AddProductScreen = ({ navigation }) => {
 
+    const { category, classify, price, quantity } = useSelector(state => state.myStoreReducer)
     const [images, setImages] = useState(data)
     const dispatch = useDispatch()
 
@@ -33,6 +35,15 @@ const AddProductScreen = ({ navigation }) => {
         dispatch(clearProduct())
         navigation.goBack()
     }
+
+    const handleChangePrice = useCallback((value) => {
+        dispatch(setValuePrice(+value))
+    }, []) 
+
+    const handleChangeQuantity= useCallback((value) => {
+        dispatch(setValueQuantity(+value))
+    }, []) 
+
 
     return (
         <View style={ styles.container }>
@@ -52,8 +63,34 @@ const AddProductScreen = ({ navigation }) => {
                 <UnderLineSection />
 
                 {/*  */}
-                <NoName icon={'list-outline'} label={'Danh mục'} onPress={() => navigation.navigate('AddCategoryProduct')} />
-                <NoName icon={'md-layers-outline'} label={'Phân loại hàng'} onPress={() => navigation.navigate('ClassifyProduct')} hideRequired />
+                <NoName 
+                    icon={'list-outline'} 
+                    label={'Danh mục'} 
+                    valueDetail={ category.name } 
+                    onPress={() => navigation.navigate('AddCategoryProduct', { category: category })} 
+                />
+                <NoName 
+                    icon={'md-layers-outline'} 
+                    label={'Phân loại hàng'} 
+                    onPress={() => navigation.navigate('ClassifyProduct', { classify: classify })} 
+                    hideRequired 
+                />
+                <NoName 
+                    icon={'pricetag-outline'} 
+                    label={'Giá'} 
+                    showInput={ isEmpty(classify) } 
+                    onChangeInput={ handleChangePrice }
+                    valueDetail={ price ? price + '' : '' } 
+                    onPress={() =>  !isEmpty(classify) ? navigation.navigate('PriceQuantity', { classify: classify }) : null} 
+                />
+                <NoName 
+                    icon={'file-tray-stacked-outline'} 
+                    label={'Kho hàng'} 
+                    showInput={ isEmpty(classify) }
+                    onChangeInput={ handleChangeQuantity }
+                    valueDetail={ quantity ? quantity + '' : '' }
+                    onPress={() =>  !isEmpty(classify) ? navigation.navigate('PriceQuantity', { classify: classify }) : null} 
+                />
                 <UnderLineSection />
 
             </ScrollView>
@@ -82,4 +119,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AddProductScreen
+export default React.memo(AddProductScreen)

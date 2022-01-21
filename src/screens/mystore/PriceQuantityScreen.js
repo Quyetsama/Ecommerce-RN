@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Dimensions, TextI
 import HeaderStore from '../../components/storescreen/HeaderStore'
 import { violet } from '../../helpers/configs'
 import { useDispatch, useSelector } from 'react-redux'
-import { addValueClassifyProduct } from '../../redux/actions/myStoreAction'
+import { addValueClassifyProduct, setValuePrice, setValueQuantity } from '../../redux/actions/myStoreAction'
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -70,12 +70,7 @@ const HeaderColumn = () => {
     )
 }
 
-const RowItem = ({ type, price, quantity, handleChangePriceItem }) => {
-
-    const [input, setInput] = useState({
-        price: price ? price : '',
-        quantity: quantity ? quantity : ''
-    })
+const RowItem = ({ type, price, quantity, handleChangePriceItem, handleChangeQuantityItem }) => {
 
     const convertVND = (value) => {
         return (
@@ -83,15 +78,6 @@ const RowItem = ({ type, price, quantity, handleChangePriceItem }) => {
         )
     }
 
-    const changePrice = (text) => {
-        setInput({
-            ...input,
-            price: text
-        })
-        handleChangePriceItem(input.price)
-    }
-
-console.log('render')
     return (
         <View style={ styles.rowItemContainer }>
             <View style={ styles.firstRow }>
@@ -99,8 +85,8 @@ console.log('render')
             </View>
             <View style={ styles.secondRow }>
                 <TextInput
-                    value={ input.price }
-                    onChangeText={text => changePrice(text)}
+                    value={ price + '' }
+                    onChangeText={text => handleChangePriceItem(text)}
                     style={ styles.input }
                     placeholder={ convertVND(0) }
                     keyboardType="numeric"
@@ -108,11 +94,8 @@ console.log('render')
             </View>
             <View style={ styles.thirdRow }>
                 <TextInput
-                    value={ input.quantity }
-                    onChangeText={text => setInput({
-                        ...input,
-                        quantity: text
-                    })}
+                    value={ quantity + '' }
+                    onChangeText={text => handleChangeQuantityItem(text)}
                     style={ styles.input }
                     placeholder='0'
                     keyboardType="numeric"
@@ -124,20 +107,43 @@ console.log('render')
 
 const PriceQuantity = ({ route, navigation }) => {
 
+    const deepClone = JSON.parse(JSON.stringify(route.params.classify))
+
     const [changeAll, setChangeAll] = useState(false)
-    const [classify, setClassify] = useState(route.params.classify)
+    const [classify, setClassify] = useState(deepClone)
     const dispatch = useDispatch()
 
     const handleSave = () => {
-        console.log(classify)
+        // console.log(classify)
         dispatch(addValueClassifyProduct(classify))
+        dispatch(setValuePrice(Math.max.apply(Math, classify.detailClassification.map(o => o.price))))
+        dispatch(setValueQuantity(classify.detailClassification.reduce((sum, cur) => sum + cur.quantity , 0)))
         navigation.pop(2)
     }
 
     const handleChangePriceItem = (position, value) => {
         const newClassify = {...classify}
-        newClassify.detailClassification[position].price = value
+        newClassify.detailClassification[position].price = +value
         setClassify(newClassify)
+    }
+
+    const handleChangeQuantityItem = (position, value) => {
+        const newClassify = {...classify}
+        newClassify.detailClassification[position].quantity = +value
+        setClassify(newClassify)
+    }
+
+    const isValid = () => {
+        let isValid = true
+
+        for(let i = 0; i < classify.detailClassification.length; i++) {
+            if(!classify.detailClassification[i].price || !classify.detailClassification[i].quantity) {
+                isValid = false
+                break
+            }
+        }
+
+        return isValid
     }
 
     // console.log(classify)
@@ -160,15 +166,17 @@ const PriceQuantity = ({ route, navigation }) => {
                     <RowItem 
                         key={ index }
                         type={ item.type.length < 2 ? item.type[0] : (item.type[0] + ' - ' + item.type[1]) }
-                        price={ item.price }
-                        quantity={ item.quantity }
+                        price={ item.price || '' }
+                        quantity={ item.quantity || '' }
                         handleChangePriceItem={(value) => handleChangePriceItem(index, value)}
+                        handleChangeQuantityItem={(value) => handleChangeQuantityItem(index, value)}
                     />
                 )}
             />
                 
             <TouchableOpacity 
-                style={ styles.btnNext } 
+                disabled={ !isValid() }
+                style={[ styles.btnNext, { opacity: isValid() ? 1 : 0.5 } ]} 
                 activeOpacity={0.9}
                 onPress={ handleSave }
             >

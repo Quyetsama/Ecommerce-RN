@@ -6,8 +6,8 @@ import {
     SET_CATEGORY_PRODUCT,
     SET_VALUE_CLASSIFY_PRODUCT,
     REMOVE_VALUE_CLASSIFY_PRODUCT,
-    ADD_VALUE_CLASSIFY0_PRODUCT,
-    ADD_VALUE_CLASSIFY1_PRODUCT
+    SET_VALUE_PRICE,
+    SET_VALUE_QUANTITY
 } from "../actions/types"
 
 
@@ -15,10 +15,12 @@ const initialState = {
     name: '',
     des: '',
     category: {
-        _id: '',
-        name: ''
+        _id: null,
+        name: null
     },
-    classify: {}
+    classify: {},
+    price: null,
+    quantity: null
 }
 
 const myStoreReducer = (state = initialState, action) => {
@@ -56,23 +58,19 @@ const myStoreReducer = (state = initialState, action) => {
         case REMOVE_VALUE_CLASSIFY_PRODUCT:
             return {
                 ...state,
-                classify: {}
+                classify: {},
+                price: null,
+                quantity: null
             }
-        case ADD_VALUE_CLASSIFY0_PRODUCT:
-            // var newClassify0 = state.classify
-            // newClassify0[0].data = [ ...new Set([...newClassify0[0].data, action.value]) ]
-            var newClassify0 = state.classify
-            newClassify0[0].data = [...newClassify0[0].data, action.value]
+        case SET_VALUE_PRICE:
             return {
                 ...state,
-                classify: [...newClassify0]
+                price: action.price
             }
-        case ADD_VALUE_CLASSIFY1_PRODUCT:
-            var newClassify1 = state.classify
-            newClassify1[1].data = [ ...new Set([...newClassify1[1].data, action.value]) ]
+        case SET_VALUE_QUANTITY:
             return {
                 ...state,
-                classify: [...newClassify1]
+                quantity: action.quantity
             }
         default:
             return {

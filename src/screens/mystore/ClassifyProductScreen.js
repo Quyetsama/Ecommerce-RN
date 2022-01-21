@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity, FlatList, TextInput } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useDispatch, useSelector } from 'react-redux'
-import { addValueClassifyProduct, changeValueClassifyProduct } from '../../redux/actions/myStoreAction'
 
 import HeaderStore from '../../components/storescreen/HeaderStore'
 import { violet } from '../../helpers/configs'
@@ -21,11 +20,15 @@ const DialogADD = ({ visible, defaultValue, onPressCancel, onPressOK, type }) =>
     }, [defaultValue])
 
     const handleOK = () => {
+        const newValue = text.trim()
+
+        if(newValue === '') return
+
         if(type === 'edit') {
-            onPressOK(defaultValue, text)
+            onPressOK(defaultValue, newValue)
         }
         else {
-            onPressOK(text)
+            onPressOK(newValue)
         }
         setText('')
     }
@@ -138,6 +141,7 @@ const SectionClassify = ({ label, defaultData, removeClassify, handleAddValueCla
                 <TextInput
                     editable={ isUpdate } 
                     style={ styles.titleContainer }
+                    placeholder='Phân loại'
                     value={ nameClassify }
                     onChangeText={text => setNameClassify(text)}
                 />
@@ -165,35 +169,127 @@ const SectionClassify = ({ label, defaultData, removeClassify, handleAddValueCla
     )
 }
 
-const ClassifyProduct = ({ navigation }) => {
+const ClassifyProduct = ({ route, navigation }) => {
 
-    const Class = useSelector(state => state.myStoreReducer.classify)
+    // const Class = useSelector(state => state.myStoreReducer.classify)
+
+    const deepClone = JSON.parse(JSON.stringify(route.params.classify))
+
     const dispatch = useDispatch()
-    const [classify, setClassify] = useState(Class.generalClassification || [])
-
-
+    const [classify, setClassify] = useState({
+        generalClassification: deepClone.generalClassification || [],
+        detailClassification: deepClone.detailClassification || []
+    })
 
     const setPrice_Quantity = () => {
-        // dispatch(addValueClassifyProduct({
-        //     ...Class,
-        //     generalClassification: classify
-        // }))
-        const finalClassify = {
-            generalClassification: [...classify],
-            detailClassification: []
+        navigation.navigate('PriceQuantity', {
+            classify: classify
+        })
+    }
+
+
+
+    const handleAddValueClassify = (position, value) => {
+        const newClassify = {...classify}
+        newClassify.generalClassification[position].data = [...new Set([...newClassify.generalClassification[position].data, value])]   
+
+        const newItem = newClassify.generalClassification[position].data[newClassify.generalClassification[position].data.length - 1]
+
+
+        if(newClassify.generalClassification.length === 1) {
+            newClassify.detailClassification.push({
+                type: [newItem],
+                price: null,
+                quantity: null
+            })
+        }
+        else if(newClassify.generalClassification.length === 2) {
+            if(position === 0) {
+                newClassify.generalClassification[1].data.map((item, index) => {
+                    newClassify.detailClassification.push({
+                        type: [newItem, item],
+                        price: null,
+                        quantity: null
+                    })
+                })
+            }
+            else if(position === 1) {
+                newClassify.generalClassification[0].data.map((item, index) => {
+                    newClassify.detailClassification.push({
+                        type: [item, newItem],
+                        price: null,
+                        quantity: null
+                    })
+                })
+            }
         }
         
-        classify[0].data.map((item0, index0) => {
-            classify.length === 1
+
+        setClassify(newClassify)
+    }
+
+    const handleRemoveValueClassify = (position, value) => {
+        const newClassify = {...classify}
+        newClassify.generalClassification[position].data = newClassify.generalClassification[position].data.filter(item => item !== value)
+
+        for(let i = 0; i < newClassify.detailClassification.length; i++) {
+            if(newClassify.detailClassification[i].type[position] === value) {
+                newClassify.detailClassification.splice(i, 1)
+                i--
+            }
+        }
+        
+        setClassify(newClassify)
+    }
+
+    const handleEditValueClassify = (position, oldValue, newValue) => {
+        const newClassify = {...classify}
+        newClassify.generalClassification[position].data.map((item, index) => {
+            if(item === oldValue ) {
+                newClassify.generalClassification[position].data[index] = newValue
+            }
+        })
+
+        newClassify.detailClassification.map((item, index) => {
+            if(item.type[position] === oldValue) {
+                newClassify.detailClassification[index].type[position] = newValue
+            }
+        })
+
+        setClassify(newClassify)
+    }
+
+    const handleChangeNameClassify = (position, value) => {
+        const newClassify = {...classify}
+        newClassify.generalClassification[position].label = value
+        setClassify(newClassify)
+    }
+
+    const addClassify = () =>{
+        const newGeneralClassification = [...classify.generalClassification]
+
+        const newClassify = {
+            generalClassification: [
+                ...newGeneralClassification,
+                {
+                    id: Date.now().toString(),
+                    label: 'Phân loại',
+                    data: ['Loại 1']
+                }
+            ],
+            detailClassification: []
+        }
+        newClassify.generalClassification[0].data.map((item0, index0) => {
+            newClassify.generalClassification.length === 1
             ?
-            finalClassify.detailClassification.push({
+            newClassify.detailClassification.push({
                 type: [item0],
                 price: null,
                 quantity: null
             })
             :
-            classify[1].data.map((item1, index1) => {
-                finalClassify.detailClassification.push({
+            newClassify.generalClassification[1].data.map((item1, index1) => {
+                newClassify.detailClassification.push({
                     type: [item0, item1],
                     price: null,
                     quantity: null
@@ -201,65 +297,43 @@ const ClassifyProduct = ({ navigation }) => {
             })
         })
 
-        navigation.navigate('PriceQuantity', {
-            classify: finalClassify
-        })
-    }
 
-
-
-    const handleAddValueClassify = (position, value) => {
-        const newClassify = [...classify]
-        newClassify[position].data = [...new Set([...newClassify[position].data, value])]
         setClassify(newClassify)
-    }
-
-    const handleRemoveValueClassify = (position, value) => {
-        const newClassify = [...classify]
-        newClassify[position].data = newClassify[position].data.filter(item => item !== value)
-        setClassify(newClassify)
-    }
-
-    const handleEditValueClassify = (position, oldValue, newValue) => {
-        const newClassify = [...classify]
-        newClassify[position].data.map((item, index) => {
-            if(newClassify[position].data[index] === oldValue ) {
-                newClassify[position].data[index] = newValue
-            }
-        })
-        setClassify(newClassify)
-    }
-
-    const handleChangeNameClassify = (position, value) => {
-        const newClassify = [...classify]
-        newClassify[position].label = value
-        setClassify(newClassify)
-    }
-
-    const addClassify = () =>{
-        const newClassify = classify.filter(item => item !== null)
-        setClassify([
-            ...newClassify,
-            {
-                id: Date.now().toString(),
-                label: 'Phân loại',
-                data: ['Loại 1', 'Loại 2']
-            }
-        ])
     }
 
     const removeClassify = (position) =>{
-        const newClassify = classify.filter((item, index) => (index !== position))
+        const newClassify = {...classify}
+        
+        newClassify.generalClassification = newClassify.generalClassification.filter((item, index) => (index !== position))
+        newClassify.detailClassification = []
+
+        if(newClassify.generalClassification.length === 1) {
+            newClassify.generalClassification[0].data.map((item, index) => {
+                newClassify.detailClassification.push({
+                    type: [item],
+                    price: null,
+                    quantity: null
+                })
+            })
+        }
+
         setClassify(newClassify)
     }
 
     const isValid = () => {
+
+        let isValid = true
+
+        classify.generalClassification.map((item, index) => {
+            if((item.label.trim() === '') || (item.data.length === 0)) {
+                isValid = false
+            }
+        })
+
         return (
-            classify.length > 0
+            isValid && classify.generalClassification.length !== 0
         )
     }
-
-    // console.log(Class)
 
     return (
         <View style={ styles.container }>
@@ -267,13 +341,15 @@ const ClassifyProduct = ({ navigation }) => {
                 label={'Phân loại hàng'} 
                 goBack={() => { 
                     navigation.goBack()
-                    // dispatch({ type: 'REMOVE_VALUE_CLASSIFY_PRODUCT' })
+                    if(classify.generalClassification.length === 0) {
+                        dispatch({ type: 'REMOVE_VALUE_CLASSIFY_PRODUCT' })
+                    }
                 }} 
             />
 
             <FlatList
                 keyboardShouldPersistTaps='handled'
-                data={classify}
+                data={classify.generalClassification}
                 renderItem={({item, index}) => (
                     <SectionClassify
                         key={item.id}
@@ -287,7 +363,7 @@ const ClassifyProduct = ({ navigation }) => {
                     />
                 )}
                 ListFooterComponent={
-                    (classify.length < 2)
+                    (classify.generalClassification.length < 2)
                         ? <NoName
                             onPress={ addClassify }
                             icon={'add-circle-outline'} 

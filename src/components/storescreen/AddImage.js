@@ -24,7 +24,6 @@ const AddImage = ({ listImage, remove }) => {
     //     setImages(newImages)
     // }
 
-
     return (
         <View style={ styles.container }>
             {/* <ScrollView horizontal> */}
@@ -94,4 +93,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AddImage
+export default React.memo(AddImage)

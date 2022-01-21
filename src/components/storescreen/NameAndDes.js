@@ -15,7 +15,7 @@ const NameAndDes = ({ label, maxLength, minLength, multiline, type }) => {
     const handleDispatch = (text) => {
         type === 'name' ? dispatch(setNameProduct(text)) : dispatch(setDesProduct(text)) 
     }
-
+    
     return (
         <View style={ styles.container }>
             <View style={ styles.labelContainer }>
@@ -77,4 +77,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default NameAndDes
+export default React.memo(NameAndDes)

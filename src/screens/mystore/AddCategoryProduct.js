@@ -6,11 +6,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setCategoryProduct } from '../../redux/actions/myStoreAction'
 
 
-const AddCategoryProduct = ({ navigation }) => {
+const AddCategoryProduct = ({ route, navigation }) => {
 
     const [categories, setCategories] = useState([])
     const dispatch = useDispatch()
-    const categorySelected = useSelector(state => state.myStoreReducer.category)
+    // const categorySelected = useSelector(state => state.myStoreReducer.category)
+    const categorySelected = route.params.category
 
     useEffect(() => {
         getAllCategory().then(res => setCategories([...res.data.categories])).catch(error => console.log(error))

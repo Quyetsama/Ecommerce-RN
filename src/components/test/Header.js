@@ -2,6 +2,7 @@ import React from "react"
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { NAME } from "../../helpers/configs"
 
 
 
@@ -11,7 +12,7 @@ const Header = ({ navigation }) => {
     return (
         <View style={ styles.container }>
             <View style={ styles.spaceX }>
-                <Text style={ styles.txtSpaceX }>SPACEX</Text>
+                <Text style={ styles.txtSpaceX }>{NAME}</Text>
             </View>
             <TouchableOpacity style={ styles.inputContainer } onPress={() => navigation.navigate('stackSearch')}>
                 <Ionicons name={'search'} size={21} color={'#969696'} />

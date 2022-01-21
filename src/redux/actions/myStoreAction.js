@@ -4,7 +4,9 @@ import {
     SET_NAME_PRODUCT, 
     SET_DES_PRODUCT, 
     SET_CATEGORY_PRODUCT, 
-    SET_VALUE_CLASSIFY_PRODUCT
+    SET_VALUE_CLASSIFY_PRODUCT,
+    SET_VALUE_PRICE,
+    SET_VALUE_QUANTITY
 } from "./types"
 
 
@@ -49,9 +51,16 @@ export const addValueClassifyProduct = (value) => (
     }
 )
 
-export const changeValueClassifyProduct = (type, value) => (
+export const setValuePrice = (price) => (
     {
-        type: type,
-        value: value
+        type: SET_VALUE_PRICE,
+        price: price
+    }
+)
+
+export const setValueQuantity = (quantity) => (
+    {
+        type: SET_VALUE_QUANTITY,
+        quantity: quantity
     }
 )
