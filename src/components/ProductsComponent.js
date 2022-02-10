@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0f1f2',
         flexDirection: 'row',
         flexWrap: 'wrap',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        marginBottom: 60
     }
 })
 

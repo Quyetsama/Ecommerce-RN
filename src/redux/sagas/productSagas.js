@@ -1,12 +1,22 @@
-import { POST_PRODUCT } from "../actions/types"
+import { POST_PRODUCT, POST_SUCCESS, POST_FAILD } from "../actions/types"
 
 import { put, takeLatest, takeEvery, select } from 'redux-saga/effects'
+import { createProduct } from "../../api/productApi"
 
 const getStateMyStore = state => state.myStoreReducer
 
 function* postProduct() {
-    const state = yield select(getStateMyStore)
-    console.log(state)
+    const { name, des, image, classify, category, price, quantity, transportfee } = yield select(getStateMyStore)
+    // console.log({ name, des, image, classify, category, price, quantity, transportfee })
+    try {
+        const result = yield createProduct({ name, des, image, classify, category, price, quantity, transportfee })
+        console.log(result.data)
+        yield put({ type: POST_SUCCESS })
+    }
+    catch(error) {
+        console.log(error)
+        yield put({ type: POST_FAILD })
+    }
 }
 
 export function* watchPostProduct() {

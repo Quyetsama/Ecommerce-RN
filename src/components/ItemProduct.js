@@ -10,7 +10,7 @@ const ItemProduct = ({ data, navigation }) => {
 
     const goToDetail = () => {
         navigation.navigate('Detail', {
-            product: data
+            _id: data._id
         })
     }
 

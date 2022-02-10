@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from 'react'
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState, useCallback, useEffect } from 'react'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, KeyboardAvoidingView, Platform } from 'react-native'
+import ImagePicker from 'react-native-image-crop-picker'
 import UnderLineSection from '../../components/UnderLineSection'
 import HeaderStore from '../../components/storescreen/HeaderStore'
 import AddImage from '../../components/storescreen/AddImage'
@@ -9,7 +10,7 @@ import { isEmpty } from 'lodash'
 
 import { violet } from '../../helpers/configs'
 import { useDispatch, useSelector } from 'react-redux'
-import { postProduct, clearProduct, setValuePrice, setValueQuantity } from '../../redux/actions/myStoreAction'
+import { postProduct, clearProduct, setImageProduct, setValuePrice, setValueQuantity, setValueTransportFee } from '../../redux/actions/myStoreAction'
 
 
 const data = [
@@ -22,13 +23,65 @@ const data = [
 
 const AddProductScreen = ({ navigation }) => {
 
-    const { category, classify, price, quantity } = useSelector(state => state.myStoreReducer)
-    const [images, setImages] = useState(data)
+    const { image, category, classify, price, quantity, transportfee, post_success } = useSelector(state => state.myStoreReducer)
+    // const [imagesSelected, setImagesSelected] = useState([])
     const dispatch = useDispatch()
 
+    useEffect(() => {
+        if(post_success === true) {
+            dispatch(clearProduct())
+            navigation.goBack()
+        }
+        else if(post_success === false) {
+            console.log('faild')
+            Alert.alert('Lỗi', 'Có lỗi xảy ra vui lòng thử lại sau !', [{
+                text: 'OK',
+                onPress: () => dispatch({ type: 'SET_POST_NULL' })
+            }])
+        }
+    }, [post_success])
+
+    const openImage = useCallback(() => {
+        if(image.length < 5) {
+            let listImage = []
+
+            ImagePicker.openPicker({
+                multiple: true,
+                waitAnimationEnd: false,
+                includeExif: true,
+                forceJpg: true,
+                maxFiles: 5,
+                compressImageQuality: 0.8,
+                includeBase64: true,
+                mediaType: 'photo'
+            })
+            .then(images => {
+                if(images.length + image.length <= 5) {
+                    images.map((image, index) => {
+                        listImage.push(image.data)
+                    })
+                    dispatch(setImageProduct([...image, ...listImage]))
+                    // setImagesSelected([...imagesSelected, ...listImage])
+                }
+                else {
+                    Alert.alert('Lỗi', 'Chỉ được phép chọn tối đa 5 ảnh', [{
+                        text: 'OK'
+                    }])
+                }
+            })
+            .catch(error => console.log(error))
+        }
+        else {
+            Alert.alert('Lỗi', 'Chỉ được phép chọn tối đa 5 ảnh', [{
+                text: 'OK'
+            }])
+        }
+    })
+
     const removeImage = (id) => {
-        const newImages = images.filter((item, index) => index !== id)
-        setImages(newImages)
+        const newImages = image.filter((item, index) => index !== id)
+        dispatch(setImageProduct(newImages))
+        // setImagesSelected(newImages)
     }
 
     const handleGoBack = () => {
@@ -42,8 +95,11 @@ const AddProductScreen = ({ navigation }) => {
 
     const handleChangeQuantity= useCallback((value) => {
         dispatch(setValueQuantity(+value))
-    }, []) 
+    }, [])
 
+    const handleChangeTransportFee = useCallback((value) => {
+        dispatch(setValueTransportFee(+value))
+    })
 
     return (
         <View style={ styles.container }>
@@ -53,7 +109,7 @@ const AddProductScreen = ({ navigation }) => {
                 keyboardShouldPersistTaps='handled'
             >
                 {/*  */}
-                <AddImage listImage={ images } remove={ removeImage } />
+                <AddImage openImage={ openImage } listImage={ image } remove={ removeImage } />
                 <UnderLineSection />
 
                 {/*  */}
@@ -81,6 +137,7 @@ const AddProductScreen = ({ navigation }) => {
                     showInput={ isEmpty(classify) } 
                     onChangeInput={ handleChangePrice }
                     valueDetail={ price ? price + '' : '' } 
+                    hideIconChevron={ isEmpty(classify) }
                     onPress={() =>  !isEmpty(classify) ? navigation.navigate('PriceQuantity', { classify: classify }) : null} 
                 />
                 <NoName 
@@ -89,7 +146,16 @@ const AddProductScreen = ({ navigation }) => {
                     showInput={ isEmpty(classify) }
                     onChangeInput={ handleChangeQuantity }
                     valueDetail={ quantity ? quantity + '' : '' }
+                    hideIconChevron={ isEmpty(classify) }
                     onPress={() =>  !isEmpty(classify) ? navigation.navigate('PriceQuantity', { classify: classify }) : null} 
+                />
+                <NoName 
+                    icon={'rocket-outline'}
+                    label={'Phí vận chuyển'}
+                    showInput={ true }
+                    onChangeInput={ handleChangeTransportFee }
+                    valueDetail={ transportfee ? transportfee + '' : '' }
+                    hideIconChevron
                 />
                 <UnderLineSection />
 

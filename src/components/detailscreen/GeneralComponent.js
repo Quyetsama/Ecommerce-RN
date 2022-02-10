@@ -11,7 +11,7 @@ const kFormatter = (num) => {
     return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
 }
 
-const GeneralComponent = ({ name, discount, price, sold }) => {
+const GeneralComponent = ({ name, price, sold, discount, rate }) => {
     const [favorite, setFavorite] = useState(false)
 
     const handleFavorite = () => {
@@ -24,29 +24,34 @@ const GeneralComponent = ({ name, discount, price, sold }) => {
                 <View style={ styles.textContainer }>
                     <Text style={ styles.nameProduct } numberOfLines={ 2 }>{ name } { name } { name } { name }</Text>                
                 </View>
-                <Discount percent={ 22 } />
+                {discount && <Discount percent={ discount } />}
             </View>
 
             <View>
                 <Text style={ styles.newPrice }>{ price.toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
-                <Text style={ styles.oldPrice }>{ price.toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
+                {discount && <Text style={ styles.oldPrice }>{ price.toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>}
             </View>
 
             <View style={ styles.rate_sold_favorite_Container }>
                 <View style={ styles.rate_sold_favorite_left }>
-                    <MaterialCommunityIcons name={ 'star' } size={ 20 } color={ '#f7ed2a' } />
-                    <MaterialCommunityIcons name={ 'star' } size={ 20 } color={ '#f7ed2a' } />
-                    <MaterialCommunityIcons name={ 'star' } size={ 20 } color={ '#f7ed2a' } />
-                    <MaterialCommunityIcons name={ 'star' } size={ 20 } color={ '#f7ed2a' } />
-                    <MaterialCommunityIcons name={ 'star-half-full' } size={ 20 } color={ '#f7ed2a' } />
+                    
 
-                    <View style={{ paddingHorizontal: 10 }}>
-                        <Text>4.2</Text>
-                    </View>
+                    {rate.count > 0 &&
+                        <>
+                            <MaterialCommunityIcons name={ 'star' } size={ 20 } color={ '#f7ed2a' } />
+                            <MaterialCommunityIcons name={ 'star' } size={ 20 } color={ '#f7ed2a' } />
+                            <MaterialCommunityIcons name={ 'star' } size={ 20 } color={ '#f7ed2a' } />
+                            <MaterialCommunityIcons name={ 'star' } size={ 20 } color={ '#f7ed2a' } />
+                            <MaterialCommunityIcons name={ 'star-half-full' } size={ 20 } color={ '#f7ed2a' } />
 
-                    <View style={{ height: '80%',width: 1,backgroundColor: '#909090' }} />
+                            <View style={{ paddingHorizontal: 10 }}>
+                                <Text>4.2</Text>
+                            </View>
 
-                    <View style={{ paddingHorizontal: 10 }}>
+                            <View style={{ height: '80%',width: 1,backgroundColor: '#909090', marginRight: 10 }} />
+                        </>
+                    }
+                    <View>
                         <Text>Đã bán { kFormatter(sold) }</Text>
                     </View>         
                 </View>

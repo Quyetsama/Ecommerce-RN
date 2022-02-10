@@ -1,12 +1,14 @@
 import { 
     POST_PRODUCT, 
     CLEAR_PRODUCT,
+    SET_IMAGE_PRODUCT,
     SET_NAME_PRODUCT, 
     SET_DES_PRODUCT, 
     SET_CATEGORY_PRODUCT, 
     SET_VALUE_CLASSIFY_PRODUCT,
     SET_VALUE_PRICE,
-    SET_VALUE_QUANTITY
+    SET_VALUE_QUANTITY,
+    SET_VALUE_TRANSPORTFEE
 } from "./types"
 
 
@@ -20,6 +22,13 @@ export const postProduct = () => (
 export const clearProduct = () => (
     {
         type: CLEAR_PRODUCT
+    }
+)
+
+export const setImageProduct = (image) => (
+    {
+        type: SET_IMAGE_PRODUCT,
+        image: image
     }
 )
 
@@ -62,5 +71,12 @@ export const setValueQuantity = (quantity) => (
     {
         type: SET_VALUE_QUANTITY,
         quantity: quantity
+    }
+)
+
+export const setValueTransportFee = (transportFee) => (
+    {
+        type: SET_VALUE_TRANSPORTFEE,
+        transportFee: transportFee
     }
 )

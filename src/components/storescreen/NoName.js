@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 
 const NoName = ({ valueDetail, icon, label, onPress, hideRequired, hideIconChevron, colorIcon, showInput, onChangeInput }) => {
 
-    console.log('render')
+    // console.log('render')
     return (
         <TouchableOpacity style={ styles.container } activeOpacity={0.5} onPress={ onPress }>
             <View style={ styles.leftContainer }>
@@ -20,6 +20,7 @@ const NoName = ({ valueDetail, icon, label, onPress, hideRequired, hideIconChevr
             <View style={ styles.rightContainer }>
                 {showInput
                     ? <TextInput
+                        padding={ 0 }
                         value={ valueDetail }
                         onChangeText={text => onChangeInput(text)}
                         placeholder='Đặt'

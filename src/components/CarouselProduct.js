@@ -7,6 +7,7 @@ import {
     Dimensions
 } from "react-native"
 import { doMain } from "../helpers/configs"
+import { violet } from "../helpers/configs"
 
 
 const WIDTH = Dimensions.get('window').width
@@ -60,12 +61,12 @@ const color = '#34A853'
 const styles = StyleSheet.create({
     carouselContainer: {
         width: WIDTH,
-        height: HEIGHT / 2,
+        height: HEIGHT / 3,
         backgroundColor: '#fff'
     },
     imgCarousel: {
         width: WIDTH,
-        height: HEIGHT / 2
+        height: HEIGHT / 3
     },
     circleDiv: {
         position: 'absolute',
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
         height: 6,
         borderRadius: 3,
         margin: 5,
-        backgroundColor: '#34A853'
+        backgroundColor: violet
     }
 })
 

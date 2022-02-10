@@ -7,15 +7,15 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 const WIDTH = Dimensions.get('window').width
 
 
-const SelectImage = () => {
+const SelectImage = ({ openImage }) => {
     return (
-        <TouchableOpacity style={ styles.selectImage } activeOpacity={0.5}>
+        <TouchableOpacity style={ styles.selectImage } activeOpacity={0.5} onPress={ openImage }>
             <Text style={{ color: violet, fontSize: 12 }}>Thêm ảnh</Text>
         </TouchableOpacity>
     )
 }
 
-const AddImage = ({ listImage, remove }) => {
+const AddImage = ({ openImage, listImage, remove }) => {
 
     // const [images, setImages] = useState(listImage)
 
@@ -41,12 +41,12 @@ const AddImage = ({ listImage, remove }) => {
                         <Image
                             key={ index } 
                             style={ styles.image }
-                            source={{ uri: item }}
+                            source={{ uri: 'data:image/png;base64,' + item }}
                         />
                     </View>
                 )}
                 ListHeaderComponent={
-                    <SelectImage />
+                    <SelectImage openImage={ openImage } />
                 }
             />
             {/* </ScrollView> */}

@@ -1,13 +1,19 @@
 import React from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 
 const data = ['Đen', 'Vàng Nhạt', 'Xanh Lam', 'Xanh Ngọc', 'Cam']
 
-const TypeProductComponent = () => {
+const TypeProductComponent = ({ classify, onPress }) => {
+
+    const [data, setData] = React.useState([
+        ...classify.generalClassification[0].data,
+        // ...classify.generalClassification[1].data
+    ])
+
     return (
-        <View style={ styles.container }>
+        <TouchableOpacity style={ styles.container } activeOpacity={ 1 } onPress={ onPress }>
             <View style={ styles.headerContainer }>
                 <View style={ styles.leftContainer }>
                     <Text style={ styles.textHeader }>Chọn loại hàng</Text>
@@ -36,7 +42,7 @@ const TypeProductComponent = () => {
                 }
                 
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

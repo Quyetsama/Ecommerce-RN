@@ -3,11 +3,15 @@ import { StyleSheet, Text, TouchableOpacity, View, TextInput, Animated, Dimensio
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
+import { useSelector } from 'react-redux'
+
 const HEIGHT = Dimensions.get('window').height
-const Header_Max_Height = HEIGHT / 2
+const Header_Max_Height = 100
 const Header_Min_Height = 60
 
 const HeaderDetailProdcut = ({ navigation, animatedValue }) => {
+
+    const quantity = useSelector(state => state.cartReducer.products.length)
 
     const animatedHeaderOpacity = animatedValue.interpolate({
         inputRange: [0, Header_Max_Height - Header_Min_Height],
@@ -54,11 +58,12 @@ const HeaderDetailProdcut = ({ navigation, animatedValue }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('tabOrder')}
                     style={styles.iconCartHeader}
                 >
                     <View style={[ styles.backgroundIconRight, { opacity: 0 } ]}></View>
                     <View style={styles.iconBadge}>
-                        <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
+                        <Text style={{ color: '#fff', fontSize: 11 }}>{ quantity }</Text>
                     </View>
                     <Ionicons name={'cart-outline'} size={25} color={color} />
                 </TouchableOpacity>
@@ -73,11 +78,12 @@ const HeaderDetailProdcut = ({ navigation, animatedValue }) => {
 
             {/*  */}
             <TouchableOpacity
+                onPress={() => {navigation.navigate('tabOrder')}}
                 style={{ position: 'absolute', top: 8, right: 53, zIndex: 10, margin: 10 }}
             >
                 <View style={ styles.backgroundIconRight }></View>
                 <View style={styles.iconBadge}>
-                    <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
+                    <Text style={{ color: '#fff', fontSize: 11 }}>{ quantity }</Text>
                 </View>
                 <Ionicons name={'cart-outline'} size={25} color={'#fff'} />
             </TouchableOpacity>

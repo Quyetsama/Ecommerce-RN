@@ -1,17 +1,22 @@
 import { 
     POST_PRODUCT, 
-    CLEAR_PRODUCT, 
+    CLEAR_PRODUCT,
+    SET_IMAGE_PRODUCT,
     SET_NAME_PRODUCT, 
     SET_DES_PRODUCT, 
     SET_CATEGORY_PRODUCT,
     SET_VALUE_CLASSIFY_PRODUCT,
     REMOVE_VALUE_CLASSIFY_PRODUCT,
     SET_VALUE_PRICE,
-    SET_VALUE_QUANTITY
+    SET_VALUE_QUANTITY,
+    SET_VALUE_TRANSPORTFEE,
+    POST_SUCCESS,
+    POST_FAILD
 } from "../actions/types"
 
 
 const initialState = {
+    image: [],
     name: '',
     des: '',
     category: {
@@ -20,7 +25,9 @@ const initialState = {
     },
     classify: {},
     price: null,
-    quantity: null
+    quantity: null,
+    transportfee: null,
+    post_success: null
 }
 
 const myStoreReducer = (state = initialState, action) => {
@@ -30,8 +37,28 @@ const myStoreReducer = (state = initialState, action) => {
             return {
                 ...state
             }
+        case POST_SUCCESS:
+            return {
+                ...state,
+                post_success: true
+            }
+        case POST_FAILD:
+            return {
+                ...state,
+                post_success: false
+            }
+        case 'SET_POST_NULL':
+            return {
+                ...state,
+                post_success: null
+            }
         case CLEAR_PRODUCT:
             return initialState
+        case SET_IMAGE_PRODUCT:
+            return {
+                ...state,
+                image: action.image
+            }
         case SET_NAME_PRODUCT:
             return {
                 ...state,
@@ -71,6 +98,11 @@ const myStoreReducer = (state = initialState, action) => {
             return {
                 ...state,
                 quantity: action.quantity
+            }
+        case SET_VALUE_TRANSPORTFEE:
+            return {
+                ...state,
+                transportfee: action.transportFee
             }
         default:
             return {
