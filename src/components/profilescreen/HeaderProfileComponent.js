@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, Platform, StatusBar } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -27,6 +27,7 @@ const HeaderProfile = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                    onPress={() => navigation.navigate('Cart')}
                     style={styles.iconHeader}
                 >
                     <View style={styles.iconBadge}>
@@ -51,11 +52,12 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         // borderBottomLeftRadius: 20,
         // borderBottomRightRadius: 20,
+        paddingTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
         elevation: 10
     },
     titleContainer: {
         position: 'absolute',
-        top: 0,
+        top: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
         right: 0,
         left: 0,
         bottom: 0,

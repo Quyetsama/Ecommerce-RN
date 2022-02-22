@@ -243,14 +243,23 @@ const DetailScreen = ({ route, navigation }) => {
             if((context.startTop + event.translationY) < (dimensions.height / 4)) {
                 return
             }
-            top.value = context.startTop + event.translationY
+            top.value = withSpring(
+                context.startTop + event.translationY,
+                SPRING_CONFIG
+            )
         },
         onEnd() {
-            if(top.value > dimensions.height / 2 + 200) {
-                top.value = dimensions.height
+            if(top.value > dimensions.height / 2 + 50) {
+                top.value = withSpring(
+                    dimensions.height,
+                    SPRING_CONFIG
+                )
             }
             else {
-                top.value = dimensions.height / 4
+                top.value = withSpring(
+                    dimensions.height / 4,
+                    SPRING_CONFIG
+                )
             }
         }
     })
@@ -357,9 +366,7 @@ const DetailScreen = ({ route, navigation }) => {
             </Animated.View>
             
             <SheetComponent
-                _id={ product?._id }
-                image={ product.image && product.image[0] } 
-                data={ product.classify }
+                product={ product }
                 onGestureEvent={ gestureHandler } 
                 style={ style } 
                 onClose={() => {

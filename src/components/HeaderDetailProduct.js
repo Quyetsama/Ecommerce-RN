@@ -58,7 +58,7 @@ const HeaderDetailProdcut = ({ navigation, animatedValue }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('tabOrder')}
+                    onPress={() => navigation.navigate('Cart')}
                     style={styles.iconCartHeader}
                 >
                     <View style={[ styles.backgroundIconRight, { opacity: 0 } ]}></View>
@@ -78,7 +78,7 @@ const HeaderDetailProdcut = ({ navigation, animatedValue }) => {
 
             {/*  */}
             <TouchableOpacity
-                onPress={() => {navigation.navigate('tabOrder')}}
+                onPress={() => {navigation.navigate('Cart')}}
                 style={{ position: 'absolute', top: 8, right: 53, zIndex: 10, margin: 10 }}
             >
                 <View style={ styles.backgroundIconRight }></View>

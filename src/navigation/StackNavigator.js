@@ -4,7 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import HomeScreen from '../screens/HomeScreen'
 import DetailScreen from '../screens/DetailScreen'
 
-import OrderScreen from '../screens/OrderScreen'
+import CartScreen from '../screens/CartScreen'
+import CheckOutScreen from '../screens/CheckoutScreen'
 
 import ProfileScreen from '../screens/ProfileScreen'
 
@@ -42,6 +43,8 @@ const HomeStack = () => {
         <Stack.Navigator screenOptions={ screenOptionStyle }>
             <Stack.Screen name="Home" component={ HomeScreen } />
             <Stack.Screen name="Detail" component={ DetailScreen } />
+            <Stack.Screen name="Cart" component={ CartScreen } />
+            <Stack.Screen name="Checkout" component={ CheckOutScreen } />
         </Stack.Navigator>
     )
 }
@@ -57,7 +60,7 @@ const SearchStack = () => {
 const OrderStack = () => {
     return(
         <Stack.Navigator screenOptions={ screenOptionStyle }>
-            <Stack.Screen name="Order" component={ OrderScreen } />
+            <Stack.Screen name="Cart" component={ CartScreen } />
         </Stack.Navigator>
     )
 }
@@ -67,6 +70,7 @@ const ProfileStack = () => {
         <Stack.Navigator screenOptions={ screenOptionStyle }>
             <Stack.Screen name="Profile" component={ ProfileScreen } />
             <Stack.Screen name="myStore" component={ StoreStack } />
+            <Stack.Screen name="Cart" component={ CartScreen } />
         </Stack.Navigator>
     )
 }

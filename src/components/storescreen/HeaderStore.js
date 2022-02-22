@@ -1,18 +1,19 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather'
 import { violet } from '../../helpers/configs'
 
 
 
 
-const HeaderStore = ({ label, goBack }) => {
+const HeaderStore = ({ label, goBack, backgroundColor }) => {
 
     return (
-        <View style={ styles.container }>
-            <Feather style={{ zIndex: 12 }} name={'corner-down-left'} size={25} color={violet} onPress={ goBack } />
+        <View style={[ styles.container, { backgroundColor: backgroundColor ? backgroundColor : 'white' } ]}>
+            <StatusBar barStyle='dark-content' />
+            <Feather style={{ zIndex: 12 }} name={'corner-down-left'} size={25} color={ backgroundColor ? 'white' : violet } onPress={ goBack } />
             <View style={ styles.labelContainer }>
-                <Text style={ styles.label }>{ label }</Text>
+                <Text style={[ styles.label, { color: backgroundColor ? 'white' : '#000' } ]}>{ label }</Text>
             </View>
         </View>
     )
@@ -21,12 +22,14 @@ const HeaderStore = ({ label, goBack }) => {
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
-        backgroundColor: '#fff',
+        alignItems: 'flex-start',
         padding: 15,
-        elevation: 3
+        elevation: 3,
+        paddingTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
     },
     labelContainer: {
         position: 'absolute',
+        top: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
         left: 0,
         right: 0,
         justifyContent: 'center',

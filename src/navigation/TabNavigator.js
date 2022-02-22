@@ -21,7 +21,7 @@ const BottomTabNavigator = () => {
         const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed'
         // console.log(routeName)
 
-        const routes = ['Detail', 'myStore']
+        const routes = ['Detail', 'Cart', 'Checkout', 'myStore']
 
         if(routes.includes(routeName)) return 'none'
         return 'flex'
@@ -48,7 +48,7 @@ const BottomTabNavigator = () => {
             },
             tabBarStyle: {
                 display: getTabBarVisibility(route),
-                borderTopLeftRadius: 21, 
+                borderTopLeftRadius: 21,
                 borderTopRightRadius: 21,
                 backgroundColor: "#fff",
                 position: 'absolute',
@@ -63,7 +63,7 @@ const BottomTabNavigator = () => {
             headerShown: false
         })}>
             <Tab.Screen name="tabHome" component={ HomeStack } options={{ title: 'Trang chủ' }} />
-            <Tab.Screen name="tabOrder" component={ OrderStack } options={{ title: 'Đơn hàng', tabBarBadge: quantity }} />
+            {/* <Tab.Screen name="tabOrder" component={ OrderStack } options={{ title: 'Đơn hàng', tabBarBadge: quantity }} /> */}
             <Tab.Screen name="tabNotification" component={ OrderStack } options={{ title: 'Thông báo', tabBarBadge: 21 }} />
             <Tab.Screen name="tabProfile" component={ ProfileStack } options={{ title: 'Tôi' }} />
         </Tab.Navigator>

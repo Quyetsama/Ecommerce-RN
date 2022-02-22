@@ -1,5 +1,5 @@
 import React from "react"
-import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, StatusBar, Platform } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { NAME } from "../../helpers/configs"
@@ -22,7 +22,7 @@ const Header = ({ navigation }) => {
                 <View style={styles.iconBadge}>
                     <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
                 </View>
-                <MaterialCommunityIcons name={'cart-outline'} size={25} color={'#969696'} />
+                <MaterialCommunityIcons name={'cart-outline'} size={24} color={'#969696'}  onPress={() => navigation.navigate('Cart')} />
             </View>
         </View>
     )
@@ -31,14 +31,14 @@ const Header = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         // flex: 1,
-        width: WIDTH,
+        width: '100%',
         flexDirection: 'row',
         backgroundColor: '#8141ff',
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 20,
         paddingVertical: 10,
-        // paddingTop: 10,
+        paddingTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight + 6,
         // paddingBottom: 10
     },
     spaceX: {
@@ -61,12 +61,14 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         marginLeft: 5,
-        marginRight: 20
+        marginRight: 20,
+        padding: 0,
+        height: 42
     },
     Cart: {
         backgroundColor: '#fff',
         marginLeft: 10,
-        padding: 10,
+        padding: 8,
         borderRadius: 10
     },
     iconBadge: {

@@ -26,6 +26,7 @@ import { useDispatch } from 'react-redux'
 import { login } from "../../redux/actions/authAction"
 import { getAllUser, signInApi } from "../../api/authApi"
 import axiosClient from "../../api/axiosClient"
+import { violet, NAME } from '../../helpers/configs'
 
 
 
@@ -78,7 +79,7 @@ const SignInScreen = ({ navigation }) => {
                             <MaterialCommunityIcons style={{ position: 'relative' }} name="keyboard-backspace" size={30} color={'#fff'} />  
                         </TouchableOpacity> */}
                         {/* <View style={{ flex: 1, justifyContent: 'center' }}> */}
-                            <Text style={{ color: '#fff', fontSize: 50, fontWeight: 'bold', textAlign: 'center' }}>Grabee</Text>
+                            <Text style={{ color: '#fff', fontSize: 50, fontWeight: 'bold', textAlign: 'center' }}>{ NAME }</Text>
                         {/* </View> */}
                         {/* <View style={{ width: 30 }}></View> */}
                     </View>
@@ -182,7 +183,7 @@ const SignInScreen = ({ navigation }) => {
     )
 }
 
-const color = '#34A853'
+const color = violet
 
 const styles = StyleSheet.create({
     container: {

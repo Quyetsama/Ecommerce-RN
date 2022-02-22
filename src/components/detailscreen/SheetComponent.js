@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, TextInput } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, TextInput, Modal } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Animated from 'react-native-reanimated'
 import { PanGestureHandler, ScrollView as ScrollView2 } from 'react-native-gesture-handler'
 import { violet, doMain } from '../../helpers/configs'
+import SuccessModal from '../SuccessModal'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../../redux/actions/cartAction'
@@ -15,9 +16,15 @@ const HEIGHT = Dimensions.get('window').height
 
 const color = ['Black', 'White', 'yellow', 'Pink', 'Brown', 'pink']
 
-const ItemSheet = React.memo(({ classify, onSelect }) => {
+const ItemSheet = React.memo(({ classify, selected, onSelect }) => {
 
     const [isSelect, setIsSelect] = useState('')
+
+    useEffect(() => {
+        if(selected.length < 1) {
+            setIsSelect('')
+        }
+    }, [selected])
 
     const handleSelect = (item) => {
         onSelect(isSelect, item)
@@ -122,17 +129,31 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
     )
 })
 
-const SheetComponent = ({ _id, image, data, onGestureEvent, style, onClose }) => {
+const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
 
-    const { products } = useSelector(state => state.cartReducer)
-    console.log(products)
+    // const { products } = useSelector(state => state.cartReducer)
+    // console.log(product)
     const dispatch = useDispatch()
     const [selected, setSelected] = useState([])
     const [quantity, setQuantity] = useState(1)
+    // SuccessModal
+    const [isModalVisible, setIsModalVisible] = useState(false)
+
+    useEffect(() => {
+        if(isModalVisible) {
+            setTimeout(() => {
+                onClose()
+                setSelected([])
+                setQuantity(1)
+                setIsModalVisible(false)
+            }, 1500)
+        }
+    }, [isModalVisible])
+
 
     const handleOnSelect = React.useCallback((index, prev, item) => {
         // console.log(prev)
-        console.log(index)
+        // console.log(index)
         const newSelected = selected.filter(item => item !==prev)
         if(prev !== item) {
             // newSelected.push(item)
@@ -156,28 +177,41 @@ const SheetComponent = ({ _id, image, data, onGestureEvent, style, onClose }) =>
         handleChangeQuantity(quantity - 1)
     }, [quantity])
 
+    const getPriceClassify = React.useCallback(() => {
+        product?.classify?.detailClassification?.map(item => {
+            if(item.type.includes(...selected)) {
+                return item.price
+            }
+        })
+        return null
+    }, [selected])
+
+    const handleAddToCart = React.useCallback(() => {
+        // onClose()
+
+        const price = getPriceClassify()
+        
+        dispatch(addToCart(
+            {
+                _id: product._id,
+                name: product.name,
+                price: price ? price : product.price,
+                quantity: quantity,
+                image: product.image[0],
+                selected: selected.length !== 0 ? selected : null
+            }
+        ))
+
+        setIsModalVisible(true)
+    })
+
     const isValid = () => {
         return (
-            selected.length === (data?.generalClassification?.length || 0)
+            selected.length === (product?.classify?.generalClassification?.length || 0)
             &&
             quantity > 0
         )  
     }
-
-    const handleAddToCart = React.useCallback(() => {
-        onClose()
-        dispatch(addToCart(
-            {
-                _id,
-                image,
-                selected: selected.length !== 0 ? selected : null,
-                quantity
-            }
-        ))
-    })
-
-    // console.log(selected)
-    // console.log(isValid())
 
     return (
         <PanGestureHandler
@@ -193,14 +227,14 @@ const SheetComponent = ({ _id, image, data, onGestureEvent, style, onClose }) =>
                 <View style={ styles.headerSheet }>
                     <View style={{ width: HEIGHT / 5, height: HEIGHT / 5 }}>
                         <Image 
-                            source={{ uri: image && (doMain + '/image/' + image) }}
+                            source={{ uri: product.image && (doMain + '/image/' + product.image[0]) }}
                             style={ styles.imageSheet }
                             resizeMode='contain'
                         />
                     </View>
                     <View style={{ flex: 1, justifyContent: 'flex-end', marginLeft: 10 }}>
-                        <Text style={{ color: 'red' }}>25.000đ - 50.000đ</Text>
-                        <Text>Kho: 282101</Text>
+                        <Text style={{ color: 'red' }}>{ (+product?.price).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
+                        <Text>Kho: { product?.quantity }</Text>
                     </View>
                     <TouchableOpacity 
                         activeOpacity={0.5} 
@@ -216,7 +250,7 @@ const SheetComponent = ({ _id, image, data, onGestureEvent, style, onClose }) =>
                             showsVerticalScrollIndicator={ false }
                             keyboardShouldPersistTaps='handled'
                         >
-                            {data?.generalClassification.map((item, index) => (
+                            {product?.classify?.generalClassification.map((item, index) => (
                                 <ItemSheet 
                                     key={ item.id } 
                                     classify={ item } 
@@ -243,6 +277,7 @@ const SheetComponent = ({ _id, image, data, onGestureEvent, style, onClose }) =>
                             >Thêm vào giỏ hàng</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            onPress={() => setIsModalVisible(true)}
                             disabled={ !isValid() }
                             style={[ styles.buttonBuyNow, { opacity: isValid() ? 1 : 0.5 } ]}
                         >
@@ -256,6 +291,16 @@ const SheetComponent = ({ _id, image, data, onGestureEvent, style, onClose }) =>
                     </View>
                 </View>
 
+                <Modal
+                    transparent={ true }
+                    animationType='fade'
+                    visible={ isModalVisible }
+                    onRequestClose={() => setIsModalVisible(false) }
+                >
+                    <SuccessModal 
+                        changeModalVisible={() => setIsModalVisible(!isModalVisible)}
+                    />
+                </Modal>
             </Animated.View>
             {/* </Animated.View> */}
         </PanGestureHandler>

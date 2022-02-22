@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Dimensions, Image, Text, FlatList, ScrollView, ActivityIndicator } from 'react-native'
 import ItemProduct from './ItemProduct'
+import ProductItem from '../components/homescreen/ProductItem'
 import { getAllProduct, getProductByCategory } from '../api/categoriesApi'
 import { doMain } from '../helpers/configs'
 
@@ -32,20 +33,35 @@ const Products = ({ category, navigation }) => {
         
     }, [category])
 
+    const goToDetail = (_id) => {
+        navigation.navigate('Detail', {
+            _id
+        })
+    }
+
     return (
         <View removeClippedSubviews={true} style={ styles.container }>
             <ScrollView horizontal={true} scrollEnabled={false}>
                 <FlatList
                     // nestedScrollEnabled={true}
                     removeClippedSubviews
+                    scrollEnabled={ false }
                     data={products}
                     numColumns={2}
-                    keyExtractor={(item, index) => index}
+                    keyExtractor={(item, index) => item._id}
                     renderItem={({item}) => (
                         <ItemProduct 
-                            data={ item }
-                            navigation={navigation}
+                            _id={ item._id }
+                            name={ item.name }
+                            price={ item.price }
+                            image={  doMain + 'image/' + item.image[0] }
+                            sold={ item.sold }
+                            goToDetail={() => goToDetail(item._id)}
                         />
+                        // <ItemProduct 
+                        //     data={ item }
+                        //     navigation={navigation}
+                        // />
                     )}
                     ListFooterComponent={
                         // isLoading ? <Loading /> : <></>

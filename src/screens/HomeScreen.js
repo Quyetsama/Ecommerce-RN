@@ -23,6 +23,7 @@ import CarouselComponent from "../components/CarouselComponent"
 import FeaturesComponent from "../components/FeaturesComponent"
 import ProductLimit from "../components/ProductLimitComponent"
 import ProductDiscount from "../components/ProductDiscountComponent"
+import ProductRecommend from "../components/homescreen/ProductRecommend"
 import Categories from "../components/CategoriesComponent"
 import Products from "../components/ProductsComponent"
 import { getAllProduct } from '../api/categoriesApi'
@@ -65,8 +66,8 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <StatusBar hidden />
-            {/* <StatusBar backgroundColor={color} /> */}
+            {/* <StatusBar hidden /> */}
+            <StatusBar translucent backgroundColor={'transparent'}/>
             {/* Header */}
             {/* <HeaderHomeComponent navigation={ navigation } animatedValue={ offset } /> */}
             <Header navigation={ navigation } />
@@ -74,9 +75,10 @@ const HomeScreen = ({ navigation }) => {
             {/* Body */}
             <ScrollView
                 ref={refCategories}
+                showsVerticalScrollIndicator={ false }
                 removeClippedSubviews
                 nestedScrollEnabled={true}
-                stickyHeaderIndices={[10]}
+                stickyHeaderIndices={[7]}
                 scrollEventThrottle={16}
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: offset } } }],
@@ -99,19 +101,24 @@ const HomeScreen = ({ navigation }) => {
 
                 {/* Features */}
                 <FeaturesComponent />
-                <UnderLineSection />
+                {/* <UnderLineSection /> */}
+
+                <ProductRecommend />
+                <ProductRecommend />
+                <ProductRecommend />
+                {/* <UnderLineSection /> */}
 
                 {/* ProductLimit */}
-                <ProductLimit />
-                <UnderLineSection />
+                {/* <ProductLimit />
+                <UnderLineSection /> */}
 
                 {/* Discount */}
-                <ProductDiscount />
-                <UnderLineSection />
+                {/* <ProductDiscount />
+                <UnderLineSection /> */}
 
                 {/* CarouselImage */}
                 <CarouselComponent />
-                <UnderLineSection />
+                {/* <UnderLineSection /> */}
 
                 {/* Categories */}
                 <Text style={{ padding: 5, fontSize: 15, fontWeight: 'bold', color: color, marginLeft: 5 }}>Danh Mục Sản Phẩm</Text>
