@@ -2,12 +2,15 @@ import {
     ADD_TO_CART,
     DELETE_FROM_CART,
     INCREASE_QUANTITY,
-    DECREASE_QUANTITY
+    DECREASE_QUANTITY,
+    ADD_VOUCHER,
+    DELETE_VOUCHER
 } from "../actions/types"
 
 
 const initialState = {
-    products: []
+    products: [],
+    voucher: null
 }
 
 const cartReducer = (state = initialState, action) => {
@@ -36,7 +39,11 @@ const cartReducer = (state = initialState, action) => {
             }
         }
         case DELETE_FROM_CART: { 
-            const newProducts = state.products.filter(item => item._id !== action._id)
+            const newProducts = state.products.filter(item => {
+                return (
+                    item.timestamp !== action.timestamp
+                )
+            })
             return {
                 ...state,
                 products: [...newProducts]
@@ -44,7 +51,11 @@ const cartReducer = (state = initialState, action) => {
         }
         case INCREASE_QUANTITY: {
             const newProducts = [...state.products]
-            const index = state.products.findIndex(item => item._id === action._id)
+            const index = state.products.findIndex(item => {
+                return (
+                    item.timestamp === action.timestamp
+                )
+            })
             newProducts[index].quantity += 1
             return {
                 ...state,
@@ -53,11 +64,27 @@ const cartReducer = (state = initialState, action) => {
         }
         case DECREASE_QUANTITY: {
             const newProducts = [...state.products]
-            const index = state.products.findIndex(item => item._id === action._id)
+            const index = state.products.findIndex(item => {
+                return (
+                    item.timestamp === action.timestamp
+                )
+            })
             newProducts[index].quantity -= 1
             return {
                 ...state,
                 products: [...newProducts]
+            }
+        }
+        case ADD_VOUCHER: {
+            return {
+                ...state,
+                voucher: action.voucher
+            }
+        }
+        case DELETE_VOUCHER: {
+            return {
+                ...state,
+                voucher: null
             }
         }
         default:

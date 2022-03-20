@@ -5,7 +5,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Animated from 'react-native-reanimated'
 import { PanGestureHandler, ScrollView as ScrollView2 } from 'react-native-gesture-handler'
 import { violet, doMain } from '../../helpers/configs'
-import SuccessModal from '../SuccessModal'
+import SuccessModal from '../modal/SuccessModal'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../../redux/actions/cartAction'
@@ -132,7 +132,7 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
 const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
 
     // const { products } = useSelector(state => state.cartReducer)
-    // console.log(product)
+    // console.log(product.discount)
     const dispatch = useDispatch()
     const [selected, setSelected] = useState([])
     const [quantity, setQuantity] = useState(1)
@@ -142,10 +142,10 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
     useEffect(() => {
         if(isModalVisible) {
             setTimeout(() => {
-                onClose()
                 setSelected([])
                 setQuantity(1)
                 setIsModalVisible(false)
+                onClose()
             }, 1500)
         }
     }, [isModalVisible])
@@ -188,14 +188,16 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
 
     const handleAddToCart = React.useCallback(() => {
         // onClose()
-
         const price = getPriceClassify()
         
         dispatch(addToCart(
             {
                 _id: product._id,
+                timestamp: Date.now(),
                 name: product.name,
-                price: price ? price : product.price,
+                price: (price ? price : product.price * (100 - product.discount) / 100),
+                discount: product.discount ? product.discount : null,
+                transportFee: product.transportFee,
                 quantity: quantity,
                 image: product.image[0],
                 selected: selected.length !== 0 ? selected : null
@@ -259,11 +261,16 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                                 />
                             ))}
 
-                            <Quantity value={ quantity } onChangeQuantity={ handleChangeQuantity } onIncrease={ handleIncrease } onDecrease={ handleDecrease } />
+                            <Quantity 
+                                value={ quantity } 
+                                onChangeQuantity={ handleChangeQuantity } 
+                                onIncrease={ handleIncrease } 
+                                onDecrease={ handleDecrease } 
+                            />
                         </ScrollView2>
                     </View>
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', paddingVertical: 5, borderTopWidth: 1, borderTopColor: '#f2f2f2' }}>
+                    <View style={ styles.btnContainer }>
                         <TouchableOpacity 
                             disabled={ !isValid() }
                             style={[ styles.buttonAddToCart, { opacity: isValid() ? 1 : 0.5 } ]}
@@ -297,9 +304,7 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                     visible={ isModalVisible }
                     onRequestClose={() => setIsModalVisible(false) }
                 >
-                    <SuccessModal 
-                        changeModalVisible={() => setIsModalVisible(!isModalVisible)}
-                    />
+                    <SuccessModal />
                 </Modal>
             </Animated.View>
             {/* </Animated.View> */}
@@ -315,13 +320,6 @@ const button = {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    tabViewContainer: {
-        flex: 1,
-        width: WIDTH
-    },
     sheet: {
         position: 'absolute',
         left: 0,
@@ -347,6 +345,13 @@ const styles = StyleSheet.create({
         flex: 1,
         width: null,
         height: null,
+    },
+    btnContainer: { 
+        flexDirection: 'row', 
+        justifyContent: 'flex-end',
+        paddingVertical: 5, 
+        borderTopWidth: 1, 
+        borderTopColor: '#f2f2f2' 
     },
     buttonAddToCart: {
         ...button,

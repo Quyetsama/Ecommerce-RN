@@ -8,11 +8,13 @@ export const retrieveToken = (token) => (
     }
 )
 
-export const login = (username, token) => (
+export const login = (fullName, token, coin, email) => (
     {
         type: LOGIN,
         token: token,
-        username: username
+        fullName: fullName,
+        coin: coin,
+        email: email
     }
 )
 

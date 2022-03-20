@@ -1,12 +1,5 @@
 import React, { useState, useRef, useEffect, forwardRef } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity, ScrollView, FlatList, Dimensions } from "react-native"
-import all from '../assets/img/all.png'
-import clothes from '../assets/img/clothes.png'
-import shoes from '../assets/img/shoes.png'
-import food from '../assets/img/food.png'
-import smarthome from '../assets/img/smarthome.png'
-import electronic from '../assets/img/electronic.png'
-import accessories from '../assets/img/accessories.png'
 import ItemCategories from "./ItemCategories"
 import { doMain } from "../helpers/configs"
 import { getAllCategory } from "../api/categoriesApi"

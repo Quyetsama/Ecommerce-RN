@@ -11,6 +11,7 @@ import {
     TextInput,
     useWindowDimensions,
     TouchableWithoutFeedback,
+    StatusBar,
     Animated as Anie
 } from "react-native"
 
@@ -85,7 +86,7 @@ const Tab = React.forwardRef(({ icon, onItemPress }, ref) => {
     )
 })
 
-const Tabs = ({ scrollX, onItemPress }) => {
+const Tabs = ({ scrollX, onItemPress, onClickBuy }) => {
 
     const [measures, setMeasures] = React.useState([])
 	const containerRef = React.useRef()
@@ -113,7 +114,7 @@ const Tabs = ({ scrollX, onItemPress }) => {
     return (
         <View
             style={{ 
-                flex: 1,
+                // flex: 1,
                 flexDirection: 'row',
                 backgroundColor: '#fff',
                 borderBottomWidth: 1,
@@ -137,11 +138,13 @@ const Tabs = ({ scrollX, onItemPress }) => {
             <TouchableOpacity
                 style={{
                     // flex: 1,
+                    width: WIDTH / 4,
                     justifyContent: 'center',
                     alignItems: 'center',
                     paddingVertical: 10,
                     backgroundColor: violet
                 }}
+                onPress={ onClickBuy }
             >
                 <Text 
                 style={{
@@ -150,7 +153,7 @@ const Tabs = ({ scrollX, onItemPress }) => {
                     paddingHorizontal: 15
                 }}
                 >
-                    + Mua ngay
+                    + Buy
                 </Text>
             </TouchableOpacity>
 
@@ -274,9 +277,10 @@ const DetailScreen = ({ route, navigation }) => {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <View style={ styles.container }>
+                <StatusBar hidden />
                 <HeaderDetailProdcut navigation={ navigation } animatedValue={ offset } />
 
-                <ScrollView
+                {/* <ScrollView
                     contentContainerStyle={{ paddingBottom: 100 }}
                     showsVerticalScrollIndicator={ false }
                     onScroll={Anie.event(
@@ -285,11 +289,11 @@ const DetailScreen = ({ route, navigation }) => {
                             useNativeDriver: false 
                         }
                     )}
-                >
+                > */}
                     {/* Carousel */}
                     <CarouselProduct images={ product.image || [] } />
 
-                    <Tabs scrollX={ scrollX } onItemPress={ onItemPress } />
+                    <Tabs scrollX={ scrollX } onItemPress={ onItemPress } onClickBuy={ handleShowSheet } />
                     <ScrollView
                         ref={ ref }
                         horizontal
@@ -303,46 +307,54 @@ const DetailScreen = ({ route, navigation }) => {
                             )
                         }
                     >
-                        <View style={ styles.tabViewContainer }>
-                            {/* General */}
-                            <GeneralComponent 
-                                name={ product.name } 
-                                price={ product.price || 0 } 
-                                sold={ product.sold || 0 } 
-                                discount={ product.discount }
-                                rate={ product.rate || {} }
-                            />
-                            <UnderLineSection />
+                        <ScrollView
+                            showsVerticalScrollIndicator={ false }
+                        >
+                            <View style={ styles.tabViewContainer }>
+                                {/* General */}
+                                <GeneralComponent 
+                                    name={ product.name } 
+                                    price={ product.price || 0 } 
+                                    sold={ product.sold || 0 } 
+                                    discount={ product.discount }
+                                    rate={ product.rate || {} }
+                                />
+                                <UnderLineSection />
 
-                            {/* Ship */}
-                            <ShipComponent 
-                                transportFee={ product.transportFee || 0 }
-                            />
-                            <UnderLineSection />
+                                {/* Ship */}
+                                <ShipComponent 
+                                    transportFee={ product.transportFee || 0 }
+                                />
+                                <UnderLineSection />
 
-                            {/*  */}
-                            {product.classify &&
-                                <>
-                                    <TypeProductComponent 
-                                        classify={ product.classify } 
-                                        onPress={ handleShowSheet } 
-                                    />
-                                    <UnderLineSection />
-                                </>
-                            }
+                                {/*  */}
+                                {product.classify &&
+                                    <>
+                                        <TypeProductComponent 
+                                            classify={ product.classify } 
+                                            onPress={ handleShowSheet } 
+                                        />
+                                        <UnderLineSection />
+                                    </>
+                                }
 
-                            {/*  */}
-                            <ShopComponent />
-                            <UnderLineSection />
-                        </View>
+                                {/*  */}
+                                <ShopComponent />
+                                <UnderLineSection />
+                            </View>
+                        </ScrollView>
 
-                        <View style={ styles.tabViewContainer }>
-                            {/*  */}
-                            <ShopComponent />
-                            <UnderLineSection />
-                        </View>
+                        <ScrollView
+                            showsVerticalScrollIndicator={ false }
+                        >
+                            <View style={ styles.tabViewContainer }>
+                                {/*  */}
+                                <ShopComponent />
+                                <UnderLineSection />
+                            </View>
+                        </ScrollView>
                     </ScrollView>
-                </ScrollView>
+                {/* </ScrollView> */}
             </View>
 
             <Animated.View
@@ -377,7 +389,7 @@ const DetailScreen = ({ route, navigation }) => {
                 }}
             />  
 
-            <View 
+            {/* <View 
                 style={{ 
                     position: 'absolute',
                     bottom: 0,
@@ -411,124 +423,11 @@ const DetailScreen = ({ route, navigation }) => {
                         }}
                     >Mua ngay</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </GestureHandlerRootView>
     )
 }
 
-{/* <PanGestureHandler
-    onGestureEvent={ gestureHandler }
->
-    <Animated.View
-        style={[ 
-            styles.sheet,
-            style
-        ]}
-    >
-        <View style={ styles.headerSheet }>
-            <View style={{ width: HEIGHT / 5, height: HEIGHT / 5 }}>
-                <Image 
-                    source={{ uri: product.image && (doMain + '/image/' + product.image[0]) }}
-                    style={ styles.imageSheet }
-                    resizeMode='contain'
-                />
-            </View>
-            <View style={{ flex: 1, justifyContent: 'flex-end', marginLeft: 10 }}>
-                <Text style={{ color: 'red' }}>25.000đ - 50.000đ</Text>
-                <Text>Kho: 282101</Text>
-            </View>
-            <TouchableOpacity 
-                activeOpacity={0.5} 
-                onPress={() => {
-                        top.value = withSpring(
-                            dimensions.height,
-                            SPRING_CONFIG
-                        )
-                    }
-                }
-            >
-                <Ionicons name={ 'md-close-outline' } size={30} color="#969696" />
-            </TouchableOpacity>
-        </View>
-            
-        <ScrollView2
-                showsVerticalScrollIndicator={ false }
-        >
-            <ItemSheet />
-            <ItemSheet />
-            <ItemSheet />
-            <ItemSheet />
-            <ItemSheet />
-            <ItemSheet />
-        </ScrollView2>
-
-        <View style={{ flexDirection: 'row', justifyContent: 'center', paddingVertical: 5, borderTopWidth: 1, borderTopColor: '#f2f2f2' }}>
-            <TouchableOpacity 
-                style={ styles.buttonAddToCart }
-            >
-                <Text
-                    style={{
-                        color: violet,
-                        fontSize: 15
-                    }}
-                >Thêm vào giỏ hàng</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={ styles.buttonBuyNow }
-            >
-                <Text
-                    style={{
-                        color: '#fff',
-                        fontSize: 15
-                    }}
-                >Mua ngay</Text>
-            </TouchableOpacity>
-        </View>
-
-    </Animated.View>
-</PanGestureHandler> */}
-
-// const color = ['Black', 'White', 'yellow', 'Pink', 'Brown']
-
-// const ItemSheet = () => {
-//     return (
-//         <View style={{ marginTop: 15, paddingHorizontal: 10 }}>
-//             <Text
-//                 style={{ color: '#000', fontSize: 15 }}
-//             >
-//                 Color
-//             </Text>
-//             <View
-//                 style={{
-//                     flex: 1,
-//                     flexWrap: 'wrap',
-//                     flexDirection: 'row',
-//                     borderBottomWidth: 1,
-//                     borderBottomColor: '#f2f2f2',
-//                     paddingVertical: 10
-//                 }}
-//             >
-//                 {color.map((item, index) => (
-//                     <TouchableOpacity
-//                         activeOpacity={ 0.8 }
-//                         style={{
-//                             paddingVertical: 5,
-//                             paddingHorizontal: 20,
-//                             backgroundColor: '#fff',
-//                             borderRadius: 3,
-//                             marginRight: 10,
-//                             marginVertical: 5,
-//                             borderWidth: 1,
-//                             borderColor: violet
-//                         }}
-//                     >
-//                         <Text style={{ color: '#000' }}>{ item }</Text>
-//                     </TouchableOpacity>
-//                 ))}
-//             </View>
-//         </View>
-//     )
-// }
 
 const button = {
     flex: 1,

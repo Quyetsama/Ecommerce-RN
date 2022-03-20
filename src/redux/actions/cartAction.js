@@ -2,7 +2,9 @@ import {
     ADD_TO_CART,
     DELETE_FROM_CART,
     INCREASE_QUANTITY,
-    DECREASE_QUANTITY
+    DECREASE_QUANTITY,
+    ADD_VOUCHER,
+    DELETE_VOUCHER
 } from "./types"
 
 
@@ -13,23 +15,36 @@ export const addToCart = (product) => (
     }
 )
 
-export const deleteFromCart = (_id) => (
+export const deleteFromCart = (timestamp) => (
     {
         type: DELETE_FROM_CART,
-        _id: _id
+        timestamp: timestamp
     }
 )
 
-export const inCrease = (_id) => (
+export const inCrease = (timestamp) => (
     {
         type: INCREASE_QUANTITY,
-        _id: _id
+        timestamp: timestamp
     }
 )
 
-export const deCrease = (_id) => (
+export const deCrease = (timestamp) => (
     {
         type: DECREASE_QUANTITY,
-        _id: _id
+        timestamp: timestamp
+    }
+)
+
+export const addVoucher = (voucher) => (
+    {
+        type: ADD_VOUCHER,
+        voucher: voucher
+    }
+)
+
+export const deleteVoucher = () => (
+    {
+        type: DELETE_VOUCHER
     }
 )

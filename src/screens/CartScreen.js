@@ -18,12 +18,13 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import { violet } from '../helpers/configs'
 import HeaderStore from '../components/storescreen/HeaderStore'
 import CartHeader from '../components/cartscreen/CartHeader'
-import SimpleModal from '../components/SimpleModal'
+import DeleteProductModal from '../components/modal/DeleteProductModal'
 import { isEmpty } from 'lodash'
 import { doMain } from '../helpers/configs'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteFromCart, inCrease, deCrease } from '../redux/actions/cartAction'
 import LinearGradient from 'react-native-linear-gradient'
+import emptyCart from '../assets/img/emptyCart.png'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -43,7 +44,7 @@ let rowAnimatedValues = {}
 const VisibleItem = memo((props) => {
     const { data, onIncrease, onDecrease } = props
 
-    const rowKey = data.item._id
+    const rowKey = data.item.timestamp
 
     return (
         <Animated.View style={[ 
@@ -87,7 +88,7 @@ const VisibleItem = memo((props) => {
 const HiddenItemWithActions = memo((props) => {
     const { rightActionActivated, swipeAnimatedValue, data, onDelete } = props
 
-    const rowKey = data.item._id
+    const rowKey = data.item.timestamp
 
     if(rightActionActivated) {
         // Animated.timing(rowAnimatedValues[rowKey].rightBtnWidth, {
@@ -188,19 +189,30 @@ const HiddenItemWithActions = memo((props) => {
 const CartScreen = ({ navigation }) => {
 
     const { products } = useSelector(state => state.cartReducer)
+    const { userToken } = useSelector(state => state.authReducer)
+
     const dispatch = useDispatch()
 
     const [checkRowAnimatedValues, setCheckRowAnimatedValues] = useState(false)
+    const [cartEmpty, setCartEmpty] = useState(false)
 
     useEffect(() => {
-        createAnimatedValue()
-        setCheckRowAnimatedValues(!checkRowAnimatedValues)
-        console.log('create animated')
+        if(products.length > 0 && isEmpty(rowAnimatedValues)) {
+            createAnimatedValue()
+            setCheckRowAnimatedValues(!checkRowAnimatedValues)
+            console.log('create animated')
+        }
     }, [])
+
+    useEffect(() => {
+        if(products.length <= 0) {
+            setCartEmpty(true)
+        }
+    }, [products])
 
     const createAnimatedValue = React.useCallback(() => {
         products.forEach((item, i) => {
-            rowAnimatedValues[`${item._id}`] = {
+            rowAnimatedValues[`${item.timestamp}`] = {
                 rowHeigt: new Animated.Value(128),
                 rightBtnWidth: new Animated.Value(100),
                 deleteBtnWidth: new Animated.Value(100),
@@ -216,10 +228,10 @@ const CartScreen = ({ navigation }) => {
         currentRowKey: null
     })
 
-    const changeModalVisible = React.useCallback((bool, data) => {
+    const changeModalVisible = React.useCallback((bool, rowkey) => {
         setIsModalVisible({
             visible: bool,
-            currentRowKey: data ? data : null
+            currentRowKey: rowkey ? rowkey : null
         })
     }, [isModalVisible])
 
@@ -239,8 +251,8 @@ const CartScreen = ({ navigation }) => {
         <VisibleItem 
             data={data} 
             rowMap={rowMap} 
-            onIncrease={() => handleIncrease(data.item._id)} 
-            onDecrease={() => handleDecrease(data.item._id)}
+            onIncrease={() => handleIncrease(data.item.timestamp)} 
+            onDecrease={() => handleDecrease(data.item.timestamp)}
         />
     ), [products])
 
@@ -300,7 +312,7 @@ const CartScreen = ({ navigation }) => {
 
     const handleDecrease = useCallback((rowKey) => {
         const newData = [...products]
-        const index = products.findIndex(item => item._id === rowKey)
+        const index = products.findIndex(item => item.timestamp === rowKey)
 
         if(newData[index].quantity - 1 < 1) {
             showModal(rowKey)
@@ -312,13 +324,19 @@ const CartScreen = ({ navigation }) => {
     }, [products])
 
     const getTotalPrice = useCallback(() => {
-        const total = products.reduce(
-            (prev, cur) => prev + (cur.price * cur.quantity),
-            0
-        )
-        console.log(total)
+        const total = products.reduce((prev, cur) => prev + (cur.price * cur.quantity), 0)
+        // console.log(total)
         return total
     }, [products])
+
+    const handleCheckout = () => {
+        if(userToken) {
+            navigation.navigate('Checkout')
+        }
+        else {
+            navigation.navigate('stackAuth')
+        }
+    }
 
     const isValid = () => {
         return (
@@ -336,13 +354,15 @@ const CartScreen = ({ navigation }) => {
                     }
                 }
             />
-            {!isEmpty(rowAnimatedValues) &&
+            {/* cartEmpty === false chớp image */}
+            {!isEmpty(rowAnimatedValues) && cartEmpty === false
+                ?
                 <>
                     <View>
                         <SwipeListView
                             contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 300, paddingTop: 28 }}
                             data={products}
-                            keyExtractor={item => item._id}
+                            keyExtractor={item => item.timestamp}
                             renderItem={renderItem}
                             renderHiddenItem={renderIrenderHiddenItemtem}
                             // leftOpenValue={75}
@@ -376,7 +396,7 @@ const CartScreen = ({ navigation }) => {
                                     <Text style={ styles.totalPrice }>{ (getTotalPrice()).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
                                 </View>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate('Checkout')}
+                                    onPress={ handleCheckout }
                                     style={ styles.checkOutBtn }
                                 >
                                     <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Check Out</Text>
@@ -388,17 +408,35 @@ const CartScreen = ({ navigation }) => {
                     </View> */}
 
                     <Modal
+                        statusBarTranslucent
                         transparent={ true }
                         animationType='fade'
                         visible={ isModalVisible.visible }
                         onRequestClose={() => changeModalVisible(false) }
                     >
-                        <SimpleModal 
+                        <DeleteProductModal 
                             changeModalVisible={ changeModalVisible }
                             setData={ setData }
                         />
                     </Modal>
                 </>
+                :
+                cartEmpty &&
+                <View style={ styles.emptyCart }>
+                    <Image
+                        style={ styles.emptyImage }
+                        source={ emptyCart }
+                        resizeMode='center'
+                    />
+                    <Text style={ styles.ohhhText }>Ohhh... Your cart is empty</Text>
+                    <Text style={ styles.butText }>but it doesn't have to be.</Text>
+                    <TouchableOpacity 
+                        style={ styles.shopnowBtn }
+                        onPress={() => navigation.goBack()}
+                    >
+                        <Text style={ styles.shopNow }>SHOP NOW</Text>
+                    </TouchableOpacity>
+                </View>
             }
         </View>
     )
@@ -542,6 +580,35 @@ const styles = StyleSheet.create({
         fontSize: 32,
         color: 'tomato',
         fontWeight: '800'
+    },
+    emptyCart: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 100
+    },
+    emptyImage: {
+        width: '100%',
+        height: WIDTH / 2
+    },
+    ohhhText: {
+        color: '#000',
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    butText: {
+        color: '#969696'
+    },
+    shopnowBtn: {
+        backgroundColor: violet,
+        marginTop: 32,
+        paddingVertical: 12,
+        paddingHorizontal: 38,
+        borderRadius: 30
+    },
+    shopNow: {
+        color: 'white',
+        fontSize: 16
     }
 })
 

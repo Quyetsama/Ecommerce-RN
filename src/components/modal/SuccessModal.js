@@ -2,23 +2,13 @@ import React from 'react'
 import {
     StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, TextInput
 } from 'react-native'
-import { violet } from '../helpers/configs'
+import { violet } from '../../helpers/configs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const HEIGHT = Dimensions.get('window').height
 const WIDTH = Dimensions.get('window').width
 
-const SuccessModal = ({ changeModalVisible, setData }) => {
-    
-    const okModal = () => {
-        changeModalVisible()
-        // setData()
-    }
-
-
-    const cancelModal = () => {
-        changeModalVisible()
-    }
+const SuccessModal = () => {
     
     return (
         <TouchableOpacity

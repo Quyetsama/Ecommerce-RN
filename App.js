@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
+import RNBootSplash from 'react-native-bootsplash'
 import { NavigationContainer  } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { AuthStack, SearchStack, StoreStack } from "./src/navigation/StackNavigator"
@@ -7,8 +8,10 @@ import BottomTabNavigator from "./src/navigation/TabNavigator"
 import SplashScreen from "./src/screens/auth/SplashScreen"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
-import { retrieveToken, logout } from './src/redux/actions/authAction'
+import { retrieveToken, login, logout } from './src/redux/actions/authAction'
 import DetailScreen from "./src/screens/DetailScreen"
+
+import { getCurrentUser } from "./src/api/authApi"
 
 
 const Stack = createNativeStackNavigator()
@@ -16,37 +19,35 @@ const Stack = createNativeStackNavigator()
 const App = () => {
 
     const dispatch = useDispatch()
-    const isLoading = useSelector(state => state.authReducer.isLoading)
     const userToken = useSelector(state => state.authReducer.userToken)
 
-    // const [isLoading, setIsLoading] = useState(true)
-    // const [isLogin, setIsLogin] = useState(false)
-
     useEffect(() => {
-        // Get token from asyncStorage is here
-        const getTokenAsyncStorage = async () => {
-            try {
-                const token = await AsyncStorage.getItem('userToken')
-                return token
+        const init = async () => {
+            const token = await AsyncStorage.getItem('userToken')
+            // token !== null ? dispatch(retrieveToken(token)) : dispatch(logout())
+            // console.log('token: ', token)
+
+            if(token) {
+                try{
+                    const user = await getCurrentUser(token)
+                    // console.log(user.data.profile)
+                    dispatch(login(user.data.profile.fullName, token, user.data.profile.coin, user.data.profile.email))
+                }
+                catch(error) {
+                    if(error.response.data) {
+                        dispatch(logout())
+                    }
+                }
             }
-            catch(error) {
-                console.log(error)
+            else {
+                dispatch(logout())
             }
         }
-
-        let token
-        getTokenAsyncStorage().then(value => token = value)
-
-        setTimeout(() => {
-            token !== null ? dispatch(retrieveToken(token)) : dispatch(logout())
-        }, 2000)
+    
+        init().finally(async () => {
+            await RNBootSplash.hide({ fade: true })
+        })
     }, [])
-
-    if(isLoading) {
-        return (
-            <SplashScreen />
-        )
-    }
 
     return (
         <NavigationContainer>
@@ -56,8 +57,6 @@ const App = () => {
                 {/* <Stack.Screen name='stackAuth' component={ AuthStack }/>  */}
                 <Stack.Screen name='stackMain' component={ BottomTabNavigator }/>
                 <Stack.Screen name='stackSearch' component={ SearchStack } />
-                {/* <Stack.Screen name='stackDetail' component={ DetailScreen } /> */}
-                {/* <Stack.Screen name='stackStore' component={ StoreStack } /> */}
                 { userToken ? <></> : <Stack.Screen name='stackAuth' component={ AuthStack }/> }
             </Stack.Navigator>
         </NavigationContainer>

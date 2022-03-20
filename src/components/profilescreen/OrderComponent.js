@@ -6,10 +6,10 @@ import ItemProfile from "./ItemProfileComponent"
 
 const WIDTH = Dimensions.get('window').width
 
-const OrderComponent = () => {
+const OrderComponent = ({ onHistory }) => {
     return (
         <View style={ styles.container }>
-            <ItemProfile icon={'history'} label={'Đơn Hàng'} txtDetail={'Xem lịch sử mua hàng'} />
+            <ItemProfile icon={'history'} label={'Đơn Hàng'} txtDetail={'Xem lịch sử mua hàng'} onPress={ onHistory } />
             
             <View style={ styles.progerssContainer }>
                 <View style={ styles.itemProgress }>

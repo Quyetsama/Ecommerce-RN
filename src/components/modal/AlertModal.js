@@ -2,22 +2,14 @@ import React from 'react'
 import {
     StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, TextInput
 } from 'react-native'
-import { violet } from '../helpers/configs'
+import { violet } from '../../helpers/configs'
 
 const HEIGHT = Dimensions.get('window').height
 const WIDTH = Dimensions.get('window').width
 
-const SimpleModal = ({ changeModalVisible, setData }) => {
+const AlertModal = ({ title, content, changeModalVisible, setData }) => {
     
-    const [text, setText] = React.useState('')
-
     const okModal = () => {
-        changeModalVisible(false)
-        setData()
-    }
-
-
-    const cancelModal = () => {
         changeModalVisible(false)
     }
     
@@ -28,29 +20,20 @@ const SimpleModal = ({ changeModalVisible, setData }) => {
         >
             <View style={ styles.modal }>
                 <View style={ styles.textView }>
-                    <Text style={[ styles.text, { color: 'red' } ]}>
-                        Thông báo
+                    <Text style={[ styles.text, { fontSize: 22, color: '#000' } ]}>
+                        { title }
                     </Text>
                     <Text style={ styles.text }>
-                        Bạn muốn xóa sản phẩm này?
+                        { content }
                     </Text>
                 </View>
 
                 <View style={ styles.buttonsView }>
                     <TouchableOpacity
-                        onPress={() => cancelModal()}
-                        style={ styles.touchableOpacity }
-                    >
-                        <Text style={[ styles.text, { color: violet } ]}>Hủy</Text>
-                    </TouchableOpacity>
-
-                    <View style={{ width: 1, height: '100%', backgroundColor: '#f2f2f2' }} />
-
-                    <TouchableOpacity
                         onPress={() => okModal()}
                         style={ styles.touchableOpacity }
                     >
-                        <Text style={[ styles.text, { color: violet } ]}>Xác nhận</Text>
+                        <Text style={[ styles.text, { color: violet } ]}>OK</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -67,8 +50,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(52, 52, 52, 0.4)'
     },
     modal: {
-        height: 150,
-        width: WIDTH - 80,
+        height: 165,
+        width: WIDTH / 1.5,
         paddingTop: 10,
         backgroundColor: 'white',
         borderRadius: 16
@@ -80,10 +63,12 @@ const styles = StyleSheet.create({
         borderBottomColor: '#f2f2f2'
     },
     text: {
-        margin: 5,
-        fontSize: 16,
+        textAlign: 'center',
+        marginVertical: 5,
+        marginHorizontal: 15,
+        // fontSize: 16,
         fontWeight: 'bold',
-        color: '#000'
+        color: 'grey'
     },
     buttonsView: {
         width: '100%',
@@ -96,4 +81,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default React.memo(SimpleModal)
+export default React.memo(AlertModal)

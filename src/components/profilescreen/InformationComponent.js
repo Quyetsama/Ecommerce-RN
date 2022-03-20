@@ -2,11 +2,14 @@ import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Text, Image, Dimensions } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { violet } from '../../helpers/configs'
 
 
 const WIDTH = Dimensions.get('window').width
 
-const Information = () => {
+const Information = ({ isLogin, fullName, email, onSignIn, onSignUp }) => {
+
+    console.log(email)
     return (
         <View style={ styles.container }>
             <View style={ styles.topContainer }>
@@ -17,31 +20,54 @@ const Information = () => {
                     />
                 </View>
 
-                <View style={ styles.name_follow_Container }>
-                    <View style={ styles.nameContainer }>
-                        <Text style={ styles.txtName }>Quyết Sama</Text>
-                    </View>
-                    <View style={ styles.followContainer }>
-                        <View style={ styles.followerContainer }>
-                            <Text style={ styles.txtFollower }>Người theo dõi 21</Text>
+                {isLogin
+                    ?
+                    <View style={ styles.name_follow_Container }>
+                        <View style={ styles.nameContainer }>
+                            <Text style={ styles.txtName }>{ fullName }</Text>
                         </View>
-                        <View style={ styles.followingContainer }>
-                            <Text style={ styles.txtFollowing }>Đang theo dõi 28</Text>
+                        <View style={ styles.followContainer }>
+                            <View style={ styles.followerContainer }>
+                                <Text style={ styles.txtFollower }>Người theo dõi 21</Text>
+                            </View>
+                            <View style={ styles.followingContainer }>
+                                <Text style={ styles.txtFollowing }>Đang theo dõi 28</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
+                    :
+                    <View style={ styles.authContainer }>
+                        <TouchableOpacity 
+                            style={[ styles.authButton, { backgroundColor: violet, marginRight: 8 } ]}
+                            activeOpacity={0.8}
+                            onPress={ onSignIn }
+                        >
+                            <Text style={[ styles.authText, { color: 'white' } ]}>Sign In</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            style={[ styles.authButton, { backgroundColor: 'white' } ]}
+                            activeOpacity={0.8}
+                            onPress={ onSignUp }
+                        >
+                            <Text style={[ styles.authText, { color: violet } ]}>Sign Up</Text>
+                        </TouchableOpacity>
+                    </View> 
+                }
+                
             </View>
 
-            <View style={ styles.botContainer }>
-                <View style={ styles.itemBot }>
-                    <MaterialCommunityIcons name={'phone-outline'} size={21} color={'#969696'} />
-                    <Text style={ styles.txtItemBot }>(84)-867-985-106</Text>
+            {isLogin &&
+                <View style={ styles.botContainer }>
+                    <View style={ styles.itemBot }>
+                        <MaterialCommunityIcons name={'phone-outline'} size={21} color={'#969696'} />
+                        <Text style={ styles.txtItemBot }>(84)-867-985-106</Text>
+                    </View>
+                    <View style={ styles.itemBot }>
+                        <MaterialCommunityIcons name={'email-outline'} size={21} color={'#969696'} />
+                        <Text style={ styles.txtItemBot }>{ email }</Text>
+                    </View>
                 </View>
-                <View style={ styles.itemBot }>
-                    <MaterialCommunityIcons name={'email-outline'} size={21} color={'#969696'} />
-                    <Text style={ styles.txtItemBot }>vanquyetc2vc@gmail.com</Text>
-                </View>
-            </View>
+            }
         </View>
     )
 }
@@ -86,6 +112,22 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold'
     },
+    authContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    authButton: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 3,
+        borderWidth: 1,
+        borderColor: violet
+    },
+    authText: {
+        
+    },
     followContainer: {
         flexDirection: 'row',
         alignItems: 'center'
@@ -118,4 +160,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Information
+export default React.memo(Information)

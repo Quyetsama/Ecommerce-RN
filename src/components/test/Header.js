@@ -1,8 +1,9 @@
 import React from "react"
-import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, StatusBar, Platform } from "react-native"
+import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, StatusBar, Platform, Image } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { NAME } from "../../helpers/configs"
+import name from '../../assets/img/name.png'
 
 
 
@@ -18,12 +19,15 @@ const Header = ({ navigation }) => {
                 <Ionicons name={'search'} size={21} color={'#969696'} />
                 <TextInput editable={false} style={ styles.input } placeholder="Search..." />
             </TouchableOpacity>
-            <View style={ styles.Cart }>
+            <TouchableOpacity 
+                style={ styles.Cart }
+                onPress={() => navigation.navigate('Cart')}
+            >
                 <View style={styles.iconBadge}>
                     <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
                 </View>
-                <MaterialCommunityIcons name={'cart-outline'} size={24} color={'#969696'}  onPress={() => navigation.navigate('Cart')} />
-            </View>
+                <MaterialCommunityIcons name={'cart-outline'} size={24} color={'#969696'} />
+            </TouchableOpacity>
         </View>
     )
 }

@@ -6,8 +6,10 @@ import DetailScreen from '../screens/DetailScreen'
 
 import CartScreen from '../screens/CartScreen'
 import CheckOutScreen from '../screens/CheckoutScreen'
+import HistoryScreen from '../screens/HistoryScreen'
 
 import ProfileScreen from '../screens/ProfileScreen'
+import VoucherScreen from '../screens/VoucherScreen'
 
 import StoreScreen from '../screens/mystore/StoreScreen'
 import AddProductScreen from '../screens/mystore/AddProductScreen'
@@ -45,6 +47,7 @@ const HomeStack = () => {
             <Stack.Screen name="Detail" component={ DetailScreen } />
             <Stack.Screen name="Cart" component={ CartScreen } />
             <Stack.Screen name="Checkout" component={ CheckOutScreen } />
+            <Stack.Screen name="Voucher" component={ VoucherScreen } />
         </Stack.Navigator>
     )
 }
@@ -69,8 +72,11 @@ const ProfileStack = () => {
     return(
         <Stack.Navigator screenOptions={ screenOptionStyle }>
             <Stack.Screen name="Profile" component={ ProfileScreen } />
+            <Stack.Screen name="Voucher" component={ VoucherScreen } />
             <Stack.Screen name="myStore" component={ StoreStack } />
             <Stack.Screen name="Cart" component={ CartScreen } />
+            <Stack.Screen name="Checkout" component={ CheckOutScreen } />
+            <Stack.Screen name="History" component={ HistoryScreen } />
         </Stack.Navigator>
     )
 }

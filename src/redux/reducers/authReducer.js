@@ -2,9 +2,10 @@ import { RETRIEVE_TOKEN, LOGIN, LOGOUT, REGISTER } from "../actions/types"
 
 
 const initialStateAuth = {
-    isLoading: true,
-    userName: null,
-    userToken: null
+    fullName: null,
+    userToken: null,
+    coin: 0,
+    email: null
 }
 
 const authReducer = (state = initialStateAuth, action) => {
@@ -13,29 +14,31 @@ const authReducer = (state = initialStateAuth, action) => {
         case RETRIEVE_TOKEN:
             return {
                 ...state,
-                isLoading: false,
                 userToken: action.token
             }
         case LOGIN:
             return {
                 ...state,
-                isLoading: false,
-                userName: action.username,
-                userToken: action.token
+                fullName: action.fullName,
+                userToken: action.token,
+                coin: action.coin,
+                email: action.email
             }
         case LOGOUT:
             return {
                 ...state,
-                isLoading: false,
-                userName: null,
-                userToken: null
+                fullName: null,
+                userToken: null,
+                coin: 0,
+                email: null
             }
         case REGISTER:
             return {
                 ...state,
-                isLoading: false,
-                userName: action.username,
-                userToken: action.token
+                fullName: action.fullName,
+                userToken: action.token,
+                coin: action.coin,
+                email: action.email
             }
         default:
             return {

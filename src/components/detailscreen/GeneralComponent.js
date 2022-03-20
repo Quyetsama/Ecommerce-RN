@@ -28,7 +28,7 @@ const GeneralComponent = ({ name, price, sold, discount, rate }) => {
             </View>
 
             <View>
-                <Text style={ styles.newPrice }>{ price.toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
+                <Text style={ styles.newPrice }>{ (price * (100 - discount) / 100).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
                 {discount && <Text style={ styles.oldPrice }>{ price.toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>}
             </View>
 
@@ -105,4 +105,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default GeneralComponent
+export default React.memo(GeneralComponent)

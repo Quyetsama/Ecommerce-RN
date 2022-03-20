@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { NAME } from '../../helpers/configs'
 
@@ -15,20 +15,23 @@ const ICON = ({ icon, color }) => {
     )
 }
 
-const CoinVoucher = () => {
+const CoinVoucher = ({ coin, onCLickVoucher }) => {
     return (
         <View style={ styles.container }>
-            <View style={ styles.itemLeftContainer }>
+            <TouchableOpacity style={ styles.itemLeftContainer }>
                 <View style={ styles.contentContainer }>          
                     <ICON icon={ 'skype' } color={ '#ffe600' } />
                     <View style={ styles.textContainer }>
                         <Text style={ styles.title }>{ NAME } Xu</Text>
-                        <Text style={{ color: 'tomato', fontSize: 13, fontWeight: '500' }}>200 Xu</Text>
+                        <Text style={{ color: 'tomato', fontSize: 13, fontWeight: '500' }}>{ coin } Xu</Text>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
 
-            <View style={ styles.itemRightContainer }>
+            <TouchableOpacity 
+                style={ styles.itemRightContainer }
+                onPress={ onCLickVoucher }
+            >
                 <View style={ styles.contentContainer }>          
                     <ICON icon={ 'ticket-percent' } color={ '#00a6ff' } />
                     <View style={ styles.textContainer }>
@@ -36,7 +39,7 @@ const CoinVoucher = () => {
                         <Text style={{ color: '#969696', fontSize: 13 }}>Tìm thêm</Text>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -99,4 +102,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default CoinVoucher
+export default React.memo(CoinVoucher)

@@ -11,7 +11,7 @@ import {
 } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { NAME } from "../helpers/configs"
-import grabee from '../assets/img/grabee.png'
+// import grabee from '../assets/img/grabee.png'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -69,7 +69,7 @@ const HeaderHomeComponent = ({ navigation, animatedValue }) => {
             </Animated.Text>
 
             <Animated.View style={{ position: 'absolute', top: 0, left: animatedMascot, opacity: animatedHeaderOpacityText }}>
-                <Animated.Image style={{ width: animatedWidthMascot, height: animatedWidthMascot }} source={ grabee } />
+                {/* <Animated.Image style={{ width: animatedWidthMascot, height: animatedWidthMascot }} source={ grabee } /> */}
             </Animated.View>
 
 

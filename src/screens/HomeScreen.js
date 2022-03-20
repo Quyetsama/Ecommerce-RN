@@ -67,7 +67,7 @@ const HomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             {/* <StatusBar hidden /> */}
-            <StatusBar translucent backgroundColor={'transparent'}/>
+            <StatusBar translucent backgroundColor={'transparent'} barStyle={'light-content'}/>
             {/* Header */}
             {/* <HeaderHomeComponent navigation={ navigation } animatedValue={ offset } /> */}
             <Header navigation={ navigation } />

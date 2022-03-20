@@ -1,24 +1,35 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { 
     ScrollView, 
     StyleSheet, 
     Text, 
     TouchableOpacity, 
     View, 
-    Switch 
+    Switch,
+    Image,
+    LayoutAnimation,
+    Platform,
+    UIManager,
+    Dimensions
 } from 'react-native'
 import { violet } from '../helpers/configs'
 import CartHeader from '../components/cartscreen/CartHeader'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import { doMain } from '../helpers/configs'
+import { useDispatch, useSelector } from 'react-redux'
+import { orderApi } from '../api/orderApi'
 
 
+
+const WIDTH = Dimensions.get('window').width
+const HEIGHT = Dimensions.get('window').height
 
 const convertVND = (value) => {
     return (value).toLocaleString('vi', {style : 'currency', currency : 'VND'})
 }
 
-const ItemInfo = ({ icon, text }) => {
+const ItemInfo = React.memo(({ icon, text }) => {
     return (
         <View style={ styles.itemInfoContainer }>
             <MaterialCommunityIcons name={icon} size={26} color={violet} />
@@ -33,11 +44,15 @@ const ItemInfo = ({ icon, text }) => {
             </Text>
         </View>
     )
-}
+})
 
-const ItemBill = ({ title, text, iconChevron }) => {
+const ItemBill = React.memo(({ title, text, iconChevron, onCLick }) => {
     return (
-        <View style={ styles.ItemBillContainer }>
+        <TouchableOpacity 
+            style={ styles.ItemBillContainer }
+            activeOpacity={ 1 }
+            onPress={ onCLick }
+        >
             <Text 
                 style={{
                     flex: 1,
@@ -52,14 +67,197 @@ const ItemBill = ({ title, text, iconChevron }) => {
                     <EvilIcons name='chevron-right' size={30} color={'#969696'} />
                 }
             </View>
+        </TouchableOpacity>
+    )
+})
+
+const ExpandableProduct = React.memo(({ data, onClick }) => {
+
+    const [layoutHeight, setLayoutHeight] = useState(0)
+
+    useEffect(() => {
+        if(data.isExpanded) {
+            setLayoutHeight(null)
+        }
+        else {
+            setLayoutHeight(0)
+        }
+    }, [data.isExpanded])
+
+    return (
+        <View>
+            <View style={ styles.ItemBillContainer }>
+                <Text 
+                    style={{
+                        flex: 1,
+                        color: '#969696'
+                    }}
+                >
+                    { data.title }
+                </Text>
+                <TouchableOpacity 
+                    style={{ flexDirection: 'row', alignItems: 'center' }}
+                    onPress={ onClick }
+                >
+                    <Text style={{ color: '#000', marginRight: 14 }}>{ data.subProduct.length } items</Text>
+                    <EvilIcons name={ layoutHeight === null ? 'chevron-down' : 'chevron-right' } size={30} color={'#969696'} />
+                </TouchableOpacity>
+            </View>
+            <View
+                    style={{
+                        height: layoutHeight,
+                        overflow: 'hidden'
+                    }}
+                >
+                    {
+                        data.subProduct.map((item, index) => (
+                            <View
+                                key={ index }
+                                style={ styles.productContainer }
+                            >
+                                <Image 
+                                    style={ styles.imageProduct }
+                                    source={{ uri: doMain + 'image/' + item.image  }}
+                                />
+                                <View style={ styles.detailContainer }>
+                                    <Text style={ styles.nameProduct } numberOfLines={ 1 }>{ item.name }</Text>
+                                    <Text numberOfLines={ 1 }>{ item.selected }</Text>
+                                    <Text numberOfLines={ 1 }>{ (item.price).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
+                                    <Text style={ styles.quantityProduct }>x{ item.quantity }</Text>
+                                </View>
+                            </View>
+                        ))
+                    }
+                </View>
         </View>
     )
-}
+})
 
 const CheckOutScreen = ({ navigation }) => {
 
+    const { products, voucher } = useSelector(state => state.cartReducer)
+    const { userToken } = useSelector(state => state.authReducer)
+    const { coin } = useSelector(state => state.authReducer)
+    const [bill, setBill] = useState({
+        price: 0,
+        transportFee: 0,
+        coin: 0,
+        discount: 0,
+        total: 0
+    })
+    const [balanceCoin, setBalanceCoin] = useState(coin)
+    // console.log(coin)
+    const [dataSource, setDataSource] = useState({
+        isExpanded: false,
+        title: 'Product',
+        subProduct: [
+            ...JSON.parse(JSON.stringify(products))
+        ]
+    })
     const [isEnabled, setIsEnabled] = useState(false)
     const toggleSwitch = () => setIsEnabled(previousState => !previousState)
+
+    useEffect(() => {
+        let total = 0
+        let price = products.reduce((prev, cur) => prev + (cur.price * cur.quantity), 0)
+        let transportFee = products.reduce((prev, cur) => prev + cur.transportFee, 0)
+        let orignalTotal = price + transportFee
+
+        if(voucher?.classify.type === 1 || voucher?.classify.type === 3) {
+            total = price + transportFee - (voucher?.classify.value * 1000)
+            if(voucher?.classify.type === 3) {
+                transportFee = total - price
+            }
+            // discount = 
+        }
+        else if(voucher?.classify.type === 2) {
+            total = (price + transportFee) * (100 - voucher?.classify.value) / 100
+        }
+        else if(voucher?.classify.type === 4) {
+            total = price + (transportFee * (100 - voucher?.classify.value)) / 100
+            transportFee = total - price
+        }
+        else {
+            total = price + transportFee
+        }
+
+        if(total < 0) {
+            total = 0
+        }
+
+        if(isEnabled) {
+            if(total >= coin) {
+                total = total - coin
+                setBill({
+                    ...bill,
+                    price: price,
+                    transportFee: transportFee,
+                    coin: coin,
+                    discount: orignalTotal - total,
+                    total: total
+                })
+            }
+            else {
+                setBill({
+                    ...bill,
+                    price: price,
+                    transportFee: transportFee,
+                    coin: total,
+                    discount: orignalTotal - total,
+                    total: 0
+                })
+            }
+        }
+        else {
+            setBill({
+                ...bill,
+                price: price,
+                transportFee: transportFee,
+                discount: orignalTotal - total,
+                total: total
+            })
+        }
+    }, [products, voucher, isEnabled])
+
+    if(Platform.OS === 'android') {
+        UIManager.setLayoutAnimationEnabledExperimental(true)
+    }
+
+    const updateLayout = React.useCallback(() => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+        const newDataSource = { ...dataSource }
+        newDataSource['isExpanded'] = !newDataSource['isExpanded']
+        setDataSource(newDataSource)
+    }, [dataSource])
+
+    const handleOrder = async () => {
+        try {
+            const result = products.map(item => (
+                {
+                    product: item._id,
+                    classify: item.selected,
+                    price: item.price,
+                    quantity: item.quantity
+                }
+            ))
+
+            const data = {
+                bill: {
+                    transportFee: bill.transportFee,
+                    discount: bill.discount,
+                    total: bill.total
+                },
+                products: result
+            }
+
+            // const res = await orderApi(userToken, data)
+            navigation.popToTop()
+            navigation.navigate('tabProfile', { screen: 'History' })
+        }
+        catch(error) {
+            console.log(error)
+        }
+    }
 
     return (
         <View style={ styles.container }>
@@ -72,6 +270,8 @@ const CheckOutScreen = ({ navigation }) => {
             />
 
             <ScrollView
+                showsVerticalScrollIndicator={ false }
+                contentContainerStyle={{ paddingBottom: 100 }}
             >
                 <View style={ styles.customerInfo }>
                     <View style={ styles.headerAddress }>
@@ -96,12 +296,25 @@ const CheckOutScreen = ({ navigation }) => {
                         <Text style={ styles.titleSection }>Order Bill</Text>
                     </View>
                     <View>
-                        <ItemBill title={'Product'} text={'3 items'} iconChevron />
-                        <ItemBill title={'Price'} text={ convertVND(350000) } />
-                        <ItemBill title={'Shopping Fee'} text={ convertVND(15000) } />   
+                        <ExpandableProduct 
+                            data={ dataSource } 
+                            onClick={ updateLayout }
+                        />
+                        <ItemBill title={'Price'} text={ convertVND(bill.price) } />
+                        <ItemBill title={'Shopping Fee'} text={ convertVND(bill.transportFee) } />
+                        <ItemBill 
+                            title={'Voucher'} 
+                            text={voucher?.title} 
+                            iconChevron 
+                            onCLick={() => navigation.navigate('Voucher')} 
+                        />
                     </View>
                     <View style={ styles.useCoinsContainer }>
                         <Text style={ styles.useCoinsText }>Use Coins</Text>
+                        {
+                            isEnabled &&
+                            <Text style={{ color: '#000', marginRight: 12 }}>-{ convertVND(bill.coin) }</Text>
+                        }
                         <Switch
                             style={{ justifyContent: 'center' }}
                             trackColor={{ false: "#f2f2f2", true: "#30d126" }}
@@ -113,7 +326,7 @@ const CheckOutScreen = ({ navigation }) => {
                     </View>
                     <View style={ styles.totalBillContainer }>
                         <Text style={[ styles.totalBillText, { flex: 1 } ]}>Total Bill</Text>
-                        <Text style={[ styles.totalBillText, { marginRight: 14 } ]}>{ convertVND(365000) }</Text>
+                        <Text style={[ styles.totalBillText, { marginRight: 14 } ]}>{ convertVND(bill.total) }</Text>
                     </View>
                 </View>
             </ScrollView>
@@ -121,6 +334,7 @@ const CheckOutScreen = ({ navigation }) => {
             <View style={ styles.btnContainer }>
                 <TouchableOpacity
                     style={ styles.completeBtn }
+                    onPress={ handleOrder }
                 >
                     <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Complete</Text>
                 </TouchableOpacity>
@@ -214,6 +428,32 @@ const styles = StyleSheet.create({
         padding: 18,
         borderRadius: 15,
         zIndex: 100
+    },
+    productContainer: {
+        width: WIDTH,
+        flexDirection: 'row',
+        paddingVertical: 18,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f2f2f2'
+    },
+    imageProduct: {
+        width: 75,
+        height: 75
+    },
+    detailContainer: {
+        flex: 1,
+        justifyContent: 'space-around',
+        marginLeft: 12
+    },
+    nameProduct: {
+        color: '#3d3d3d',
+        fontWeight: 'bold',
+        marginRight: 28,
+    },
+    quantityProduct: {
+        position: 'absolute',
+        bottom: 0,
+        right: 28
     }
 })
 
