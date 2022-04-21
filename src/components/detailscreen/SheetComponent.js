@@ -132,7 +132,7 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
 const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
 
     // const { products } = useSelector(state => state.cartReducer)
-    // console.log(product.discount)
+    // console.log(product?.discount)
     const dispatch = useDispatch()
     const [selected, setSelected] = useState([])
     const [quantity, setQuantity] = useState(1)
@@ -192,14 +192,14 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
         
         dispatch(addToCart(
             {
-                _id: product._id,
+                _id: product?._id,
                 timestamp: Date.now(),
-                name: product.name,
-                price: (price ? price : product.price * (100 - product.discount) / 100),
-                discount: product.discount ? product.discount : null,
-                transportFee: product.transportFee,
+                name: product?.name,
+                price: (price ? price : product?.price * (100 - product?.discount) / 100),
+                discount: product?.discount ? product?.discount : null,
+                transportFee: product?.transportFee,
                 quantity: quantity,
-                image: product.image[0],
+                image: product?.image[0],
                 selected: selected.length !== 0 ? selected : null
             }
         ))
@@ -229,7 +229,7 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                 <View style={ styles.headerSheet }>
                     <View style={{ width: HEIGHT / 5, height: HEIGHT / 5 }}>
                         <Image 
-                            source={{ uri: product.image && (doMain + '/image/' + product.image[0]) }}
+                            source={{ uri: product?.image && (doMain + '/image/' + product?.image[0]) }}
                             style={ styles.imageSheet }
                             resizeMode='contain'
                         />

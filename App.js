@@ -3,8 +3,8 @@ import { StyleSheet, Text, View } from "react-native"
 import RNBootSplash from 'react-native-bootsplash'
 import { NavigationContainer  } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { AuthStack, SearchStack, StoreStack } from "./src/navigation/StackNavigator"
-import BottomTabNavigator from "./src/navigation/TabNavigator"
+import { AuthStack, SearchStack, StoreStack, Root } from "./src/navigation/StackNavigator"
+// import BottomTabNavigator from "./src/navigation/TabNavigator"
 import SplashScreen from "./src/screens/auth/SplashScreen"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
@@ -51,13 +51,15 @@ const App = () => {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{
-                headerShown: false
-            }}>    
+            <Stack.Navigator 
+                screenOptions={{
+                    headerShown: false,
+                }}
+            >    
                 {/* <Stack.Screen name='stackAuth' component={ AuthStack }/>  */}
-                <Stack.Screen name='stackMain' component={ BottomTabNavigator }/>
-                <Stack.Screen name='stackSearch' component={ SearchStack } />
-                { userToken ? <></> : <Stack.Screen name='stackAuth' component={ AuthStack }/> }
+                <Stack.Screen name='Root' component={ Root }/>
+                {/* <Stack.Screen name='stackSearch' component={ SearchStack } /> */}
+                { userToken === null && <Stack.Screen name='stackAuth' component={ AuthStack } options={{ animation: 'slide_from_right' }}/> }
             </Stack.Navigator>
         </NavigationContainer>
     )

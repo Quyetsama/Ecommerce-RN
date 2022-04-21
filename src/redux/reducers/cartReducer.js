@@ -3,14 +3,32 @@ import {
     DELETE_FROM_CART,
     INCREASE_QUANTITY,
     DECREASE_QUANTITY,
+    ADD_ADDRESS,
+    CLEAR_ADDRESS,
+    SET_CONTACT,
+    CLEAR_DELIVERY_ADDRESS,
     ADD_VOUCHER,
-    DELETE_VOUCHER
+    DELETE_VOUCHER,
+    CLEAR_CART
 } from "../actions/types"
 
 
 const initialState = {
     products: [],
-    voucher: null
+    voucher: null,
+    deliveryAddress: {
+        address: {
+            province: null,
+            district: null,
+            ward: null,
+            selected: 1
+        },
+        contact: {
+            name: '',
+            phone: '',
+            street: ''
+        }
+    }
 }
 
 const cartReducer = (state = initialState, action) => {
@@ -75,6 +93,39 @@ const cartReducer = (state = initialState, action) => {
                 products: [...newProducts]
             }
         }
+        case ADD_ADDRESS: {
+            return {
+                ...state,
+                deliveryAddress: {
+                    ...state.deliveryAddress,
+                    address: action.address
+                }
+            }
+        }
+        case CLEAR_ADDRESS: {
+            return {
+                ...state,
+                deliveryAddress: {
+                    ...state.deliveryAddress,
+                    address: {...initialState.deliveryAddress.address}
+                }
+            }
+        }
+        case SET_CONTACT: {
+            return {
+                ...state,
+                deliveryAddress: {
+                    ...state.deliveryAddress,
+                    contact: {...action.contact}
+                }
+            }
+        }
+        case CLEAR_DELIVERY_ADDRESS: {
+            return {
+                ...state,
+                deliveryAddress: {...initialState.deliveryAddress}
+            }
+        }
         case ADD_VOUCHER: {
             return {
                 ...state,
@@ -85,6 +136,11 @@ const cartReducer = (state = initialState, action) => {
             return {
                 ...state,
                 voucher: null
+            }
+        }
+        case CLEAR_CART: {
+            return {
+                ...initialState
             }
         }
         default:

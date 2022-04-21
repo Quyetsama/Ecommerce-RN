@@ -7,7 +7,8 @@ import {
     TouchableOpacity, 
     Dimensions, 
     TextInput,
-    ActivityIndicator
+    ActivityIndicator,
+    StatusBar
 } from 'react-native'
 import { violet } from '../../helpers/configs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -22,6 +23,7 @@ const LoadingModal = () => {
             disabled={ true }
             style={ styles.container }
         >
+            <StatusBar hidden />
             <View style={ styles.modal }>
                 <ActivityIndicator color={'white'} />
                 <Text style={ styles.text }>

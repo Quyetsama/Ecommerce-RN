@@ -211,6 +211,8 @@ dependencies {
 
     implementation "androidx.core:core-splashscreen:1.0.0-beta01" // Add this line
 
+    implementation project(':react-native-pager-view')
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }

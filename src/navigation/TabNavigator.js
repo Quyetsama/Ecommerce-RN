@@ -21,7 +21,7 @@ const BottomTabNavigator = () => {
         const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed'
         // console.log(routeName)
 
-        const routes = ['Detail', 'Cart', 'Checkout', 'myStore', 'Voucher', 'History']
+        const routes = ['Detail', 'Cart', 'Checkout', 'myStore', 'Voucher', 'HistoryStack', 'Success', 'stackSearch']
 
         if(routes.includes(routeName)) return 'none'
         return 'flex'
@@ -63,7 +63,7 @@ const BottomTabNavigator = () => {
             headerShown: false
         })}>
             <Tab.Screen name="tabHome" component={ HomeStack } options={{ title: 'Trang chủ' }} />
-            {/* <Tab.Screen name="tabOrder" component={ OrderStack } options={{ title: 'Đơn hàng', tabBarBadge: quantity }} /> */}
+            {/* <Tab.Screen name="tabOrder" component={ OrderStack } options={{ title: 'Đơn hàng'}} /> */}
             <Tab.Screen name="tabNotification" component={ OrderStack } options={{ title: 'Thông báo', tabBarBadge: 21 }} />
             <Tab.Screen name="tabProfile" component={ ProfileStack } options={{ title: 'Tôi' }} />
         </Tab.Navigator>

@@ -12,6 +12,7 @@ import {
     useWindowDimensions,
     TouchableWithoutFeedback,
     StatusBar,
+    Modal,
     Animated as Anie
 } from "react-native"
 
@@ -23,6 +24,8 @@ import Animated, {
 } from 'react-native-reanimated'
 import { PanGestureHandler, GestureHandlerRootView, ScrollView as ScrollView2 } from 'react-native-gesture-handler'
 import SheetComponent from "../components/detailscreen/SheetComponent"
+import LoadingModal from "../components/modal/LoadingModal"
+import useBackButton from "../hooks/useBackButton"
 
 import { LogBox } from 'react-native';
 
@@ -64,10 +67,6 @@ const tabs = [
         ref: React.createRef()
     }
 ]
-
-const kFormatter = (num) => {
-    return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
-}
 
 const Tab = React.forwardRef(({ icon, onItemPress }, ref) => {
     return (
@@ -195,15 +194,28 @@ const Indicator = ({ measures, scrollX }) => {
 
 const DetailScreen = ({ route, navigation }) => {
 
-    const [product, setProduct] = useState({})
+    const [product, setProduct] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
+
+    useBackButton(() => {
+        navigation.goBack()
+        return true
+    })
+
     useEffect(() => {
-        getDetailProduct(route.params._id).then(res => {
-            setProduct(res.data)
-        })
-        .catch(error => {
-            console.log(error)
-        })
+        fetchProduct()
     }, [])
+
+    const fetchProduct = async () => {
+        try {
+            const res = await getDetailProduct(route.params._id)
+            setProduct(res.data)
+            setIsLoading(false)
+        }
+        catch(error) {
+            console.log(error.response.data)
+        }
+    }
 
     const scrollX = React.useRef(new Anie.Value(0)).current
 
@@ -275,119 +287,134 @@ const DetailScreen = ({ route, navigation }) => {
     }, [])
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <View style={ styles.container }>
-                <StatusBar hidden />
-                <HeaderDetailProdcut navigation={ navigation } animatedValue={ offset } />
+        <GestureHandlerRootView style={{ flex: 1, backgroundColor: 'white' }}>
+            {
+                product &&
+                <>
+                    <View style={ styles.container }>
+                        <StatusBar hidden />
+                        <HeaderDetailProdcut navigation={ navigation } animatedValue={ offset } />
 
-                {/* <ScrollView
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                    showsVerticalScrollIndicator={ false }
-                    onScroll={Anie.event(
-                        [{ nativeEvent: { contentOffset: { y: offset } } }],
-                        {
-                            useNativeDriver: false 
-                        }
-                    )}
-                > */}
-                    {/* Carousel */}
-                    <CarouselProduct images={ product.image || [] } />
-
-                    <Tabs scrollX={ scrollX } onItemPress={ onItemPress } onClickBuy={ handleShowSheet } />
-                    <ScrollView
-                        ref={ ref }
-                        horizontal
-                        pagingEnabled
-                        showsHorizontalScrollIndicator={ false }
-                        removeClippedSubviews
-                        onScroll={
-                            Anie.event(
-                                [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                                { useNativeDriver: false }
-                            )
-                        }
-                    >
-                        <ScrollView
+                        {/* <ScrollView
+                            contentContainerStyle={{ paddingBottom: 100 }}
                             showsVerticalScrollIndicator={ false }
-                        >
-                            <View style={ styles.tabViewContainer }>
-                                {/* General */}
-                                <GeneralComponent 
-                                    name={ product.name } 
-                                    price={ product.price || 0 } 
-                                    sold={ product.sold || 0 } 
-                                    discount={ product.discount }
-                                    rate={ product.rate || {} }
-                                />
-                                <UnderLineSection />
+                            onScroll={Anie.event(
+                                [{ nativeEvent: { contentOffset: { y: offset } } }],
+                                {
+                                    useNativeDriver: false 
+                                }
+                            )}
+                        > */}
+                            {/* Carousel */}
+                            <CarouselProduct images={ product?.image || [] } />
 
-                                {/* Ship */}
-                                <ShipComponent 
-                                    transportFee={ product.transportFee || 0 }
-                                />
-                                <UnderLineSection />
-
-                                {/*  */}
-                                {product.classify &&
-                                    <>
-                                        <TypeProductComponent 
-                                            classify={ product.classify } 
-                                            onPress={ handleShowSheet } 
+                            <Tabs scrollX={ scrollX } onItemPress={ onItemPress } onClickBuy={ handleShowSheet } />
+                            <ScrollView
+                                ref={ ref }
+                                horizontal
+                                pagingEnabled
+                                showsHorizontalScrollIndicator={ false }
+                                removeClippedSubviews
+                                onScroll={
+                                    Anie.event(
+                                        [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                                        { useNativeDriver: false }
+                                    )
+                                }
+                            >
+                                <ScrollView
+                                    showsVerticalScrollIndicator={ false }
+                                >
+                                    <View style={ styles.tabViewContainer }>
+                                        {/* General */}
+                                        <GeneralComponent 
+                                            name={ product?.name } 
+                                            price={ product?.price || 0 } 
+                                            sold={ product?.sold || 0 } 
+                                            discount={ product?.discount }
+                                            rate={ product?.rate || {} }
                                         />
                                         <UnderLineSection />
-                                    </>
-                                }
 
-                                {/*  */}
-                                <ShopComponent />
-                                <UnderLineSection />
-                            </View>
-                        </ScrollView>
+                                        {/* Ship */}
+                                        <ShipComponent 
+                                            transportFee={ product?.transportFee || 0 }
+                                        />
+                                        <UnderLineSection />
 
-                        <ScrollView
-                            showsVerticalScrollIndicator={ false }
-                        >
-                            <View style={ styles.tabViewContainer }>
-                                {/*  */}
-                                <ShopComponent />
-                                <UnderLineSection />
-                            </View>
-                        </ScrollView>
-                    </ScrollView>
-                {/* </ScrollView> */}
-            </View>
+                                        {/*  */}
+                                        {product?.classify &&
+                                            <>
+                                                <TypeProductComponent 
+                                                    classify={ product?.classify } 
+                                                    onPress={ handleShowSheet } 
+                                                />
+                                                <UnderLineSection />
+                                            </>
+                                        }
 
-            <Animated.View
-                style={[
-                    {
-                        position: 'absolute',
-                        width: WIDTH,
-                        backgroundColor: 'rgba(52, 52, 52, 0.4)',
-                        zIndex: 10
-                    },
-                    styleHeight
-                ]}
-                onStartShouldSetResponder={() => {
-                    top.value = withSpring(
-                        dimensions.height,
-                        SPRING_CONFIG
-                    )
-                }}
-            >
+                                        {/*  */}
+                                        <ShopComponent />
+                                        <UnderLineSection />
+                                    </View>
+                                </ScrollView>
 
-            </Animated.View>
+                                <ScrollView
+                                    showsVerticalScrollIndicator={ false }
+                                >
+                                    <View style={ styles.tabViewContainer }>
+                                        {/*  */}
+                                        <ShopComponent />
+                                        <UnderLineSection />
+                                    </View>
+                                </ScrollView>
+                            </ScrollView>
+                        {/* </ScrollView> */}
+                    </View>
+
+                    <Animated.View
+                        style={[
+                            {
+                                position: 'absolute',
+                                width: WIDTH,
+                                backgroundColor: 'rgba(52, 52, 52, 0.4)',
+                                zIndex: 10
+                            },
+                            styleHeight
+                        ]}
+                        onStartShouldSetResponder={() => {
+                            top.value = withSpring(
+                                dimensions.height,
+                                SPRING_CONFIG
+                            )
+                        }}
+                    >
+
+                    </Animated.View>
+                    
+                    <SheetComponent
+                        product={ product }
+                        onGestureEvent={ gestureHandler } 
+                        style={ style } 
+                        onClose={() => {
+                            top.value = withSpring(
+                                dimensions.height,
+                                SPRING_CONFIG
+                            )
+                        }}
+                    />
+                </>
+            }
             
-            <SheetComponent
-                product={ product }
-                onGestureEvent={ gestureHandler } 
-                style={ style } 
-                onClose={() => {
-                    top.value = withSpring(
-                        dimensions.height,
-                        SPRING_CONFIG
-                    )
-                }}
-            />  
+
+            <Modal
+                transparent={ true }
+                animationType='fade'
+                visible={ isLoading }
+                onRequestClose={() => navigation.goBack() }
+            >
+                <LoadingModal />
+            </Modal>
 
             {/* <View 
                 style={{ 

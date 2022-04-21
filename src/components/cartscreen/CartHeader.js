@@ -6,10 +6,9 @@ import { violet } from '../../helpers/configs'
 
 
 
-const CartHeader = ({ label, goBack }) => {
-
+const CartHeader = ({ label, goBack, hideElevation }) => {
     return (
-        <View style={ styles.container }>
+        <View style={[ styles.container, { elevation: hideElevation ? 0 : 3 } ]}>
             <StatusBar translucent barStyle='dark-content' />
             <Feather style={ styles.iconBack } name={'corner-down-left'} size={25} color={'#000'} onPress={ goBack } />
             <Text style={ styles.label }>{ label }</Text>
@@ -23,8 +22,7 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         backgroundColor: 'white',
         paddingTop: 28,
-        paddingBottom: 12,
-        elevation: 3
+        paddingBottom: 12
     },
     iconBack: {
         position: 'absolute',

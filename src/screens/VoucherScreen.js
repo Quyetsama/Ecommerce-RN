@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addVoucher } from '../redux/actions/cartAction'
 import { getListVoucher } from '../api/voucherApi'
 import AlertModal from '../components/modal/AlertModal'
+import { handleTime } from '../helpers/validation'
 
 
 
@@ -29,16 +30,6 @@ const HEIGHT = Dimensions.get('window').height
 
 const ItemVoucher = React.memo(({ item, onCLick }) => {
 
-    const handleTime = () => {
-        const timeExpired = new Date(item.expired)
-        return (
-            (timeExpired.getDate() < 10 ? ('0' + timeExpired.getDate()) : timeExpired.getDate()) 
-            + '.' + 
-            (timeExpired.getMonth() + 1 < 10 ?  '0' + (timeExpired.getMonth() + 1) : (timeExpired.getMonth() + 1))
-            + '.' + 
-            timeExpired.getFullYear()
-        )
-    }
     return (
         <ImageBackground
                 style={ styles.voucher }
@@ -64,7 +55,7 @@ const ItemVoucher = React.memo(({ item, onCLick }) => {
                         </View>
                         <View style={ styles.detail }>
                             <Text style={ styles.title } numberOfLines={2}>{ item.title }</Text>
-                            <Text>{ handleTime() }</Text>
+                            <Text>{ handleTime(item.expired) }</Text>
                         </View>
                     </View>
                     
@@ -88,6 +79,7 @@ const ItemVoucher = React.memo(({ item, onCLick }) => {
 const VoucherScreen = ({ navigation }) => {
 
     const lengthProducts = useSelector(state => state.cartReducer.products.length)
+    const { userToken } = useSelector(state => state.authReducer)
     const dispatch = useDispatch()
 
     const [refreshing, setRefreshing] = useState(false)
@@ -101,7 +93,7 @@ const VoucherScreen = ({ navigation }) => {
     const fetchVoucher = React.useCallback(async () => {
         try {
             setRefreshing(true)
-            const listVoucher = await getListVoucher()
+            const listVoucher = await getListVoucher(userToken)
             setListVoucher([...listVoucher.data.vouchers])
             setRefreshing(false)
         }

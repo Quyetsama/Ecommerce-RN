@@ -57,7 +57,7 @@ const ProfileScreen = ({ navigation }) => {
     }, [])
 
     const goToHistory = useCallback(() => {
-        userToken ? navigation.navigate('History') : handleSignIn()
+        userToken ? navigation.navigate('HistoryStack') : handleSignIn()
     }, [userToken])
 
     return (

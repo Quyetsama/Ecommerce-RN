@@ -3,8 +3,13 @@ import {
     DELETE_FROM_CART,
     INCREASE_QUANTITY,
     DECREASE_QUANTITY,
+    ADD_ADDRESS,
+    CLEAR_ADDRESS,
+    SET_CONTACT,
+    CLEAR_DELIVERY_ADDRESS,
     ADD_VOUCHER,
-    DELETE_VOUCHER
+    DELETE_VOUCHER,
+    CLEAR_CART
 } from "./types"
 
 
@@ -36,6 +41,32 @@ export const deCrease = (timestamp) => (
     }
 )
 
+export const addAddress = (address) => (
+    {
+        type: ADD_ADDRESS,
+        address: address
+    }
+)
+
+export const changeContact = (contact) => (
+    {
+        type: SET_CONTACT,
+        contact: contact
+    }
+)
+
+export const clearAddress = () => (
+    {
+        type: CLEAR_ADDRESS
+    }
+)
+
+export const clearDeliveryAddress = () => (
+    {
+        type: CLEAR_DELIVERY_ADDRESS
+    }
+)
+
 export const addVoucher = (voucher) => (
     {
         type: ADD_VOUCHER,
@@ -46,5 +77,11 @@ export const addVoucher = (voucher) => (
 export const deleteVoucher = () => (
     {
         type: DELETE_VOUCHER
+    }
+)
+
+export const clearCart = () => (
+    {
+        type: CLEAR_CART
     }
 )

@@ -6,7 +6,13 @@ import DetailScreen from '../screens/DetailScreen'
 
 import CartScreen from '../screens/CartScreen'
 import CheckOutScreen from '../screens/CheckoutScreen'
-import HistoryScreen from '../screens/HistoryScreen'
+import NewAddress from '../screens/NewAddress'
+import SelectAddress from '../screens/SelectAddress'
+import SuccessScreen from '../screens/SuccessScreen'
+
+import HistoryScreen from '../../src/screens/history/HistoryScreen'
+import ListOrderScreen from '../screens/history/ListOrderScreen'
+import DetailOrder from '../screens/history/DetailOrder'
 
 import ProfileScreen from '../screens/ProfileScreen'
 import VoucherScreen from '../screens/VoucherScreen'
@@ -17,10 +23,13 @@ import AddCategoryProduct from '../screens/mystore/AddCategoryProduct'
 import ClassifyProduct from '../screens/mystore/ClassifyProductScreen'
 import PriceQuantity from '../screens/mystore/PriceQuantityScreen'
 
-import SearchScreen from '../screens/SearchScreen'
+import SearchScreen from '../screens/search/SearchScreen'
+import SearchResult from '../screens/search/SearchResult'
 
 import SignInScreen from '../screens/auth/SignInScreen'
 import SignUpScreen from '../screens/auth/SignUpScreen'
+
+import BottomTabNavigator from './TabNavigator'
 
 
 
@@ -40,14 +49,21 @@ const AuthStack = () => {
     )
 }
 
+const Root = () => {
+    return (
+        <Stack.Navigator screenOptions={ screenOptionStyle }>
+            <Stack.Screen name="Main" component={ BottomTabNavigator } />
+            <Stack.Screen name="Order" component={ OrderStack } options={{ animation: 'fade_from_bottom' }} />
+        </Stack.Navigator>
+    )
+}
+
 const HomeStack = () => {
     return(
         <Stack.Navigator screenOptions={ screenOptionStyle }>
             <Stack.Screen name="Home" component={ HomeScreen } />
+            <Stack.Screen name='stackSearch' component={ SearchStack } options={{ animation: 'slide_from_right' }} />
             <Stack.Screen name="Detail" component={ DetailScreen } />
-            <Stack.Screen name="Cart" component={ CartScreen } />
-            <Stack.Screen name="Checkout" component={ CheckOutScreen } />
-            <Stack.Screen name="Voucher" component={ VoucherScreen } />
         </Stack.Navigator>
     )
 }
@@ -55,7 +71,8 @@ const HomeStack = () => {
 const SearchStack = () => {
     return (
         <Stack.Navigator screenOptions={ screenOptionStyle }>
-            <Stack.Screen name="Search" component={ SearchScreen } />
+            <Stack.Screen name="Search" component={ SearchScreen } options={{ animation: 'fade' }} />
+            <Stack.Screen name="SearchResult" component={ SearchResult } options={{ animation: 'slide_from_right' }} />
         </Stack.Navigator>
     )
 }
@@ -64,6 +81,11 @@ const OrderStack = () => {
     return(
         <Stack.Navigator screenOptions={ screenOptionStyle }>
             <Stack.Screen name="Cart" component={ CartScreen } />
+            <Stack.Screen name="Checkout" component={ CheckOutScreen } />
+            <Stack.Screen name="NewAddress" component={ NewAddress } />
+            <Stack.Screen name="SelectAddress" component={ SelectAddress } />
+            <Stack.Screen name="Success" component={ SuccessScreen } />
+            <Stack.Screen name="Voucher" component={ VoucherScreen } />
         </Stack.Navigator>
     )
 }
@@ -74,9 +96,20 @@ const ProfileStack = () => {
             <Stack.Screen name="Profile" component={ ProfileScreen } />
             <Stack.Screen name="Voucher" component={ VoucherScreen } />
             <Stack.Screen name="myStore" component={ StoreStack } />
-            <Stack.Screen name="Cart" component={ CartScreen } />
+            {/* <Stack.Screen name="Order" component={ OrderStack } /> */}
+            {/* <Stack.Screen name="Cart" component={ CartScreen } />
             <Stack.Screen name="Checkout" component={ CheckOutScreen } />
+            <Stack.Screen name="Success" component={ SuccessScreen } /> */}
+            <Stack.Screen name="HistoryStack" component={ HistoryStack } />
+        </Stack.Navigator>
+    )
+}
+const HistoryStack = () => {
+    return(
+        <Stack.Navigator screenOptions={ screenOptionStyle }>
             <Stack.Screen name="History" component={ HistoryScreen } />
+            <Stack.Screen name="ListOrderScreen" component={ ListOrderScreen } />
+            <Stack.Screen name="DetailOrder" component={ DetailOrder } />
         </Stack.Navigator>
     )
 }
@@ -103,4 +136,4 @@ const AddProductStack = () => {
 
 
 
-export { AuthStack, HomeStack, OrderStack, ProfileStack, SearchStack, StoreStack }
+export { AuthStack, HomeStack, OrderStack, ProfileStack, SearchStack, StoreStack, Root }

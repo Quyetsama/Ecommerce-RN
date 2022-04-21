@@ -1,22 +1,14 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef } from "react"
 import {
     StyleSheet,
-    Text, TextInput,
-    TouchableOpacity,
+    Text,
     View,
-    TouchableWithoutFeedback,
-    Keyboard,
     ScrollView,
-    Image,
     Animated,
     Dimensions,
     StatusBar,
-    Button
+    Modal
 } from "react-native"
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useDispatch, useSelector } from 'react-redux'
-import { logout } from "../redux/actions/authAction"
 import UnderLineSection from "../components/UnderLineSection"
 import HeaderHomeComponent from "../components/HeaderHomeComponent"
 import CarouselComponent from "../components/CarouselComponent"
@@ -26,7 +18,6 @@ import ProductDiscount from "../components/ProductDiscountComponent"
 import ProductRecommend from "../components/homescreen/ProductRecommend"
 import Categories from "../components/CategoriesComponent"
 import Products from "../components/ProductsComponent"
-import { getAllProduct } from '../api/categoriesApi'
 
 import ViewHeader from "../components/test/ViewHeader"
 import Header from "../components/test/Header"
@@ -34,12 +25,11 @@ import Header from "../components/test/Header"
 
 const WIDTH = Dimensions.get('window').width
 
+export const SearchContext = React.createContext({})
+
 const HomeScreen = ({ navigation }) => {
 
     const offset = useRef(new Animated.Value(0)).current
-    const dispatch = useDispatch()
-    const userToken = useSelector(state => state.authReducer.userToken)
-    const userName = useSelector(state => state.authReducer.userName)
     const refCategories = useRef()
     const [index, setIndex] = useState()
     const [category, setCategory] = useState({
@@ -62,8 +52,6 @@ const HomeScreen = ({ navigation }) => {
           contentSize.height - paddingToBottom;
     }
 
-    
-
     return (
         <View style={styles.container}>
             {/* <StatusBar hidden /> */}
@@ -79,7 +67,7 @@ const HomeScreen = ({ navigation }) => {
                 removeClippedSubviews
                 nestedScrollEnabled={true}
                 stickyHeaderIndices={[7]}
-                scrollEventThrottle={16}
+                scrollEventThrottle={0.5}
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: offset } } }],
                     {

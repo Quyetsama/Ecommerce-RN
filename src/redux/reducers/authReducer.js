@@ -1,4 +1,4 @@
-import { RETRIEVE_TOKEN, LOGIN, LOGOUT, REGISTER } from "../actions/types"
+import { RETRIEVE_TOKEN, LOGIN, LOGOUT, REGISTER, SETCOIN } from "../actions/types"
 
 
 const initialStateAuth = {
@@ -39,6 +39,11 @@ const authReducer = (state = initialStateAuth, action) => {
                 userToken: action.token,
                 coin: action.coin,
                 email: action.email
+            }
+        case SETCOIN:
+            return {
+                ...state,
+                coin: action.coin
             }
         default:
             return {

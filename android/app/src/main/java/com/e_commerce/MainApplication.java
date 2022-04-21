@@ -16,6 +16,8 @@ import com.swmansion.reanimated.ReanimatedJSIModulePackage;
 
 import com.BV.LinearGradient.LinearGradientPackage; // <--- This!
 
+import com.reactnativepagerview.PagerViewPackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -30,6 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
           packages.add(new LinearGradientPackage());
+          packages.add(new PagerViewPackage());
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           return packages;

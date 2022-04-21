@@ -3,26 +3,33 @@ import { StyleSheet, View, Image, Text, TouchableOpacity, ScrollView, FlatList, 
 import ItemCategories from "./ItemCategories"
 import { doMain } from "../helpers/configs"
 import { getAllCategory } from "../api/categoriesApi"
+import useFetchCategories from "../hooks/useFetchCategories"
 
 
 const Categories = ({ onLayout, onPress }) => {
 
-    const [categories, setCategories] = useState([])
+    const categories = useFetchCategories([
+        {
+            _id: 'all',
+            name: 'Tất cả',
+            image: 'all.png'
+        }
+    ])
     const [indexSelected, setIndexSelected] = useState(0)
     const Flatlist = useRef()
 
-    useEffect(() => {
-        getAllCategory().then(res => {
-            setCategories([{
-                _id: 'all',
-                name: 'Tất cả',
-                image: 'image/all.png'
-            }, 
-                ...res.data.categories
-            ])
-        })
-        .catch(error => console.log(error))
-    }, [])
+    // useEffect(() => {
+    //     getAllCategory().then(res => {
+    //         setCategories([{
+    //             _id: 'all',
+    //             name: 'Tất cả',
+    //             image: 'all.png'
+    //         }, 
+    //             ...res.data.categories
+    //         ])
+    //     })
+    //     .catch(error => console.log(error))
+    // }, [])
 
     const handleScrollCategory = (index) => {
         Flatlist.current.scrollToIndex({
@@ -54,7 +61,7 @@ const Categories = ({ onLayout, onPress }) => {
                             handleScrollCategory(index)
                             onPress(item._id)        
                         }}
-                        image={ doMain + item.image }
+                        image={ doMain + '/image/' + item.image }
                         text={ item.name }
                         indexSelected={ index === indexSelected ? true : false }
                     />

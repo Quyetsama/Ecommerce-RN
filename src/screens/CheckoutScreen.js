@@ -10,7 +10,9 @@ import {
     LayoutAnimation,
     Platform,
     UIManager,
-    Dimensions
+    Dimensions,
+    Modal,
+    TextInput
 } from 'react-native'
 import { violet } from '../helpers/configs'
 import CartHeader from '../components/cartscreen/CartHeader'
@@ -18,30 +20,35 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { doMain } from '../helpers/configs'
 import { useDispatch, useSelector } from 'react-redux'
+import { deleteVoucher, clearCart } from '../redux/actions/cartAction'
+import { setCoin } from '../redux/actions/authAction'
 import { orderApi } from '../api/orderApi'
+import { getCurrentUser } from '../api/authApi'
+import LoadingModal from '../components/modal/LoadingModal'
+import { convertVND } from '../helpers/validation'
 
 
 
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
-const convertVND = (value) => {
-    return (value).toLocaleString('vi', {style : 'currency', currency : 'VND'})
-}
-
-const ItemInfo = React.memo(({ icon, text }) => {
+const ItemInfo = React.memo(({ icon, text, placeholder }) => {
     return (
         <View style={ styles.itemInfoContainer }>
             <MaterialCommunityIcons name={icon} size={26} color={violet} />
-            <Text 
+            <TextInput
+                editable={ false }
+                value={ text }
+                placeholder={ placeholder }
+                multiline
                 style={{
+                    flex: 1,
+                    padding: 0,
                     color: '#000',
                     fontSize: 16,
                     marginLeft: 6
                 }}
-            >
-                { text }
-            </Text>
+            />
         </View>
     )
 })
@@ -134,9 +141,11 @@ const ExpandableProduct = React.memo(({ data, onClick }) => {
 })
 
 const CheckOutScreen = ({ navigation }) => {
-
-    const { products, voucher } = useSelector(state => state.cartReducer)
+    
+    const { products, voucher, deliveryAddress } = useSelector(state => state.cartReducer)
+    // console.log(deliveryAddress)
     const { userToken } = useSelector(state => state.authReducer)
+    const dispatch = useDispatch()
     const { coin } = useSelector(state => state.authReducer)
     const [bill, setBill] = useState({
         price: 0,
@@ -145,7 +154,7 @@ const CheckOutScreen = ({ navigation }) => {
         discount: 0,
         total: 0
     })
-    const [balanceCoin, setBalanceCoin] = useState(coin)
+    const [isLoading, setIsLoading] = useState(true)
     // console.log(coin)
     const [dataSource, setDataSource] = useState({
         isExpanded: false,
@@ -156,6 +165,20 @@ const CheckOutScreen = ({ navigation }) => {
     })
     const [isEnabled, setIsEnabled] = useState(false)
     const toggleSwitch = () => setIsEnabled(previousState => !previousState)
+
+    useEffect(() => {
+        try {
+            const fetch = async () => {
+                const user = await getCurrentUser(userToken)
+                dispatch(setCoin(user.data.profile.coin))
+                setIsLoading(false)
+            }
+            fetch()
+        }
+        catch(error) {
+            navigation.goBack()
+        }
+    }, [])
 
     useEffect(() => {
         let total = 0
@@ -203,7 +226,7 @@ const CheckOutScreen = ({ navigation }) => {
                     price: price,
                     transportFee: transportFee,
                     coin: total,
-                    discount: orignalTotal - total,
+                    discount: orignalTotal,
                     total: 0
                 })
             }
@@ -213,6 +236,7 @@ const CheckOutScreen = ({ navigation }) => {
                 ...bill,
                 price: price,
                 transportFee: transportFee,
+                coin: 0,
                 discount: orignalTotal - total,
                 total: total
             })
@@ -232,6 +256,7 @@ const CheckOutScreen = ({ navigation }) => {
 
     const handleOrder = async () => {
         try {
+            setIsLoading(true)
             const result = products.map(item => (
                 {
                     product: item._id,
@@ -243,21 +268,52 @@ const CheckOutScreen = ({ navigation }) => {
 
             const data = {
                 bill: {
+                    price: bill.price,
                     transportFee: bill.transportFee,
+                    voucher: voucher?._id,
                     discount: bill.discount,
+                    coin: bill.coin,
                     total: bill.total
                 },
-                products: result
+                products: result,
+                contact: {
+                    name: deliveryAddress.contact.name,
+                    phone: deliveryAddress.contact.phone,
+                },
+                address: {
+                    province: deliveryAddress.address.province.name,
+                    district: deliveryAddress.address.district.name,
+                    ward: deliveryAddress.address.ward.name,
+                    street: deliveryAddress.contact.street
+                }
             }
 
-            // const res = await orderApi(userToken, data)
-            navigation.popToTop()
-            navigation.navigate('tabProfile', { screen: 'History' })
+            const res = await orderApi(userToken, data)
+            
+            if(res.data.success) {
+                setIsLoading(false)
+
+                dispatch(clearCart())
+
+                navigation.popToTop()
+                navigation.navigate('Success', { bill: res.data.newOrder })
+            }
         }
         catch(error) {
-            console.log(error)
+            console.log(error.response.data)
+            setIsLoading(false)
         }
     }
+
+    const isValid = React.useCallback(() => {
+        return (
+            deliveryAddress.contact.name === '' ||
+            deliveryAddress.contact.phone === '' ||
+            deliveryAddress.address.province === null ||
+            deliveryAddress.address.district === null ||
+            deliveryAddress.address.ward === null
+        )
+    }, [deliveryAddress])
 
     return (
         <View style={ styles.container }>
@@ -265,6 +321,7 @@ const CheckOutScreen = ({ navigation }) => {
                 label={'Confirm bill'} 
                 goBack={() => {
                         navigation.goBack()
+                        dispatch(deleteVoucher())
                     }
                 }
             />
@@ -276,19 +333,47 @@ const CheckOutScreen = ({ navigation }) => {
                 <View style={ styles.customerInfo }>
                     <View style={ styles.headerAddress }>
                         <Text style={ styles.titleSection }>Delivery Address</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('NewAddress')}
+                        >
                             <Text style={ styles.changeText }>Change</Text>
                         </TouchableOpacity>
                     </View>
                     <Text>Home</Text>
-                    <View style={ styles.infoContainer }>
+                    <TouchableOpacity 
+                        style={ styles.infoContainer }
+                        onPress={() => navigation.navigate('NewAddress')}
+                    >
                         <View style={ styles.viewLeft }>
-                            <ItemInfo icon={'map-marker'} text={'680 Mowe Court, New York, US'} />
-                            <ItemInfo icon={'account'} text={'Sophia Benson'} />
-                            <ItemInfo icon={'phone'} text={'+(84)-867-985-106'} />
+                            <ItemInfo 
+                                icon={'account'} 
+                                text={ deliveryAddress.contact.name !== '' ? deliveryAddress.contact.name : '' } 
+                                placeholder={'Name'}
+                            />
+                            <ItemInfo 
+                                icon={'map-marker'} 
+                                text={
+                                    (deliveryAddress.contact.street !== '' && deliveryAddress.address.ward && deliveryAddress.address.district && deliveryAddress.address.province)
+                                    ?
+                                        (
+                                            deliveryAddress.contact.street + ', '
+                                            + deliveryAddress.address.ward?.name + ', '
+                                            + deliveryAddress.address.district?.name + ', '
+                                            + deliveryAddress.address.province?.name
+                                        )
+                                    :
+                                        ''
+                                    } 
+                                placeholder={'Address'}
+                            />
+                            <ItemInfo 
+                                icon={'phone'} 
+                                text={ deliveryAddress.contact.phone !== '' ? '+' + deliveryAddress.contact.phone : ''}
+                                placeholder={'Phone'}
+                            />
                         </View>
                         <EvilIcons name='chevron-right' size={30} color={'#969696'} />
-                    </View>
+                    </TouchableOpacity>
                 </View>
                 
                 <View style={ styles.orderBill }>
@@ -324,6 +409,7 @@ const CheckOutScreen = ({ navigation }) => {
                             value={isEnabled}
                         />
                     </View>
+                    <ItemBill title={'Total Discount'} text={ convertVND(bill.discount) } />
                     <View style={ styles.totalBillContainer }>
                         <Text style={[ styles.totalBillText, { flex: 1 } ]}>Total Bill</Text>
                         <Text style={[ styles.totalBillText, { marginRight: 14 } ]}>{ convertVND(bill.total) }</Text>
@@ -333,13 +419,22 @@ const CheckOutScreen = ({ navigation }) => {
 
             <View style={ styles.btnContainer }>
                 <TouchableOpacity
-                    style={ styles.completeBtn }
+                    disabled={ isValid() }
+                    style={[ styles.completeBtn, { opacity: isValid() ? 0.5 : 1 } ]}
                     onPress={ handleOrder }
                 >
                     <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Complete</Text>
                 </TouchableOpacity>
             </View>
             
+            <Modal
+                transparent={ true }
+                animationType='fade'
+                visible={ isLoading }
+                onRequestClose={() => navigation.goBack() }
+            >
+                <LoadingModal />
+            </Modal>
         </View>
     )
 }

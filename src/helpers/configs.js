@@ -1,10 +1,25 @@
+import { Dimensions } from 'react-native'
 const NAME = 'Astronaut'
 // const NAME = 'ＳpaceX'
-const doMain = 'http://192.168.1.244:3000/'
+const doMain = 'http://192.168.32.107:3000/'
 const violet = '#8141ff'
+
+const COLOR = {
+    violet: '#8141ff'
+}
+
+const WIDTH = Dimensions.get('window').width
+const HEIGHT = Dimensions.get('window').height
+
+const SCREEN = {
+    WIDTH,
+    HEIGHT
+}
 
 export {
     NAME,
     doMain,
-    violet
+    violet,
+    COLOR,
+    SCREEN
 }

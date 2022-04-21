@@ -9,7 +9,7 @@ import name from '../../assets/img/name.png'
 
 const WIDTH = Dimensions.get('window').width
 
-const Header = ({ navigation }) => {
+const Header = React.memo(({ navigation }) => {
     return (
         <View style={ styles.container }>
             <View style={ styles.spaceX }>
@@ -21,7 +21,7 @@ const Header = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity 
                 style={ styles.Cart }
-                onPress={() => navigation.navigate('Cart')}
+                onPress={() => navigation.navigate('Order', { screen: 'Cart' })}
             >
                 <View style={styles.iconBadge}>
                     <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
@@ -30,7 +30,7 @@ const Header = ({ navigation }) => {
             </TouchableOpacity>
         </View>
     )
-}
+})
 
 const styles = StyleSheet.create({
     container: {

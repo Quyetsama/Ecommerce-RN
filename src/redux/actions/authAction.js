@@ -1,4 +1,4 @@
-import { RETRIEVE_TOKEN, LOGIN, LOGOUT, REGISTER } from "./types"
+import { RETRIEVE_TOKEN, LOGIN, LOGOUT, REGISTER, SETCOIN } from "./types"
 
 
 export const retrieveToken = (token) => (
@@ -21,5 +21,12 @@ export const login = (fullName, token, coin, email) => (
 export const logout = () => (
     {
         type: LOGOUT
+    }
+)
+
+export const setCoin = (coin) => (
+    {
+        type: SETCOIN,
+        coin
     }
 )

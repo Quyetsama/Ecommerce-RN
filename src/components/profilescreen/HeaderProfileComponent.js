@@ -27,7 +27,7 @@ const HeaderProfile = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Cart')}
+                    onPress={() => navigation.navigate('Order', { screen: 'Cart' })}
                     style={styles.iconHeader}
                 >
                     <View style={styles.iconBadge}>
