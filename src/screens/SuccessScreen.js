@@ -39,23 +39,27 @@ const SuccessScreen = ({ route, navigation }) => {
                 <Text style={[ styles.success, { fontSize: 14 } ]}>Thank you for your purchase!</Text>
             </View>
             <View style={ styles.detail }>
-                <Item title={'Price'} money={convertVND(bill.price)} />
-                <Item title={'Shipping Fee'} money={convertVND(bill.transportFee)} />
-                <Item title={'Discount'} money={convertVND(bill.discount)} />
+                <Item title={'Price'} money={convertVND(bill?.price)} />
+                <Item title={'Shipping Fee'} money={convertVND(bill?.transportFee)} />
+                <Item title={'Discount'} money={convertVND(bill?.discount)} />
                 <View style={ styles.separator }></View>
-                <Item title={'Total'} money={convertVND(bill.total)} />
+                <Item title={'Total'} money={convertVND(bill?.total)} />
             </View>
             <View style={ styles.buttonContainer }>
                 <TouchableOpacity style={ styles.button } onPress={() => {
-                    navigation.popToTop()
-                    navigation.popToTop()
+                    navigation.navigate('Home')
+                    // navigation.goBack()
                 }}>
                     <Text style={ styles.txtButton }>Home</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={ styles.button } onPress={() => {
-                        navigation.navigate('Home') 
-                        navigation.navigate('tabProfile', { screen: 'HistoryStack' })
+                        // navigation.goBack()
+                        // navigation.navigate('tabProfile', { screen: 'HistoryStack' })
                         // navigation.navigate('History')
+                        navigation.reset({
+                            index: 0,
+                            routes: [{name: 'HistoryStack'}]
+                        })
                     }
                 }>
                     <Text style={ styles.txtButton }>Order</Text>

@@ -10,6 +10,16 @@ const getListVoucher = (token) => {
     })
 }
 
+const getVoucherByCode = (token, code) => {
+    const url = `/voucher/${ code }`
+    return axiosClient.get(url, {
+        headers: {
+            Authorization: token
+        }
+    })
+}
+
 export { 
-    getListVoucher
+    getListVoucher,
+    getVoucherByCode
 }

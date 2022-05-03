@@ -31,7 +31,7 @@ const initialState = {
 }
 
 const myStoreReducer = (state = initialState, action) => {
-    console.log(action.type)
+    // console.log(action.type)
     switch(action.type) {
         case POST_PRODUCT:
             return {

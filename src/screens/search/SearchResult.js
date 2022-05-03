@@ -308,14 +308,14 @@ const SearchResult = ({ route, navigation }) => {
     }, [])
 
 
-    console.log({
-        isLoading,
+    // console.log({
+        // isLoading,
         // select,
         // page,
-        stop,
+        // stop,
         // products: products.length,
         // filters
-    })
+    // })
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>

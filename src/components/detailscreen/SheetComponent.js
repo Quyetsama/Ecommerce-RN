@@ -304,7 +304,9 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                     visible={ isModalVisible }
                     onRequestClose={() => setIsModalVisible(false) }
                 >
-                    <SuccessModal />
+                    <SuccessModal 
+                        text={'Add to cart successfully'}
+                    />
                 </Modal>
             </Animated.View>
             {/* </Animated.View> */}

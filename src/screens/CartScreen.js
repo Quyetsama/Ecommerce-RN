@@ -30,7 +30,7 @@ import emptyCart from '../assets/img/emptyCart.png'
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
-let rowAnimatedValues = {}
+// let rowAnimatedValues = {}
 // Array(5).fill('').forEach((_, i) => {
 //     rowAnimatedValues[`${i + '123'}`] = {
 //         rowHeigt: new Animated.Value(128),
@@ -42,7 +42,7 @@ let rowAnimatedValues = {}
 
 
 const VisibleItem = memo((props) => {
-    const { data, onIncrease, onDecrease } = props
+    const { data, rowAnimatedValues, onIncrease, onDecrease } = props
 
     const rowKey = data.item.timestamp
 
@@ -86,7 +86,7 @@ const VisibleItem = memo((props) => {
 })
 
 const HiddenItemWithActions = memo((props) => {
-    const { rightActionActivated, swipeAnimatedValue, data, onDelete } = props
+    const { rightActionActivated, swipeAnimatedValue, data, rowAnimatedValues, onDelete } = props
 
     const rowKey = data.item.timestamp
 
@@ -193,6 +193,7 @@ const CartScreen = ({ navigation }) => {
 
     const dispatch = useDispatch()
 
+    const [rowAnimatedValues, setRowAnimatedValues] = useState({})
     const [checkRowAnimatedValues, setCheckRowAnimatedValues] = useState(false)
     const [cartEmpty, setCartEmpty] = useState(false)
 
@@ -211,8 +212,9 @@ const CartScreen = ({ navigation }) => {
     }, [products])
 
     const createAnimatedValue = React.useCallback(() => {
+        let newRowAnimatedValues = {}
         products.forEach((item, i) => {
-            rowAnimatedValues[`${item.timestamp}`] = {
+            newRowAnimatedValues[`${item.timestamp}`] = {
                 rowHeigt: new Animated.Value(128),
                 rightBtnWidth: new Animated.Value(100),
                 deleteBtnWidth: new Animated.Value(100),
@@ -220,6 +222,7 @@ const CartScreen = ({ navigation }) => {
                 rowOpacity: new Animated.Value(1)
             }
         })
+        setRowAnimatedValues({...newRowAnimatedValues})
     }, [])
 
     // Modal
@@ -251,18 +254,24 @@ const CartScreen = ({ navigation }) => {
         <VisibleItem 
             data={data} 
             rowMap={rowMap} 
+            rowAnimatedValues={ rowAnimatedValues }
             onIncrease={() => handleIncrease(data.item.timestamp)} 
             onDecrease={() => handleDecrease(data.item.timestamp)}
         />
-    ), [products])
+    ), [products, rowAnimatedValues])
 
     const renderIrenderHiddenItemtem = useCallback((data, rowMap) => (
-        <HiddenItemWithActions data={data} rowMap={rowMap} onDelete={ handleDelete } />
-    ), [products])
+        <HiddenItemWithActions 
+            data={data} 
+            rowMap={rowMap} 
+            rowAnimatedValues={ rowAnimatedValues }
+            onDelete={ handleDelete } 
+        />
+    ), [products, rowAnimatedValues])
 
     const onRightActionStatusChange = useCallback(() => {
         console.log('On right action status change')
-    }, [products])
+    }, [products, rowAnimatedValues])
 
     const swipeGestureEnded = useCallback((rowKey, data) => {
         // -200
@@ -279,7 +288,7 @@ const CartScreen = ({ navigation }) => {
             }).start()
             handleDelete(rowKey)
         }
-    }, [products])
+    }, [products, rowAnimatedValues])
 
     const onSwipeValueChange = useCallback(data => {
         // console.log(-data.value)
@@ -288,7 +297,7 @@ const CartScreen = ({ navigation }) => {
             duration: 200,
             useNativeDriver: false,
         }).start()
-    }, [products])
+    }, [products, rowAnimatedValues])
 
     const handleDelete = (rowKey) => {
         Animated.timing(rowAnimatedValues[rowKey].rowOpacity, {
@@ -308,7 +317,7 @@ const CartScreen = ({ navigation }) => {
 
     const handleIncrease = useCallback((rowKey) => {
         dispatch(inCrease(rowKey))
-    }, [products])
+    }, [products, rowAnimatedValues])
 
     const handleDecrease = useCallback((rowKey) => {
         const newData = [...products]
@@ -321,7 +330,7 @@ const CartScreen = ({ navigation }) => {
             dispatch(deCrease(rowKey))
         }
 
-    }, [products])
+    }, [products, rowAnimatedValues])
 
     const getTotalPrice = useCallback(() => {
         const total = products.reduce((prev, cur) => prev + (cur.price * cur.quantity), 0)
@@ -349,7 +358,7 @@ const CartScreen = ({ navigation }) => {
             <CartHeader 
                 label={'My cart'} 
                 goBack={() => {
-                        rowAnimatedValues = {}
+                        // rowAnimatedValues = {}
                         navigation.goBack()
                     }
                 }

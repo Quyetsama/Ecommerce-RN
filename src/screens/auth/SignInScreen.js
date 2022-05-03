@@ -31,6 +31,7 @@ import { login } from '../../redux/actions/authAction'
 import { signInApi } from '../../api/authApi'
 import LoadingModal from '../../components/modal/LoadingModal'
 import AlertModal from '../../components/modal/AlertModal'
+import { getTokenDevice } from '../../helpers/notification'
 
 
 
@@ -59,8 +60,9 @@ const SignInScreen = ({ navigation }) => {
     const handleSignIn = async (values) => {
         // fetch api => token
         try{
+            const tokenDevice = await getTokenDevice()
             setIsModalVisible(true)
-            const res = await signInApi(values)
+            const res = await signInApi(values, tokenDevice)
 
             // console.log(res.data)
             await AsyncStorage.setItem('userToken', res.headers.authorization)

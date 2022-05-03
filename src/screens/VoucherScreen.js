@@ -11,15 +11,21 @@ import {
     RefreshControl,
     VirtualizedList,
     Modal,
+    TextInput
 } from 'react-native'
 import voucher from '../assets/img/voucher.png'
 import LinearGradient from 'react-native-linear-gradient'
 import CartHeader from '../components/cartscreen/CartHeader'
 import { useDispatch, useSelector } from 'react-redux'
-import { addVoucher } from '../redux/actions/cartAction'
-import { getListVoucher } from '../api/voucherApi'
+import { addVoucher, deleteVoucher } from '../redux/actions/cartAction'
+import { getListVoucher, getVoucherByCode } from '../api/voucherApi'
+import SuccessModal from '../components/modal/SuccessModal'
+import LoadingModal from '../components/modal/LoadingModal'
 import AlertModal from '../components/modal/AlertModal'
 import { handleTime } from '../helpers/validation'
+import { SCREEN, COLOR } from '../helpers/configs'
+import discountImage from '../assets/img/discount.png'
+import { convertToDate } from '../helpers/validation'
 
 
 
@@ -27,6 +33,32 @@ import { handleTime } from '../helpers/validation'
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
+
+const InputCoupon = React.memo(({ value, onchangeValue, onClick }) => {
+
+    const isValid = React.useCallback(() => {
+        return value.trim() !== ''
+    }, [value])
+
+    return (
+        <View style={ styles.inputCouponContainer }>
+            <TextInput
+                value={ value }
+                onChangeText={ onchangeValue }
+                style={ styles.inputCoupon }
+                placeholder='Enter discount code here'
+                placeholderTextColor={ '#afb6be' }
+            />
+            <TouchableOpacity
+                disabled={ !isValid() }
+                onPress={ onClick }
+                style={ [styles.applyBtn, { backgroundColor: !isValid() ? '#d2d8e4' : COLOR.violet } ]}
+            >
+                <Text style={ styles.applyTxt }>Apply</Text>
+            </TouchableOpacity>
+        </View>
+    )
+})
 
 const ItemVoucher = React.memo(({ item, onCLick }) => {
 
@@ -76,19 +108,48 @@ const ItemVoucher = React.memo(({ item, onCLick }) => {
     )
 })
 
+const ItemCoupon = React.memo(({ item, isSelected, onCLick }) => {
+    return (
+        <View style={ styles.couponContainer }>
+            <View style={ styles.couponLeft }>
+                <View style={ styles.borderLeft } />
+                <View style={ styles.bodyCoupon }>
+                    <Image
+                        style={ styles.imageCoupon }
+                        source={ discountImage }
+                    />
+                    <View style={ styles.txtCouponContainer }>
+                        <Text numberOfLines={ 2 } style={ styles.titleCoupon }>{ item.title }</Text>
+                        <Text numberOfLines={ 1 } style={ styles.expiryCoupon }>EXP: { convertToDate(item.expired) }</Text>
+                    </View>
+                </View>
+                <View style={ styles.borderSolid } />
+            </View>
+            <View style={ styles.couponRight }>
+                <TouchableOpacity onPress={() => onCLick(item, isSelected ? 2 : 1)}>
+                    <Text style={ styles.txtButtonCoupon }>{ isSelected ? 'Deselect' : 'Select' }</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    )
+})
+
 const VoucherScreen = ({ navigation }) => {
 
-    const lengthProducts = useSelector(state => state.cartReducer.products.length)
     const { userToken } = useSelector(state => state.authReducer)
+    const { voucher } = useSelector(state => state.cartReducer)
     const dispatch = useDispatch()
 
+    const [code, setCode] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+    const [isError, setIsError] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
     const [listVoucher, setListVoucher] = useState([])
     const [isModalVisible, setIsModalVisible] = useState(false)
 
     useEffect(() => {
         fetchVoucher()
-    }, [])
+    }, [userToken])
 
     const fetchVoucher = React.useCallback(async () => {
         try {
@@ -101,17 +162,51 @@ const VoucherScreen = ({ navigation }) => {
             console.log(error.response.data)
             setRefreshing(false)
         }
+    }, [userToken])
+
+    const fetchVoucherByCode = React.useCallback(async () => {
+        try {
+            setIsLoading(true)
+            const res = await getVoucherByCode(userToken, code)
+            if(res.data.success && res.data.data) {
+                setIsModalVisible(true)
+                setTimeout(() => {
+                    dispatch(addVoucher(res.data.data))
+                    navigation.goBack()
+                }, 1000)
+            }
+            else {
+                setIsError(true)
+            }
+            setIsLoading(false)
+        }
+        catch(error) {
+            console.log(error.response.data)
+            setIsLoading(false)
+            setIsError(true)
+        }
+    }, [userToken, code])
+
+    const handleClick = React.useCallback((voucher, type) => {
+        if(type === 1) {
+            setIsModalVisible(true)
+            setTimeout(() => {
+                dispatch(addVoucher(voucher))
+                navigation.goBack()
+            }, 1000)
+        }
+        else if(type === 2) {
+            dispatch(deleteVoucher())
+        }
     }, [])
 
-    const handleClick = React.useCallback((voucher) => {
-        if(lengthProducts > 0) {
-            dispatch(addVoucher(voucher))
-            navigation.navigate('Checkout')
-        }
-        else {
-            setIsModalVisible(true)
-        }
-    }, [])
+    const handleChangeCode = (value) => {
+        setCode(value)
+    }
+
+    const handleClickApply = React.useCallback(() => {
+        fetchVoucherByCode()
+    }, [userToken, code])
 
     return (
         <View style={ styles.container }>
@@ -121,14 +216,23 @@ const VoucherScreen = ({ navigation }) => {
                         navigation.goBack()
                     }
                 }
+                hideElevation
             />
-            <FlatList 
+            <InputCoupon
+                value={ code } 
+                onchangeValue={ handleChangeCode }
+                onClick={ handleClickApply }
+            />
+
+            <FlatList
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
                 data={ listVoucher }
                 keyExtractor={item => item._id}
                 renderItem={({ item }) => (
-                    <ItemVoucher 
+                    <ItemCoupon 
                         item={ item }
-                        onCLick={ handleClick } 
+                        isSelected={ item._id === voucher?._id ? true : false }
+                        onCLick={ handleClick }
                     />
                 )}
                 refreshControl={
@@ -143,13 +247,33 @@ const VoucherScreen = ({ navigation }) => {
                 statusBarTranslucent
                 transparent={ true }
                 animationType='fade'
-                visible={ isModalVisible }
-                onRequestClose={() => setIsModalVisible(false)}
+                visible={ isLoading }
+                onRequestClose={() => setIsLoading(false)}
             >
-                <AlertModal 
-                    title={'Failed'} 
-                    content={'Vui lòng thêm hàng vỏ giỏ\nđể sử dụng'}
-                    changeModalVisible={(bool) => setIsModalVisible(bool)}
+                <LoadingModal />
+            </Modal>
+            <Modal
+                statusBarTranslucent
+                transparent={ true }
+                animationType='fade'
+                visible={ isModalVisible }
+                onRequestClose={() => setIsLoading(false)}
+            >
+                <SuccessModal
+                    text={'Successfully applied'}
+                />
+            </Modal>
+            <Modal
+                statusBarTranslucent
+                transparent={ true }
+                animationType='fade'
+                visible={ isError }
+                onRequestClose={() => setIsError(false)}
+            >
+                <AlertModal
+                    title={'Error'}
+                    content={'Invalid code'}
+                    changeModalVisible={bool => setIsError(bool)}
                 />
             </Modal>
         </View>
@@ -158,8 +282,109 @@ const VoucherScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#f4f7fc'
     },
+    inputCouponContainer: {
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        paddingHorizontal: 18,
+        paddingBottom: 18
+    },
+    inputCoupon: {
+        flex: 1,
+        backgroundColor: '#f4f7fc',
+        borderTopLeftRadius: 8,
+        borderBottomLeftRadius: 8,
+        paddingHorizontal: 18
+    },
+    applyBtn: {
+        justifyContent: 'center',
+        // backgroundColor: '#d2d8e4',
+        paddingHorizontal: 22,
+        borderTopRightRadius: 8,
+        borderBottomRightRadius: 8
+    },
+    applyTxt: {
+        color: 'white',
+        fontWeight: 'bold'
+    },
+    couponContainer: {
+        width: '100%',
+        height: SCREEN.HEIGHT / 8 + 24,
+        flexDirection: 'row',
+        paddingHorizontal: 18,
+        marginTop: 12,
+    },
+    couponLeft: {
+        flex: 4,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderTopLeftRadius: 4,
+        borderBottomLeftRadius: 4,
+        borderTopRightRadius: 12,
+        borderBottomRightRadius: 12,
+        overflow: 'hidden',
+        elevation: 3
+    },
+    bodyCoupon: {
+        flex: 1,
+        flexDirection: 'row'
+    },
+    imageCoupon: {
+        width: SCREEN.HEIGHT / 10,
+        height: SCREEN.HEIGHT / 10,
+        marginHorizontal: 12,
+        borderRadius: 8,
+        borderWidth: 0.5,
+        borderColor: '#969696'
+    },
+    txtCouponContainer: {
+        justifyContent: 'space-between',
+        flex: 1,
+        marginRight: 12
+    },
+    titleCoupon: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#25383C'
+    },
+    expiryCoupon: {
+        fontSize: 13,
+        marginTop: 12,
+        fontWeight: '500',
+        color: '#969696'
+    },
+    borderLeft: {
+        width: 8,
+        height: '100%',
+        backgroundColor: COLOR.violet
+    },
+    borderSolid: {
+        height: '100%',
+        borderStyle: 'dashed',
+        borderWidth: 1,
+        borderColor: '#969696'
+    },
+    couponRight: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12,
+        borderTopRightRadius: 4,
+        borderBottomRightRadius: 4,
+        elevation: 3
+    },
+    txtButtonCoupon: {
+        color: COLOR.violet,
+        fontWeight: '500',
+        textAlign: 'center'
+    },
+
+
     voucher: {
         width: '100%',
         height: WIDTH / 3,

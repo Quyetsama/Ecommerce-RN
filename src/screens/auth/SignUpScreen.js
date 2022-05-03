@@ -28,7 +28,7 @@ import { SignUpSchema } from '../../helpers/validation'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch } from 'react-redux'
 import { login } from '../../redux/actions/authAction'
-import { signInApi } from '../../api/authApi'
+import { signUpApi } from '../../api/authApi'
 import LoadingModal from '../../components/modal/LoadingModal'
 import AlertModal from '../../components/modal/AlertModal'
 
@@ -54,24 +54,27 @@ const SignUpScreen = ({ navigation }) => {
     const dispatch = useDispatch()
     const [hidePass, setHidePass] = useState(true)
     const [isModalVisible, setIsModalVisible] = useState(false)
-    const [loginFailed, setLoginFailed] = useState(false)
+    const [signUpFailed, setSignUpFailed] = useState(false)
 
-    const handleSignIn = async (values) => {
+    const handleSignUp = async (values) => {
+
+        console.log(values)
         // fetch api => token
         try{
             setIsModalVisible(true)
-            const res = await signInApi(values)
-
-            // console.log(res.data)
-            await AsyncStorage.setItem('userToken', res.headers.authorization)
-            setIsModalVisible(false)
-            dispatch(login(res.data.profile.fullName, res.headers.authorization))
+            const res = await signUpApi(values)
+            if(res.data.success) {
+                setIsModalVisible(false)
+                navigation.reset({
+                    index: 0,
+                    routes: [{name: 'SignIn'}]
+                })
+            }
         }
         catch(error) {
-            // console.log(error.response.data)
             setIsModalVisible(false)
-            if(error.response.data === 'Unauthorized'){
-                setLoginFailed(true)
+            if(error.response.status === 403){
+                setSignUpFailed(true)
             }
         }
     }
@@ -97,26 +100,26 @@ const SignUpScreen = ({ navigation }) => {
                         <Text style={ styles.loginText }>Sign Up</Text>
                     </View>
                     <Formik
-                        initialValues={{ email: '', password: '', fullname: '' }}
+                        initialValues={{ email: '', password: '', fullName: '' }}
                         validationSchema={ SignUpSchema }
-                        onSubmit={values => handleSignIn(values)}
+                        onSubmit={values => handleSignUp(values)}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isValid }) => (
                             <>
                                 <View style={ styles.authContainer }>
                                     <View style={{ marginTop: 24 }}>
                                         {/* {
-                                            errors.fullname && touched.fullname && 
-                                            <Text style={{ color: 'red', marginBottom: 6 }}>{errors.fullname}</Text>
+                                            errors.fullName && touched.fullName && 
+                                            <Text style={{ color: 'red', marginBottom: 6 }}>{errors.fullName}</Text>
                                         } */}
                                         <FieldAuth 
                                             iconLeft={'account-edit-outline'}
-                                            iconRight={ !errors.fullname && touched.fullname ? 'checkmark' : null }
+                                            iconRight={ !errors.fullName && touched.fullName ? 'checkmark' : null }
                                         >
                                             <TextInput
-                                                onChangeText={handleChange('fullname')}
-                                                onBlur={handleBlur('fullname')}
-                                                value={values.fullname}
+                                                onChangeText={handleChange('fullName')}
+                                                onBlur={handleBlur('fullName')}
+                                                value={values.fullName}
                                                 style={ styles.input }
                                                 placeholder='Full name'
                                             />
@@ -171,7 +174,7 @@ const SignUpScreen = ({ navigation }) => {
                                         disabled={ !isFormValid(isValid, touched) }
                                         style={[ styles.loginBtn, { opacity: isFormValid(isValid, touched) ? 1 : 0.8 } ]} 
                                         activeOpacity={0.8}
-                                        // onPress={ handleSubmit }
+                                        onPress={ handleSubmit }
                                     >
                                         <LinearGradient
                                             style={ styles.gradientBtn }
@@ -208,13 +211,13 @@ const SignUpScreen = ({ navigation }) => {
                 statusBarTranslucent
                 transparent={ true }
                 animationType='fade'
-                visible={ loginFailed }
-                onRequestClose={() => setLoginFailed(false)}
+                visible={ signUpFailed }
+                onRequestClose={() => setSignUpFailed(false)}
             >
                 <AlertModal 
-                    title={'Login Failed'} 
-                    content={'Your email or password is incorrect. Please try again.'}
-                    changeModalVisible={(bool) => setLoginFailed(bool)}
+                    title={'SignUp Failed'} 
+                    content={'Email is already in use. Please try again.'}
+                    changeModalVisible={(bool) => setSignUpFailed(bool)}
                 />
             </Modal>
         </ImageBackground>

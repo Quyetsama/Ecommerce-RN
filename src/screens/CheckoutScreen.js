@@ -188,7 +188,7 @@ const CheckOutScreen = ({ navigation }) => {
 
         if(voucher?.classify.type === 1 || voucher?.classify.type === 3) {
             total = price + transportFee - (voucher?.classify.value * 1000)
-            if(voucher?.classify.type === 3) {
+            if(voucher?.classify.type === 3 && transportFee > 0) {
                 transportFee = total - price
             }
             // discount = 
@@ -295,8 +295,13 @@ const CheckOutScreen = ({ navigation }) => {
 
                 dispatch(clearCart())
 
-                navigation.popToTop()
-                navigation.navigate('Success', { bill: res.data.newOrder })
+                navigation.reset({
+                    index: 0,
+                    routes: [{name: 'Success', params: { bill: res.data.newOrder }}]
+                })
+
+                // navigation.popToTop()
+                // navigation.navigate('Success', { bill: res.data.newOrder })
             }
         }
         catch(error) {
@@ -321,7 +326,7 @@ const CheckOutScreen = ({ navigation }) => {
                 label={'Confirm bill'} 
                 goBack={() => {
                         navigation.goBack()
-                        dispatch(deleteVoucher())
+                        // dispatch(deleteVoucher())
                     }
                 }
             />

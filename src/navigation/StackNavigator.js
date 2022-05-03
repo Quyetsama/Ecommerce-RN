@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import HomeScreen from '../screens/HomeScreen'
 import DetailScreen from '../screens/DetailScreen'
 
+import NotificationScreen from '../screens/NotificationScreen'
+
 import CartScreen from '../screens/CartScreen'
 import CheckOutScreen from '../screens/CheckoutScreen'
 import NewAddress from '../screens/NewAddress'
@@ -68,6 +70,15 @@ const HomeStack = () => {
     )
 }
 
+const NotificationStack = () => {
+    return(
+        <Stack.Navigator screenOptions={ screenOptionStyle }>
+            <Stack.Screen name="Notification" component={ NotificationScreen } />
+            <Stack.Screen name="HistoryStack" component={ HistoryStack } />
+        </Stack.Navigator>
+    )
+}
+
 const SearchStack = () => {
     return (
         <Stack.Navigator screenOptions={ screenOptionStyle }>
@@ -85,6 +96,7 @@ const OrderStack = () => {
             <Stack.Screen name="NewAddress" component={ NewAddress } />
             <Stack.Screen name="SelectAddress" component={ SelectAddress } />
             <Stack.Screen name="Success" component={ SuccessScreen } />
+            <Stack.Screen name="HistoryStack" component={ HistoryStack } />
             <Stack.Screen name="Voucher" component={ VoucherScreen } />
         </Stack.Navigator>
     )
@@ -136,4 +148,4 @@ const AddProductStack = () => {
 
 
 
-export { AuthStack, HomeStack, OrderStack, ProfileStack, SearchStack, StoreStack, Root }
+export { AuthStack, HomeStack, NotificationStack, OrderStack, ProfileStack, SearchStack, StoreStack, Root }

@@ -65,10 +65,10 @@ const DrawerFilter = React.memo(({ onGestureEvent, style, onChangeFilter, value 
             (
                 +filters.price.max > +filters.price.min
                 || 
-                (
+                // (
                     (filters.price.max === '' && filters.price.min === '')
                     // || (filters.price.max !== 0 && filters.price.min !== 0)
-                )
+                // )
                 || (filters.price.max === 0 && filters.price.min === 0)
             )
             && filters.category !== ''

@@ -38,11 +38,24 @@ const ThreeRoute = () => {
     )
 }
 
-const renderScene = SceneMap({
-    first: () => <ListOrderScreen status={ 0 } />,
-    second:  () => <ListOrderScreen status={ 1 } />,
-    third:  () => <ListOrderScreen status={ 2 } />,
-})
+// const renderScene = SceneMap({
+//     first: () => <ListOrderScreen status={ 0 } />,
+//     second:  () => <ListOrderScreen status={ 1 } />,
+//     third:  () => <ListOrderScreen status={ 2 } />,
+// })
+
+const renderScene = ({ route }) => {
+    switch (route.key) {
+        case 'first':
+            return <ListOrderScreen status={ 0 } />
+        case 'second':
+            return <ListOrderScreen status={ 1 } />
+        case 'third':
+            return <ListOrderScreen status={ 2 } />
+        default:
+            return null;
+    }
+}
 
 const LazyPlaceholder = ({ route }) => {
 
@@ -60,11 +73,11 @@ const LazyPlaceholder = ({ route }) => {
 }
 
 
-const HistoryScreen = ({ navigation }) => {
+const HistoryScreen = ({ route, navigation }) => {
 
     const layout = useWindowDimensions()
 
-    const [index, setIndex] = useState(0);
+    const [index, setIndex] = useState(route.params?.index ? route.params?.index : 0);
     const [routes] = useState([
         { key: 'first', title: 'unconfimred' },
         { key: 'second', title: 'Delivering' },

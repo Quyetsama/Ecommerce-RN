@@ -10,6 +10,8 @@ import CoinVoucher from "../components/profilescreen/CoinVoucherComponent"
 import OrderComponent from "../components/profilescreen/OrderComponent"
 import ItemProfile from "../components/profilescreen/ItemProfileComponent"
 import LoadingModal from '../components/modal/LoadingModal'
+import { logoutApi } from "../api/authApi"
+import { getTokenDevice } from "../helpers/notification"
 
 
 
@@ -42,11 +44,21 @@ const ProfileScreen = ({ navigation }) => {
     }, [])
 
     const handleLogout = useCallback(async () => {
-        setIsLoading(true)
-        await AsyncStorage.removeItem('userToken')
-        dispatch(logout())
-        setIsLoading(false)
-    }, [isLoading])
+        try {
+            setIsLoading(true)
+            const tokenDevice = await getTokenDevice()
+            const res = await logoutApi(userToken, tokenDevice)
+            if(res.data.success) {
+                await AsyncStorage.removeItem('userToken')
+                dispatch(logout())
+                setIsLoading(false)
+            }
+        }
+        catch(error) {
+            console.log(error.response.data)
+            setIsLoading(false)
+        }
+    }, [userToken, isLoading])
 
     const goToStore = useCallback(() => {
         navigation.navigate('myStore')

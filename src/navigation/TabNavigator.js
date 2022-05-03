@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import Feather from 'react-native-vector-icons/Feather'
-import { HomeStack, OrderStack, ProfileStack, SearchStack, AuthStack } from './StackNavigator'
+import { HomeStack, NotificationStack, OrderStack, ProfileStack, SearchStack, AuthStack } from './StackNavigator'
 import { violet } from '../helpers/configs'
 import { useSelector } from 'react-redux'
 
@@ -64,7 +64,7 @@ const BottomTabNavigator = () => {
         })}>
             <Tab.Screen name="tabHome" component={ HomeStack } options={{ title: 'Trang chủ' }} />
             {/* <Tab.Screen name="tabOrder" component={ OrderStack } options={{ title: 'Đơn hàng'}} /> */}
-            <Tab.Screen name="tabNotification" component={ OrderStack } options={{ title: 'Thông báo', tabBarBadge: 21 }} />
+            <Tab.Screen name="tabNotification" component={ NotificationStack } options={{ title: 'Thông báo', tabBarBadge: 21 }} />
             <Tab.Screen name="tabProfile" component={ ProfileStack } options={{ title: 'Tôi' }} />
         </Tab.Navigator>
     )

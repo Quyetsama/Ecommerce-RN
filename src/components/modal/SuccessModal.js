@@ -1,6 +1,7 @@
 import React from 'react'
 import {
-    StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, TextInput
+    StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, TextInput,
+    StatusBar
 } from 'react-native'
 import { violet } from '../../helpers/configs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -8,18 +9,16 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 const HEIGHT = Dimensions.get('window').height
 const WIDTH = Dimensions.get('window').width
 
-const SuccessModal = () => {
+const SuccessModal = ({ text }) => {
     
     return (
         <TouchableOpacity
             disabled={ true }
             style={ styles.container }
-        >
+        >   
             <View style={ styles.modal }>
                 <MaterialCommunityIcons name={ 'check-decagram' } size={36} color="white" />
-                <Text style={ styles.text }>
-                    Đã thêm vào giỏ
-                </Text>
+                <Text style={ styles.text }>{ text }</Text>
             </View>
 
         </TouchableOpacity>

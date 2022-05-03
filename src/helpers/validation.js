@@ -16,7 +16,7 @@ export const SignUpSchema = Yup.object().shape({
     .min(6, 'Mật khẩu phải từ 6 đến 32 kí tự')
     .max(32, 'Mật khẩu phải từ 6 đến 32 kí tự')
     .required('Bạn chưa nhập mật khẩu!'),
-  fullname: Yup.string()
+  fullName: Yup.string()
     .min(6, 'Full name phải từ 6 đến 32 kí tự')
     .max(32, 'Full name phải từ 6 đến 32 kí tự')
     .required('Bạn chưa nhập Full name!')
@@ -36,6 +36,14 @@ export const handleTime = (time) => {
 
 export const handleDate = (date) => {
     return moment(date).format("DD/MM/YYYY - h:mm:ss a")
+}
+
+export const convertToDate = (date) => {
+    return moment(date).format("DD/MM/YYYY")
+}
+
+export const timeSince = (date) => {
+    return moment(date).fromNow()
 }
 
 export const convertVND = (value) => {

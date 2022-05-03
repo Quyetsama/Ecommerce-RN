@@ -50,14 +50,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(52, 52, 52, 0.4)'
     },
     modal: {
-        height: 165,
+        // height: 165,
         width: WIDTH / 1.5,
         paddingTop: 10,
         backgroundColor: 'white',
         borderRadius: 16
     },
     textView: {
-        flex: 1,
+        // flex: 1,
         alignItems: 'center',
         borderBottomWidth: 1,
         borderBottomColor: '#f2f2f2'
