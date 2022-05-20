@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     borderLeft: {
         width: 8,
         height: '100%',
-        backgroundColor: COLOR.violet
+        backgroundColor: COLOR.primary1
     },
     borderSolid: {
         height: '100%',
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
         elevation: 3
     },
     txtButtonCoupon: {
-        color: COLOR.violet,
+        color: COLOR.primary1,
         fontWeight: '500',
         textAlign: 'center'
     },

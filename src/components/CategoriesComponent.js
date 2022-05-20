@@ -11,7 +11,7 @@ const Categories = ({ onLayout, onPress }) => {
     const categories = useFetchCategories([
         {
             _id: 'all',
-            name: 'Tất cả',
+            name: 'All',
             image: 'all.png'
         }
     ])

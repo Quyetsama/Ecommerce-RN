@@ -21,6 +21,8 @@ import Products from "../components/ProductsComponent"
 
 import ViewHeader from "../components/test/ViewHeader"
 import Header from "../components/test/Header"
+import { COLOR } from "../helpers/configs"
+import { COLORS } from "../theme"
 
 
 const WIDTH = Dimensions.get('window').width
@@ -55,7 +57,7 @@ const HomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             {/* <StatusBar hidden /> */}
-            <StatusBar translucent backgroundColor={'transparent'} barStyle={'light-content'}/>
+            <StatusBar hidden translucent backgroundColor={'transparent'} barStyle={'light-content'}/>
             {/* Header */}
             {/* <HeaderHomeComponent navigation={ navigation } animatedValue={ offset } /> */}
             <Header navigation={ navigation } />
@@ -66,7 +68,7 @@ const HomeScreen = ({ navigation }) => {
                 showsVerticalScrollIndicator={ false }
                 removeClippedSubviews
                 nestedScrollEnabled={true}
-                stickyHeaderIndices={[7]}
+                stickyHeaderIndices={[5]}
                 scrollEventThrottle={0.5}
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: offset } } }],
@@ -88,7 +90,7 @@ const HomeScreen = ({ navigation }) => {
                 {/* <CarouselComponent /> */}
 
                 {/* Features */}
-                <FeaturesComponent />
+                {/* <FeaturesComponent /> */}
                 {/* <UnderLineSection /> */}
 
                 <ProductRecommend />
@@ -105,11 +107,11 @@ const HomeScreen = ({ navigation }) => {
                 <UnderLineSection /> */}
 
                 {/* CarouselImage */}
-                <CarouselComponent />
+                {/* <CarouselComponent /> */}
                 {/* <UnderLineSection /> */}
 
                 {/* Categories */}
-                <Text style={{ padding: 5, fontSize: 15, fontWeight: 'bold', color: color, marginLeft: 5 }}>Danh Mục Sản Phẩm</Text>
+                <Text style={{ padding: 5, fontSize: 15, fontWeight: 'bold', color: COLORS.dark, marginLeft: 5 }}>Danh Mục Sản Phẩm</Text>
                 <Categories onLayout={(event) => {
                     const {x, y, width, height} = event.nativeEvent.layout;
                     setIndex({x, y, width, height})

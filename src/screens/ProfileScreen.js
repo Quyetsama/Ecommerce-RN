@@ -3,8 +3,6 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../redux/actions/authAction'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { secretApi } from "../api/authApi"
-import HeaderProfile from "../components/profilescreen/HeaderProfileComponent"
 import Information from "../components/profilescreen/InformationComponent"
 import CoinVoucher from "../components/profilescreen/CoinVoucherComponent"
 import OrderComponent from "../components/profilescreen/OrderComponent"
@@ -12,28 +10,16 @@ import ItemProfile from "../components/profilescreen/ItemProfileComponent"
 import LoadingModal from '../components/modal/LoadingModal'
 import { logoutApi } from "../api/authApi"
 import { getTokenDevice } from "../helpers/notification"
+import TabHeader from "../components/headers/TabHeader"
 
 
 
 const ProfileScreen = ({ navigation }) => {
 
-    const [name, setName] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
     const { userToken, fullName, coin, email } = useSelector(state => state.authReducer)
     const dispatch = useDispatch()
-
-    // useEffect(() => {
-    //     if(userToken) {
-    //         secretApi(userToken).then(res => {
-    //             setName(res.data.profile.firstName + '-' + res.data.profile.lastName)
-    //             // console.log(res.data.profile.firstName)
-    //         })
-    //     }
-    //     else {
-    //         setName('')
-    //     }
-    // }, [userToken])
 
     const handleSignIn = useCallback(() => {
         navigation.navigate('stackAuth', { screen: 'SignIn' })
@@ -75,7 +61,7 @@ const ProfileScreen = ({ navigation }) => {
     return (
         <View style={ styles.container }>
             {/*  */}
-            <HeaderProfile navigation={ navigation } />
+            <TabHeader title={ 'Account' } />
 
             {/*  */}
             <ScrollView

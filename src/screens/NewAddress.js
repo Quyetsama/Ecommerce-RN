@@ -17,6 +17,7 @@ import CartHeader from '../components/cartscreen/CartHeader'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeContact, clearDeliveryAddress } from '../redux/actions/cartAction'
+import { COLORS } from '../theme'
 
 
 const HEIGHT = Dimensions.get('window').height
@@ -122,7 +123,7 @@ const NewAddress = ({ navigation }) => {
                 style={[ styles.completeBtn , { opacity: isValid() === false ? 0.5 : 1 }]}
                 onPress={ handleComplete }
             >
-                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Complete</Text>
+                <Text style={{ color: COLORS.dark, fontWeight: 'bold', fontSize: 16 }}>Complete</Text>
             </TouchableOpacity>
         </View>
     )
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
         // marginTop: 250,
         alignSelf: 'center',
         alignItems: 'center',
-        backgroundColor: violet,
+        backgroundColor: COLORS.primary,
         padding: 18,
         marginBottom: 8,
         borderRadius: 15,

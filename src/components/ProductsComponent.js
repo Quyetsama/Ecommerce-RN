@@ -48,16 +48,9 @@ const Products = ({ category, navigation }) => {
                     scrollEnabled={ false }
                     data={products}
                     numColumns={2}
-                    keyExtractor={(item, index) => item._id}
+                    keyExtractor={(item) => item._id}
                     renderItem={({item}) => (
-                        <ItemProduct 
-                            _id={ item._id }
-                            name={ item.name }
-                            price={ item.price }
-                            image={  doMain + 'image/' + item.image[0] }
-                            sold={ item.sold }
-                            goToDetail={() => goToDetail(item._id)}
-                        />
+                        <ItemProduct item={ item } />
                         // <ItemProduct 
                         //     data={ item }
                         //     navigation={navigation}

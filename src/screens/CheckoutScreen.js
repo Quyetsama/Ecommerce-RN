@@ -10,15 +10,13 @@ import {
     LayoutAnimation,
     Platform,
     UIManager,
-    Dimensions,
     Modal,
     TextInput
 } from 'react-native'
-import { violet } from '../helpers/configs'
 import CartHeader from '../components/cartscreen/CartHeader'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
-import { doMain } from '../helpers/configs'
+import { doMain, SCREEN } from '../helpers/configs'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteVoucher, clearCart } from '../redux/actions/cartAction'
 import { setCoin } from '../redux/actions/authAction'
@@ -26,16 +24,14 @@ import { orderApi } from '../api/orderApi'
 import { getCurrentUser } from '../api/authApi'
 import LoadingModal from '../components/modal/LoadingModal'
 import { convertVND } from '../helpers/validation'
+import { COLORS } from '../theme'
 
 
-
-const WIDTH = Dimensions.get('window').width
-const HEIGHT = Dimensions.get('window').height
 
 const ItemInfo = React.memo(({ icon, text, placeholder }) => {
     return (
         <View style={ styles.itemInfoContainer }>
-            <MaterialCommunityIcons name={icon} size={26} color={violet} />
+            <MaterialCommunityIcons name={icon} size={26} color={COLORS.dark} />
             <TextInput
                 editable={ false }
                 value={ text }
@@ -428,7 +424,7 @@ const CheckOutScreen = ({ navigation }) => {
                     style={[ styles.completeBtn, { opacity: isValid() ? 0.5 : 1 } ]}
                     onPress={ handleOrder }
                 >
-                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Complete</Text>
+                    <Text style={{ color: COLORS.dark, fontWeight: 'bold', fontSize: 16 }}>Complete</Text>
                 </TouchableOpacity>
             </View>
             
@@ -524,13 +520,13 @@ const styles = StyleSheet.create({
     completeBtn: {
         width: '80%',
         alignItems: 'center',
-        backgroundColor: violet,
+        backgroundColor: COLORS.primary,
         padding: 18,
         borderRadius: 15,
         zIndex: 100
     },
     productContainer: {
-        width: WIDTH,
+        width: SCREEN.WIDTH,
         flexDirection: 'row',
         paddingVertical: 18,
         borderBottomWidth: 1,

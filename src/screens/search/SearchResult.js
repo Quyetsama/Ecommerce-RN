@@ -348,13 +348,8 @@ const SearchResult = ({ route, navigation }) => {
                             numColumns={2}
                             keyExtractor={(item, index) => item._id}
                             renderItem={({item}) => (
-                                <ItemProduct 
-                                    _id={ item._id }
-                                    name={ item.name }
-                                    price={ item.price }
-                                    image={  doMain + 'image/' + item.image }
-                                    sold={ item.sold }
-                                    goToDetail={() => goToDetail(item._id)}
+                                <ItemProduct
+                                    item={ item }
                                 />
                             )}
                             onEndReached={ handleOnEndReached }

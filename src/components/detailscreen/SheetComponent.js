@@ -4,15 +4,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Animated from 'react-native-reanimated'
 import { PanGestureHandler, ScrollView as ScrollView2 } from 'react-native-gesture-handler'
-import { violet, doMain } from '../../helpers/configs'
+import { violet, doMain, SCREEN, SIZE } from '../../helpers/configs'
 import SuccessModal from '../modal/SuccessModal'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../../redux/actions/cartAction'
+import { theme } from '../../theme'
 
-
-const WIDTH = Dimensions.get('window').width
-const HEIGHT = Dimensions.get('window').height
 
 const color = ['Black', 'White', 'yellow', 'Pink', 'Brown', 'pink']
 
@@ -35,11 +33,11 @@ const ItemSheet = React.memo(({ classify, selected, onSelect }) => {
 
     // console.log(isSelect)
     return (
-        <View style={{ marginTop: 15, paddingHorizontal: 10 }}>
+        <View style={{ alignItems: 'center', marginTop: 16, paddingHorizontal: 10 }}>
             <Text
-                style={{ color: '#000', fontSize: 15 }}
+                style={ styles.label }
             >
-                { classify.label }
+                { classify.label.toUpperCase() }
             </Text>
             <View
                 style={{
@@ -48,7 +46,8 @@ const ItemSheet = React.memo(({ classify, selected, onSelect }) => {
                     flexDirection: 'row',
                     borderBottomWidth: 1,
                     borderBottomColor: '#f2f2f2',
-                    paddingVertical: 10
+                    paddingVertical: 10,
+                    alignItems: 'center'
                 }}
             >
                 {classify.data.map((item, index) => (
@@ -57,17 +56,15 @@ const ItemSheet = React.memo(({ classify, selected, onSelect }) => {
                         onPress={() => handleSelect(item)}
                         activeOpacity={ 0.8 }
                         style={{
-                            paddingVertical: 5,
-                            paddingHorizontal: 20,
-                            backgroundColor: item === isSelect ? '#fff' : '#f2f2f2',
-                            borderRadius: 3,
+                            paddingVertical: 12,
+                            paddingHorizontal: 18,
+                            backgroundColor: item === isSelect ? theme.primary : theme.dark,
+                            borderRadius: 30,
                             marginRight: 10,
-                            marginVertical: 5,
-                            borderWidth: 1,
-                            borderColor: item === isSelect ? violet : '#f2f2f2'
+                            marginVertical: 5
                         }}
                     >
-                        <Text style={{ color: '#000' }}>{ item }</Text>
+                        <Text style={{ color: item === isSelect ? theme.dark : 'white', fontWeight: 'bold' }}>{ item }</Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -80,34 +77,34 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
     // console.log(value)
     return (
         <View style={{
-            flexDirection: 'row',
+            alignItems: 'center',
             marginTop: 15, 
             paddingHorizontal: 10
         }}>
-            <Text style={{ flex: 1, color: '#000', fontSize: 15 }}>Số lượng</Text>
+            <Text style={ styles.label }>QUANTITY</Text>
             <View style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                borderWidth: 1,
-                borderColor: '#f3f3f3'
+                marginTop: 18
             }}>
                 <View style={{
-                    // padding: 3,
-                    // borderRightWidth: 1,
-                    // borderColor: '#f3f3f3'
+                    padding: 3,
+                    borderWidth: 1,
+                    borderColor: '#969696',
+                    borderRadius: 100
                 }}>
                     <TouchableOpacity onPress={ onDecrease }>
-                        <Entypo name={ 'minus' } size={20} color="#969696" />
+                        <Entypo name={ 'minus' } size={20} color={ theme.dark } />
                     </TouchableOpacity>
                 </View>
                 <View style={{
-                    // paddingVertical: 3,
-                    paddingHorizontal: 20,
-                    borderLeftWidth: 1,
-                    borderRightWidth: 1,
-                    borderColor: '#f3f3f3'
+                    paddingHorizontal: 30
                 }}>
                     <TextInput
+                        style={{
+                            fontSize: SIZE(18),
+                            fontWeight: 'bold'
+                        }}
                         value={ value + '' }
                         onChangeText={value => onChangeQuantity(value)}
                         padding={ 0 }
@@ -116,12 +113,14 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
                     />
                 </View>
                 <View style={{
-                    // padding: 3,
-                    // borderLeftWidth: 1,
-                    // borderColor: '#f3f3f3'
+                    padding: 3,
+                    borderWidth: 1,
+                    borderColor: '#969696',
+                    borderRadius: 100
+
                 }}>
                     <TouchableOpacity onPress={ onIncrease }>
-                        <Entypo name={ 'plus' } size={20} color="#969696" />
+                        <Entypo name={ 'plus' } size={20} color={ theme.dark } />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -227,16 +226,20 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
             >
                 
                 <View style={ styles.headerSheet }>
-                    <View style={{ width: HEIGHT / 5, height: HEIGHT / 5 }}>
+                    <View style={{ width: SCREEN.HEIGHT / 6, height: SCREEN.HEIGHT / 6 }}>
                         <Image 
                             source={{ uri: product?.image && (doMain + '/image/' + product?.image[0]) }}
                             style={ styles.imageSheet }
                             resizeMode='contain'
                         />
                     </View>
-                    <View style={{ flex: 1, justifyContent: 'flex-end', marginLeft: 10 }}>
-                        <Text style={{ color: 'red' }}>{ (+product?.price).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
-                        <Text>Kho: { product?.quantity }</Text>
+                    <View style={{ flex: 1, alignSelf: 'center', marginLeft: 10 }}>
+                        <Text style={ styles.nameProduct }>{ product?.name }</Text>
+                        <Text style={ styles.priceProduct }>{ (+product?.price).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
+                        {
+                            product?.discount &&
+                            <Text style={ styles.discountProduct }>{ product?.discount }% off</Text>
+                        }
                     </View>
                     <TouchableOpacity 
                         activeOpacity={0.5} 
@@ -247,8 +250,9 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                 </View>
                     
                 <View style={{ flex: 1, justifyContent: 'space-between' }}>
-                    <View>
+                    <View style={{ flex: 1 }}>
                         <ScrollView2
+                            contentContainerStyle={{ paddingBottom: 100 }}
                             showsVerticalScrollIndicator={ false }
                             keyboardShouldPersistTaps='handled'
                         >
@@ -270,32 +274,20 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                         </ScrollView2>
                     </View>
 
-                    <View style={ styles.btnContainer }>
-                        <TouchableOpacity 
-                            disabled={ !isValid() }
-                            style={[ styles.buttonAddToCart, { opacity: isValid() ? 1 : 0.5 } ]}
-                            onPress={ handleAddToCart }
-                        >
-                            <Text
-                                style={{
-                                    color: violet,
-                                    fontSize: 15
-                                }}
-                            >Thêm vào giỏ hàng</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => setIsModalVisible(true)}
-                            disabled={ !isValid() }
-                            style={[ styles.buttonBuyNow, { opacity: isValid() ? 1 : 0.5 } ]}
-                        >
-                            <Text
-                                style={{
-                                    color: '#fff',
-                                    fontSize: 15
-                                }}
-                            >Mua ngay</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity 
+                        disabled={ !isValid() }
+                        style={[ styles.buttonAddToCart, { opacity: isValid() ? 1 : 0.5 } ]}
+                        onPress={ handleAddToCart }
+                    >
+                        <Text
+                            style={{
+                                color: theme.dark,
+                                fontSize: 18,
+                                fontWeight: '800'
+                            }}
+                        >ADD TO CART</Text>
+                    </TouchableOpacity>
+                       
                 </View>
 
                 <Modal
@@ -349,25 +341,54 @@ const styles = StyleSheet.create({
         height: null,
     },
     btnContainer: { 
-        flexDirection: 'row', 
-        justifyContent: 'flex-end',
-        paddingVertical: 5, 
-        borderTopWidth: 1, 
-        borderTopColor: '#f2f2f2' 
+        // flexDirection: 'row', 
+        // justifyContent: 'flex-end',
+        // paddingVertical: 5, 
+        // borderTopWidth: 1, 
+        // borderTopColor: '#f2f2f2' 
     },
     buttonAddToCart: {
-        ...button,
-        marginLeft: 5,
-        marginRight: 2.5,
-        borderRadius: 3,
-        borderWidth: 1,
-        borderColor: violet
+        // ...button,
+        // marginLeft: 5,
+        // marginRight: 2.5,
+        // borderRadius: 3,
+        // borderWidth: 1,
+        // borderColor: violet
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '70%',
+        backgroundColor: theme.primary,
+        paddingVertical: 18,
+        borderRadius: 30,
+        marginBottom: 18
     },
     buttonBuyNow: {
         ...button,
         marginRight: 5,
         marginLeft: 2.5,
         backgroundColor: violet
+    },
+    nameProduct: {
+        fontSize: SIZE(16),
+        fontWeight: 'bold',
+        color: theme.dark
+    },
+    priceProduct: {
+        fontSize: SIZE(22),
+        fontWeight: '800',
+        color: '#000',
+        paddingVertical: 18
+    },
+    discountProduct: {
+        fontSize: SIZE(16),
+        fontWeight: '500',
+        color: 'green'
+    },
+    label: {
+        color: '#969696',
+        fontSize: 16,
+        fontWeight: 'bold'
     }
 })
 

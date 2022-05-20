@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import SearchDebounce from "../../components/search/SearchDebounce"
 import { searchProduct, suggestProduct } from "../../api/productApi"
 import { COLOR } from '../../helpers/configs'
+import { COLORS } from "../../theme"
 
 
 let timeOut
@@ -48,7 +49,7 @@ const SearchBar = React.memo(({ query, handleChange, handleSubmit, goBack }) => 
             <TouchableOpacity
                 onPress={ goBack }
             >
-                <Text style={{ color: COLOR.violet, fontSize: 15, fontWeight: '500' }}>Cancel</Text>
+                <Text style={{ color: COLORS.dark, fontSize: 15, fontWeight: '500' }}>Cancel</Text>
             </TouchableOpacity>
         </View>
     )

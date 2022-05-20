@@ -4,7 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import Feather from 'react-native-vector-icons/Feather'
 import { HomeStack, NotificationStack, OrderStack, ProfileStack, SearchStack, AuthStack } from './StackNavigator'
-import { violet } from '../helpers/configs'
+import { COLOR, SIZE } from '../helpers/configs'
+import { COLORS } from '../theme'
 import { useSelector } from 'react-redux'
 
 
@@ -14,7 +15,8 @@ const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
 
-    const quantity = useSelector(state => state.cartReducer.products.length)
+    const lengthCart = useSelector(state => state.cartReducer.products.length)
+    const countNotify = useSelector(state => state.notifyReducer.count)
 
     const getTabBarVisibility = (route) => {
         // console.log(route)
@@ -29,7 +31,6 @@ const BottomTabNavigator = () => {
 
     return (
         <Tab.Navigator screenOptions={({ route }) => ({
-            tabBarLabel: () => null,
             tabBarIcon: ({ focused, color, size }) => {
                 let iconName;
     
@@ -44,7 +45,7 @@ const BottomTabNavigator = () => {
                 }
                 
                 // You can return any component that you like here!
-                return <Feather name={ iconName } size={ 21 } color={ color } />
+                return <Feather name={ iconName } size={ SIZE(20) } color={ color } />
             },
             tabBarStyle: {
                 display: getTabBarVisibility(route),
@@ -53,19 +54,30 @@ const BottomTabNavigator = () => {
                 backgroundColor: "#fff",
                 position: 'absolute',
                 bottom: 0,
-                // padding:10,
+                // padding: 10,
                 width: WIDTH,
-                height: HEIGHT / 12,
+                height: HEIGHT / 15,
                 zIndex: 8
             },
-            tabBarActiveTintColor: violet,
+            tabBarActiveTintColor: COLORS.dark,
             tabBarInactiveTintColor: 'gray',
-            headerShown: false
+            headerShown: false,
+            tabBarLabelStyle: {
+                // fontSize: SIZE(13),
+                paddingBottom: 6,
+                fontWeight: '500'
+            }
+            // tabBarLabel: () => null
         })}>
-            <Tab.Screen name="tabHome" component={ HomeStack } options={{ title: 'Trang chủ' }} />
+            <Tab.Screen name="tabHome" component={ HomeStack } options={{ title: 'Home' }} />
             {/* <Tab.Screen name="tabOrder" component={ OrderStack } options={{ title: 'Đơn hàng'}} /> */}
-            <Tab.Screen name="tabNotification" component={ NotificationStack } options={{ title: 'Thông báo', tabBarBadge: 21 }} />
-            <Tab.Screen name="tabProfile" component={ ProfileStack } options={{ title: 'Tôi' }} />
+            <Tab.Screen 
+                name="tabNotification" 
+                component={ NotificationStack } 
+                initialParams={{lengthCart: lengthCart}} 
+                options={{ title: 'Notify', ...( countNotify > 0 && { tabBarBadge: countNotify }) }} 
+            />
+            <Tab.Screen name="tabProfile" component={ ProfileStack } options={{ title: 'Account' }} />
         </Tab.Navigator>
     )
 }

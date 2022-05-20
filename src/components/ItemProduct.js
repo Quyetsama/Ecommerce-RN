@@ -3,30 +3,47 @@ import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions } from 'rea
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { convertVND } from '../helpers/validation'
+import { useNavigation } from '@react-navigation/native'
+import { doMain, SCREEN } from '../helpers/configs'
+import { COLORS } from '../theme'
 
 
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
 
-const ItemProduct = ({ _id, name, price, image, sold, goToDetail }) => {
+const ItemProduct = ({ item }) => {
+    
+    const navigation = useNavigation()
+
     return (
-        <TouchableOpacity style={ styles.container } activeOpacity={ 0.8 } onPress={ goToDetail }>
+        <TouchableOpacity 
+            style={ styles.container } 
+            activeOpacity={ 0.8 } 
+            onPress={() => navigation.navigate('Detail', { _id: item?._id })}
+        >
             <View style={ styles.imageContainer }>
                 <Image 
-                    source={{ uri: image }}
+                    source={{ uri: doMain + '/image/' + item?.image }}
                     style={ styles.image }
                     // resizeMode='stretch'
                 />
             </View>
 
+            {
+                item?.discount &&
+                <View style={ styles.discountContainer }>
+                    <Text style={ styles.discountTxt }>{ item?.discount }% OFF</Text>
+                </View>
+            }
+
             <View style={ styles.footerContainer }>
-                <Text numberOfLines={ 1 } style={ styles.name }>{ name }</Text>
+                <Text numberOfLines={ 1 } style={ styles.name }>{ item?.name }</Text>
                 <View style={ styles.soldContainer }>
-                    <Text style={ styles.soldText }>{ sold } Sold</Text>
+                    <Text style={ styles.soldText }>{ item?.sold } Sold</Text>
                 </View>
                 <View style={ styles.price_add }>
-                    <Text style={ styles.price }>{ convertVND(+price) }</Text>
+                    <Text style={ styles.price }>{ convertVND(+item?.price) }</Text>
                     <TouchableOpacity style={ styles.buttonADD }>
                         <MaterialIcons name='add' size={24} color='#969696' />
                     </TouchableOpacity>
@@ -38,16 +55,16 @@ const ItemProduct = ({ _id, name, price, image, sold, goToDetail }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
-        width: (WIDTH / 2) - 8,
-        height: 300,
+        backgroundColor: COLORS.white,
+        width: (SCREEN.WIDTH / 2) - 8,
+        height: (SCREEN.WIDTH / 2) + 100,
         padding: 8,
         margin: 4,
         borderRadius: 14
     },
     imageContainer: {
-        width: (WIDTH / 2) - 24,
-        height: 200
+        width: (SCREEN.WIDTH / 2) - 24,
+        height: (SCREEN.WIDTH / 2)
     },
     image: {
         flex: 1,
@@ -98,6 +115,21 @@ const styles = StyleSheet.create({
         borderColor: '#f2f2f2',
         borderRadius: 7,
         padding: 2
+    },
+    discountContainer: {
+        position: 'absolute',
+        top: 18,
+        right: 0,
+        backgroundColor: COLORS.primary,
+        paddingVertical: 3,
+        paddingHorizontal: 12,
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12
+    },
+    discountTxt: {
+        color: COLORS.dark,
+        fontSize: 13,
+        fontWeight: 'bold'
     }
 })
 

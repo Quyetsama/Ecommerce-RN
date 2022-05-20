@@ -11,6 +11,7 @@ import FlatCart from '../FlatCard'
 import { useNavigation } from '@react-navigation/native'
 import { SCREEN, COLOR } from '../../helpers/configs'
 import notFoundIMG from '../../assets/img/notFound.png'
+import { COLORS } from '../../theme'
 
 
 const Section = ({ title, seeMore, data }) => {
@@ -25,7 +26,7 @@ const Section = ({ title, seeMore, data }) => {
                     <TouchableOpacity
                         onPress={ seeMore }
                     >
-                        <Text style={ styles.seeAll }>See more</Text>
+                        <Text style={ styles.seeMore }>See more</Text>
                     </TouchableOpacity>
                 }
             </View>
@@ -95,8 +96,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold'
     },
-    seeAll: {
-        color: COLOR.violet,
+    seeMore: {
+        color: COLORS.dark,
         fontSize: 16
     }
 })

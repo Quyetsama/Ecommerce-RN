@@ -1,7 +1,8 @@
 import React from 'react'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native'
 import ProductItem from './ProductItem'
-import { violet, doMain } from '../../helpers/configs'
+import { doMain } from '../../helpers/configs'
+import { COLORS } from '../../theme'
 
 
 const data = [
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     button: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: violet,
+        backgroundColor: COLORS.dark,
         borderRadius: 6,
         paddingVertical: 8,
         paddingHorizontal: 12

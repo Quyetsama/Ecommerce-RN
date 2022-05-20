@@ -2,14 +2,20 @@ import React from "react"
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, StatusBar, Platform, Image } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Feather from 'react-native-vector-icons/Feather'
 import { NAME } from "../../helpers/configs"
 import name from '../../assets/img/name.png'
+import { COLORS } from "../../theme"
+import { SIZE } from "../../helpers/configs"
+import LinearGradient from 'react-native-linear-gradient'
+import { useSelector } from 'react-redux'
 
 
-
-const WIDTH = Dimensions.get('window').width
 
 const Header = React.memo(({ navigation }) => {
+
+    const lengthCart = useSelector(state => state.cartReducer.products.length)
+
     return (
         <View style={ styles.container }>
             <View style={ styles.spaceX }>
@@ -17,16 +23,18 @@ const Header = React.memo(({ navigation }) => {
             </View>
             <TouchableOpacity style={ styles.inputContainer } onPress={() => navigation.navigate('stackSearch')}>
                 <Ionicons name={'search'} size={21} color={'#969696'} />
-                <TextInput editable={false} style={ styles.input } placeholder="Search..." />
+                <TextInput editable={false} style={ styles.input } placeholder="Search here" />
             </TouchableOpacity>
+            
             <TouchableOpacity 
                 style={ styles.Cart }
                 onPress={() => navigation.navigate('Order', { screen: 'Cart' })}
             >
                 <View style={styles.iconBadge}>
-                    <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
+                    <Text style={{ color: '#fff', fontSize: 11 }}>{ lengthCart }</Text>
                 </View>
-                <MaterialCommunityIcons name={'cart-outline'} size={24} color={'#969696'} />
+                <Feather name={ 'shopping-bag' } size={ SIZE(24) } color={ COLORS.dark } />
+                {/* <MaterialCommunityIcons name={'cart-outline'} size={24} color={ COLORS.dark } /> */}
             </TouchableOpacity>
         </View>
     )
@@ -37,12 +45,12 @@ const styles = StyleSheet.create({
         // flex: 1,
         width: '100%',
         flexDirection: 'row',
-        backgroundColor: '#8141ff',
+        backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingVertical: 10,
-        paddingTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight + 6,
+        paddingVertical: 18,
+        // paddingTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight + 6,
         // paddingBottom: 10
     },
     spaceX: {
@@ -51,16 +59,17 @@ const styles = StyleSheet.create({
     txtSpaceX: {
         fontSize: 20,
         fontWeight: '800',
-        color: '#fff'
+        color: COLORS.dark
     },
     inputContainer: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#f4f7fc',
         borderRadius: 10,
         marginLeft: 30,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        // elevation: 20
     },
     input: {
         flex: 1,
@@ -77,16 +86,16 @@ const styles = StyleSheet.create({
     },
     iconBadge: {
         position: 'absolute',
-        bottom: 25,
-        left: 25,
+        top: 0,
+        right: 0,
         zIndex: 10,
-        width: 19,
-        height: 19,
+        width: 20,
+        height: 20,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 25,
         borderWidth: 1,
-        borderColor: '#fff',
+        borderColor: COLORS.white,
         backgroundColor: 'red'
     }
 })

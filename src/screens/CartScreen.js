@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { deleteFromCart, inCrease, deCrease } from '../redux/actions/cartAction'
 import LinearGradient from 'react-native-linear-gradient'
 import emptyCart from '../assets/img/emptyCart.png'
+import { COLORS } from '../theme'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -74,11 +75,11 @@ const VisibleItem = memo((props) => {
             </View>
             <View style={ styles.quantityContainer }>
                 <TouchableOpacity style={ styles.plusBtn } onPress={ onIncrease } activeOpacity={ 0.8 }>
-                    <Entypo name="plus" size={18} color={'white'} />
+                    <Entypo name="plus" size={18} color={ COLORS.dark } />
                 </TouchableOpacity>
                 <Text style={ styles.quantityText }>{ data.item.quantity }</Text>
                 <TouchableOpacity style={ styles.minusBtn } onPress={ onDecrease } activeOpacity={ 0.8 }>
-                    <Entypo name="minus" size={18} color={ violet } />
+                    <Entypo name="minus" size={18} color={ COLORS.dark  } />
                 </TouchableOpacity>
             </View>
         </Animated.View>
@@ -408,7 +409,7 @@ const CartScreen = ({ navigation }) => {
                                     onPress={ handleCheckout }
                                     style={ styles.checkOutBtn }
                                 >
-                                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Check Out</Text>
+                                    <Text style={{ color: COLORS.dark, fontWeight: 'bold', fontSize: 16 }}>Check Out</Text>
                                 </TouchableOpacity>
                             </>
                         }
@@ -503,7 +504,7 @@ const styles = StyleSheet.create({
 
     },
     plusBtn: {
-        backgroundColor: '#847be8',
+        backgroundColor: COLORS.primary,
         borderRadius: 90,
         padding: 2,
         elevation: 3
@@ -516,7 +517,7 @@ const styles = StyleSheet.create({
     },
     quantityText: {
         textAlign: 'center',
-        color: '#847be8',
+        color: COLORS.dark,
         fontWeight: 'bold',
         paddingVertical: 8
     },
@@ -539,7 +540,7 @@ const styles = StyleSheet.create({
     },
     backRightBtnLeft: {
         right: 0,
-        backgroundColor: violet,
+        backgroundColor: COLORS.primary,
         borderRadius: 15,
     },
     backRightBtnRight: {
@@ -568,7 +569,7 @@ const styles = StyleSheet.create({
     checkOutBtn: {
         width: '80%',
         alignItems: 'center',
-        backgroundColor: violet,
+        backgroundColor: COLORS.primary,
         padding: 18,
         borderRadius: 15,
         zIndex: 100
@@ -609,15 +610,16 @@ const styles = StyleSheet.create({
         color: '#969696'
     },
     shopnowBtn: {
-        backgroundColor: violet,
+        backgroundColor: COLORS.primary,
         marginTop: 32,
         paddingVertical: 12,
         paddingHorizontal: 38,
         borderRadius: 30
     },
     shopNow: {
-        color: 'white',
-        fontSize: 16
+        color: COLORS.dark,
+        fontSize: 16,
+        fontWeight: 'bold'
     }
 })
 

@@ -4,9 +4,14 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { violet } from '../../helpers/configs'
+import { COLORS } from '../../theme'
+import { useSelector } from 'react-redux'
 
 
 const HeaderProfile = ({ navigation }) => {
+
+    const lengthCart = useSelector(state => state.cartReducer.products.length)
+    
     return (
         <View style={ styles.container }>
 
@@ -16,14 +21,14 @@ const HeaderProfile = ({ navigation }) => {
 
             <TouchableOpacity style={ styles.leftContainer } onPress={() => navigation.navigate('myStore')} activeOpacity={1}>
                 <Text style={ styles.myShop }>Shop của tôi</Text>
-                <Entypo name={ 'chevron-thin-right' } size={ 13 } color={ violet } />
+                <Entypo name={ 'chevron-thin-right' } size={ 13 } color={ 'violet' } />
             </TouchableOpacity>
 
             <View style={ styles.rightContainer }>
                 <TouchableOpacity
                     style={styles.iconHeader}
                 >
-                    <Ionicons name={'settings-outline'} size={25} color={'#fff'} />
+                    <Ionicons name={'settings-outline'} size={25} color={COLORS.dark} />
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -31,9 +36,9 @@ const HeaderProfile = ({ navigation }) => {
                     style={styles.iconHeader}
                 >
                     <View style={styles.iconBadge}>
-                        <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
+                        <Text style={{ color: '#fff', fontSize: 11 }}>{ lengthCart }</Text>
                     </View>
-                    <MaterialCommunityIcons name={'cart-outline'} size={25} color={'#fff'} />
+                    <MaterialCommunityIcons name={'cart-outline'} size={25} color={COLORS.dark} />
                 </TouchableOpacity>
             </View>
             
@@ -45,7 +50,7 @@ const color = '#021961'
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: violet,
+        backgroundColor: COLORS.primary,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     title: {
-        color: '#fff',
+        color: COLORS.dark,
         fontSize: 20,
         fontWeight: '600'
     },

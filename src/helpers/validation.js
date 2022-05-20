@@ -49,3 +49,7 @@ export const timeSince = (date) => {
 export const convertVND = (value) => {
   return (value || 0).toLocaleString('vi', {style : 'currency', currency : 'VND'})
 }
+
+export const kFormatter = (num) => {
+  return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
+}

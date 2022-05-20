@@ -13,9 +13,13 @@ const createProduct = (data) => {
     })
 }
 
-const getDetailProduct = (id) => {
+const getDetailProduct = (id, token) => {
     const url = `/product/detail/${ id }`
-    return axiosClient.get(url)
+    return axiosClient.get(url, {
+        headers: {
+            Authorization: token
+        }
+    })
 }
 
 const searchProduct = (query) => {
@@ -43,6 +47,20 @@ const sortPriceProduct = (query, page, sort, filters) => {
     return axiosClient.get(url)
 }
 
+const favoriteProduct = (token, query, product) => {
+    const url = `/user/favorite?love=${query}`
+    return axiosClient.patch(url, 
+        {
+            product: product
+        },
+        {
+            headers: {
+                Authorization: token
+            }
+        }
+    )
+}
+
 export { 
     createProduct,
     getDetailProduct,
@@ -50,5 +68,6 @@ export {
     suggestProduct,
     relatedProduct,
     sellingProduct,
-    sortPriceProduct
+    sortPriceProduct,
+    favoriteProduct
 }

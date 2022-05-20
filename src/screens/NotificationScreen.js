@@ -12,38 +12,53 @@ import {
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { COLOR, SCREEN } from '../helpers/configs'
+import { COLOR, SCREEN, SIZE } from '../helpers/configs'
 import orderImage from '../assets/img/order.png'
 import discountImage from '../assets/img/discount.png'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setCountNotify, decreaseNotify } from '../redux/actions/notifyAction'
 import useNotify from '../hooks/useNotify'
-import { getNotify } from '../api/notifyApi'
+import { getNotify, readNotify, countNotify } from '../api/notifyApi'
 import { timeSince } from '../helpers/validation'
+import { COLORS } from '../theme'
+import TabHeader from '../components/headers/TabHeader'
 
 
-const NotifyHeader = ({ goToCart }) => {
-    return (
-        <View style={ styles.notifyHeader }>
-            <StatusBar translucent barStyle='dark-content' />
-            <TouchableOpacity
-                    onPress={ goToCart }
-                    style={styles.iconCart}
-                >
-                    <View style={styles.iconBadge}>
-                        <Text style={{ color: '#fff', fontSize: 11 }}>3</Text>
-                    </View>
-                    <MaterialCommunityIcons name={'cart-outline'} size={25} color={COLOR.violet} />
-            </TouchableOpacity>
-            <Text style={ styles.label }>Notification</Text>
-        </View>
-    )
-}
 
-const ItemNotify = React.memo(({ title, body, time, onClick }) => {
+
+const ItemNotify = React.memo(({ item, navigation }) => {
+
+    const { userToken } = useSelector(state => state.authReducer)
+    const dispatch = useDispatch()
+    const [read, setRead] = useState(item.read ? true: false)
+
+    useEffect(() => {
+        setRead(item.read)
+    }, [item.read])
+
+    const handleClick = async () => {
+        try {
+            navigation.navigate('HistoryStack', {
+                screen: 'History',
+                params: {
+                    index: item.type
+                }
+            })
+            if(!item.read) {
+                readNotify(userToken, item._id)
+                dispatch(decreaseNotify())
+            }
+            setRead(true)
+        }
+        catch(error) {
+            console.log(error)
+        }
+    }
+
     return (
         <TouchableOpacity
             style={ styles.itemNotify }
-            onPress={ onClick }
+            onPress={ handleClick }
         >
             <Image
                 style={ styles.image }
@@ -53,13 +68,16 @@ const ItemNotify = React.memo(({ title, body, time, onClick }) => {
 
             <View style={ styles.itemBody }>
                 <View style={ styles.itemTime }>
-                    <Text style={ styles.itemTitle } numberOfLines={ 1 }>{ title }</Text>
+                    <Text style={ styles.itemTitle } numberOfLines={ 1 }>{ item.title }</Text>
                     <Text style={{ fontSize: 12 }}>
-                        <Entypo name={'back-in-time'} size={12} /> { timeSince(time) }
+                        <Entypo name={'back-in-time'} size={12} /> { timeSince(item.time) }
                     </Text>
                 </View>
-                <Text numberOfLines={2} style={ styles.itemMessage }>{ body }</Text>
+                <Text numberOfLines={2} style={ styles.itemMessage }>{ item.body }</Text>
             </View>
+            {
+                read === false && <View style={ styles.badge } />
+            }
         </TouchableOpacity>
     )
 })
@@ -67,6 +85,7 @@ const ItemNotify = React.memo(({ title, body, time, onClick }) => {
 const NotificationScreen = ({ navigation }) => {
 
     const { userToken } = useSelector(state => state.authReducer)
+    const dispatch = useDispatch()
     const [notifies, setNotifies] = useState([])
     const [refreshing, setRefreshing] = useState(false)
 
@@ -78,10 +97,10 @@ const NotificationScreen = ({ navigation }) => {
         try {
             setRefreshing(true)
             const res = await getNotify(userToken)
-
             if(res.data.success) {
                 setNotifies(res.data.data)
                 setRefreshing(false)
+                dispatch(setCountNotify(res.data.count ? res.data.count : 0))
             }
         }
         catch(error) {
@@ -90,42 +109,18 @@ const NotificationScreen = ({ navigation }) => {
         }            
     }, [refreshing])
 
-    const goToCart = React.useCallback(() => {
-        navigation.navigate('Order', { screen: 'Cart' })
-    }, [])
-
-    const goToOrder = React.useCallback((index) => {
-
-        navigation.navigate('HistoryStack', {
-            screen: 'History',
-            params: {
-                index: index
-            }
-        })
-
-        // navigation.navigate('tabProfile', {
-        //     screen: 'HistoryStack',
-        //     params: {
-        //         screen: 'History',
-        //         params: { index: 1 }
-        //     }
-        // })
-    }, [])
-
     return (
         <View style={ styles.container }>
-            <NotifyHeader goToCart={ goToCart } />
+            <TabHeader title={ 'Notifications' } />
 
             <FlatList
                 contentContainerStyle={{ paddingBottom: 200 }}
                 data={ notifies }
                 keyExtractor={(item) => item._id}
                 renderItem={({item, index}) => (
-                    <ItemNotify 
-                        title={ item.title } 
-                        body={ item.body } 
-                        time={ item.createdAt } 
-                        onClick={() => goToOrder(item.type) }
+                    <ItemNotify
+                        item={ item }
+                        navigation={ navigation }
                     />
                 )}
                 refreshControl={
@@ -218,6 +213,15 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 8,
         marginBottom: 12
+    },
+    badge: {
+        position: 'absolute',
+        bottom: 12,
+        right: 12,
+        width: SIZE(6),
+        height: SIZE(6),
+        borderRadius: 100,
+        backgroundColor: 'skyblue'
     }
 })
 

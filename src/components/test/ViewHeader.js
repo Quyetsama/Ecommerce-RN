@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Dimensions } from 'react-native'
 import CarouselComponent from '../CarouselComponent'
 import Header from './Header'
+import { COLORS } from '../../theme'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     },
     topContainer: {
         flex: 2,
-        backgroundColor: '#8141ff',
+        backgroundColor: COLORS.white,
         borderBottomLeftRadius: 30,
         borderBottomRightRadius: 30
     },

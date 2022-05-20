@@ -13,6 +13,8 @@ import { retrieveToken, login, logout } from './src/redux/actions/authAction'
 import DetailScreen from "./src/screens/DetailScreen"
 
 import { getCurrentUser } from "./src/api/authApi"
+import { countNotify } from "./src/api/notifyApi"
+import { setCountNotify } from "./src/redux/actions/notifyAction"
 import useNotification from "./src/hooks/useNotification"
 
 
@@ -36,6 +38,7 @@ const App = () => {
                     const user = await getCurrentUser(token)
                     // console.log(user.data.profile)
                     dispatch(login(user.data.profile.fullName, token, user.data.profile.coin, user.data.profile.email))
+                    dispatch(setCountNotify(user.data.countNotify))
                 }
                 catch(error) {
                     // if(error.response.data) {
