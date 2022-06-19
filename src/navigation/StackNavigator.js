@@ -18,6 +18,7 @@ import DetailOrder from '../screens/history/DetailOrder'
 
 import ProfileScreen from '../screens/ProfileScreen'
 import VoucherScreen from '../screens/VoucherScreen'
+import FavoriteScreen from '../screens/profile/FavoriteScreen'
 
 import StoreScreen from '../screens/mystore/StoreScreen'
 import AddProductScreen from '../screens/mystore/AddProductScreen'
@@ -56,6 +57,7 @@ const Root = () => {
         <Stack.Navigator screenOptions={ screenOptionStyle }>
             <Stack.Screen name="Main" component={ BottomTabNavigator } />
             <Stack.Screen name="Order" component={ OrderStack } options={{ animation: 'fade_from_bottom' }} />
+            <Stack.Screen name="Detail" component={ DetailScreen } />
         </Stack.Navigator>
     )
 }
@@ -107,6 +109,7 @@ const ProfileStack = () => {
         <Stack.Navigator screenOptions={ screenOptionStyle }>
             <Stack.Screen name="Profile" component={ ProfileScreen } />
             <Stack.Screen name="Voucher" component={ VoucherScreen } />
+            <Stack.Screen name="Favorite" component={ FavoriteScreen } />
             <Stack.Screen name="myStore" component={ StoreStack } />
             {/* <Stack.Screen name="Order" component={ OrderStack } /> */}
             {/* <Stack.Screen name="Cart" component={ CartScreen } />

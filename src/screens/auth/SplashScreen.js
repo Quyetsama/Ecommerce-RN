@@ -1,6 +1,6 @@
 import React from "react"
 import { StyleSheet, View, Text, ActivityIndicator, StatusBar } from "react-native"
-import { NAME } from "../../helpers/configs"
+import { NAME } from "../../utils/configs"
 
 
 const SplashScreen = () => {

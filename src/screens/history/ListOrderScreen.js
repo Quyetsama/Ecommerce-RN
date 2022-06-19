@@ -9,12 +9,13 @@ import {
     Image
 } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { violet } from '../../helpers/configs'
+import { violet } from '../../utils/configs'
 import { useSelector } from 'react-redux'
 import { getListOrder } from '../../api/orderApi'
-import { handleTime } from '../../helpers/validation'
-import emptyOrder from '../../assets/img/emptyOrder.png'
+import { handleTime } from '../../utils/validation'
+import emptyOrder from '../../assets/images/emptyOrder.png'
 import { useNavigation } from '@react-navigation/native'
+import { COLORS } from '../../utils'
 
 
 const convertVND = (value) => {
@@ -49,16 +50,6 @@ const Item = React.memo(({ item, onClick }) => {
     </View>
     )
 })
-
-const DATA = [
-    {order: 'NPOK8T1', quantity: 3, total: 100000, time: '21/01/2025'},
-    {order: 'NPOK8T2', quantity: 2, total: 200000, time: '21/01/2025'},
-    {order: 'NPOK8T3', quantity: 1, total: 150000, time: '21/01/2025'},
-    {order: 'NPOK8T4', quantity: 6, total: 220000, time: '21/01/2025'},
-    {order: 'NPOK8T5', quantity: 1, total: 50000, time: '21/01/2025'},
-    {order: 'NPOK8T6', quantity: 1, total: 100000, time: '21/01/2025'},
-    {order: 'NPOK8T7', quantity: 2, total: 73900, time: '21/01/2025'},
-]
 
 const ListOrderScreen = ({ status }) => {
 
@@ -163,7 +154,7 @@ const styles = StyleSheet.create({
     },
     btnDetails: {
         alignSelf: 'flex-end',
-        backgroundColor: violet,
+        backgroundColor: COLORS.primary,
         borderRadius: 4,
         paddingVertical: 6,
         paddingHorizontal: 12

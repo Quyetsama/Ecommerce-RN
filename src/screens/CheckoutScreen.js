@@ -16,15 +16,15 @@ import {
 import CartHeader from '../components/cartscreen/CartHeader'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
-import { doMain, SCREEN } from '../helpers/configs'
+import { doMain, SCREEN } from '../utils/configs'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteVoucher, clearCart } from '../redux/actions/cartAction'
 import { setCoin } from '../redux/actions/authAction'
 import { orderApi } from '../api/orderApi'
 import { getCurrentUser } from '../api/authApi'
 import LoadingModal from '../components/modal/LoadingModal'
-import { convertVND } from '../helpers/validation'
-import { COLORS } from '../theme'
+import { convertVND } from '../utils/validation'
+import { COLORS } from '../utils'
 
 
 
@@ -424,7 +424,7 @@ const CheckOutScreen = ({ navigation }) => {
                     style={[ styles.completeBtn, { opacity: isValid() ? 0.5 : 1 } ]}
                     onPress={ handleOrder }
                 >
-                    <Text style={{ color: COLORS.dark, fontWeight: 'bold', fontSize: 16 }}>Complete</Text>
+                    <Text style={{ color: COLORS.white, fontWeight: 'bold', fontSize: 16 }}>Complete</Text>
                 </TouchableOpacity>
             </View>
             

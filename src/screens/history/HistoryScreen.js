@@ -9,34 +9,12 @@ import {
 } from 'react-native'
 import CartHeader from '../../components/cartscreen/CartHeader'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view'
-import { violet } from '../../helpers/configs'
 import ListOrderScreen from './ListOrderScreen'
-import emptyOrder from '../../assets/img/emptyOrder.png'
+import emptyOrder from '../../assets/images/emptyOrder.png'
+import { COLORS } from '../../utils'
 
 
 
-const WIDTH = Dimensions.get('window').width
-const HEIGHT = Dimensions.get('window').height
-
-const SecondRoute = () => {
-    useEffect(() => {
-        console.log('2')
-    }, [])
-
-    return (
-        <View style={{ flex: 1, backgroundColor: '#673ab7' }} />
-    )
-}
-
-const ThreeRoute = () => {
-    useEffect(() => {
-        console.log('3')
-    }, [])
-
-    return (
-        <View style={{ flex: 1, backgroundColor: 'pink' }} />
-    )
-}
 
 // const renderScene = SceneMap({
 //     first: () => <ListOrderScreen status={ 0 } />,
@@ -79,7 +57,7 @@ const HistoryScreen = ({ route, navigation }) => {
 
     const [index, setIndex] = useState(route.params?.index ? route.params?.index : 0);
     const [routes] = useState([
-        { key: 'first', title: 'unconfimred' },
+        { key: 'first', title: 'Processing' },
         { key: 'second', title: 'Delivering' },
         { key: 'third', title: 'Delivered' },
     ])
@@ -96,7 +74,7 @@ const HistoryScreen = ({ route, navigation }) => {
                             <Text
                                 numberOfLines={1}
                                 style={{
-                                    color: focused ? violet : '#000'
+                                    color: focused ? COLORS.primary : COLORS.gray
                                 }}
                             >
                                 {route.title}
@@ -116,7 +94,7 @@ const HistoryScreen = ({ route, navigation }) => {
     return (
         <View style={ styles.container }>
             <CartHeader 
-                label={'Orders'}
+                label={'My Orders'}
                 hideElevation
                 goBack={() => {
                         navigation.goBack()
@@ -161,7 +139,7 @@ const styles = StyleSheet.create({
         // borderColor: '#000',
     },
     indicatorStyle: {
-        backgroundColor: violet,
+        backgroundColor: COLORS.primary,
         padding: 1.5,
         // marginBottom: -2,
     },

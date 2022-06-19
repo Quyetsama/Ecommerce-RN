@@ -1,8 +1,8 @@
 import React from 'react'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native'
 import ProductItem from './ProductItem'
-import { doMain } from '../../helpers/configs'
 import { COLORS } from '../../theme'
+import useFetchSuggest from '../../hooks/useFetchSuggest'
 
 
 const data = [
@@ -44,30 +44,34 @@ const data = [
 ]
 
 const ProductRecommend = () => {
+
+    const products = useFetchSuggest()
+
     return (
         <View style={ styles.container }>
-            <View style={ styles.headerContainer }>
-                <Text style={ styles.title }>Recommend</Text>
-                <TouchableOpacity style={ styles.button }>
-                    <Text style={ styles.buttonText }>View All</Text>
-                </TouchableOpacity>
-            </View>
+            {products.length > 0 &&
+                <>
+                    <View style={ styles.headerContainer }>
+                        <Text style={ styles.title }>Recommend</Text>
+                        <TouchableOpacity style={ styles.button }>
+                            <Text style={ styles.buttonText }>View All</Text>
+                        </TouchableOpacity>
+                    </View>
 
-            <FlatList 
-                contentContainerStyle={{ paddingLeft: 18, paddingBottom: 32 }}
-                horizontal
-                showsHorizontalScrollIndicator={ false }
-                data={ data }
-                renderItem={({ item }) => (
-                    <ProductItem 
-                        key={ item.id }
-                        name={ item.name }
-                        price={ item.price }
-                        image={ item.image }
-                        sold={ item.sold }
+                    <FlatList 
+                        contentContainerStyle={{ paddingLeft: 18, paddingBottom: 18 }}
+                        horizontal
+                        showsHorizontalScrollIndicator={ false }
+                        data={ products }
+                        renderItem={({ item }) => (
+                            <ProductItem 
+                                item={ item }
+                            />
+                        )}
                     />
-                )}
-            />
+                </>
+            }
+            
         </View>
     )
 }
@@ -75,7 +79,8 @@ const ProductRecommend = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f7f7f7',
+        // backgroundColor: '#f7f7f7',
+        backgroundColor: COLORS.white,
         marginTop: 16,
         // borderTopLeftRadius: 30,
         // borderTopRightRadius: 30

@@ -3,7 +3,7 @@ import {
     StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, TextInput,
     StatusBar
 } from 'react-native'
-import { violet } from '../../helpers/configs'
+import { violet } from '../../utils/configs'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const HEIGHT = Dimensions.get('window').height

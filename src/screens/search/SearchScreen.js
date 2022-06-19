@@ -12,8 +12,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SearchDebounce from "../../components/search/SearchDebounce"
 import { searchProduct, suggestProduct } from "../../api/productApi"
-import { COLOR } from '../../helpers/configs'
-import { COLORS } from "../../theme"
+import { COLORS } from "../../utils"
 
 
 let timeOut
@@ -164,7 +163,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#f2f2f2',
+        backgroundColor: '#f4f7fc',
         borderRadius: 12,
         paddingHorizontal: 12,
         marginRight: 12

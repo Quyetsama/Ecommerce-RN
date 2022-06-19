@@ -2,10 +2,10 @@ import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { convertVND } from '../helpers/validation'
+import { convertVND } from '../utils/validation'
 import { useNavigation } from '@react-navigation/native'
-import { doMain, SCREEN } from '../helpers/configs'
-import { COLORS } from '../theme'
+import { doMain, SCREEN } from '../utils/configs'
+import { COLORS } from '../utils'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -45,7 +45,7 @@ const ItemProduct = ({ item }) => {
                 <View style={ styles.price_add }>
                     <Text style={ styles.price }>{ convertVND(+item?.price) }</Text>
                     <TouchableOpacity style={ styles.buttonADD }>
-                        <MaterialIcons name='add' size={24} color='#969696' />
+                        <MaterialIcons name='add' size={24} color={ COLORS.gray } />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -120,14 +120,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 18,
         right: 0,
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.secondary,
         paddingVertical: 3,
         paddingHorizontal: 12,
         borderTopLeftRadius: 12,
         borderBottomLeftRadius: 12
     },
     discountTxt: {
-        color: COLORS.dark,
+        color: COLORS.primary,
         fontSize: 13,
         fontWeight: 'bold'
     }

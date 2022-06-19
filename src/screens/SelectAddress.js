@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import { getAllCity, getAllDistrict, getAllWard } from '../api/addressApi'
 import CartHeader from '../components/cartscreen/CartHeader'
-import { violet } from '../helpers/configs'
+import { COLORS } from '../utils'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
 import LoadingModal from '../components/modal/LoadingModal'
@@ -22,7 +22,7 @@ const SelectedArea = React.memo(({ address, onChange, onReset }) => {
         <View style={ styles.selectedArea }>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={ styles.title }>Selected area</Text>
-                <Text onPress={ onReset } style={[ styles.title, { color: violet } ]}>Reset</Text>
+                <Text onPress={ onReset } style={[ styles.title, { color: COLORS.primary } ]}>Reset</Text>
             </View>
             <View style={{ paddingVertical: 12 }}>
                 <TouchableOpacity 
@@ -30,39 +30,39 @@ const SelectedArea = React.memo(({ address, onChange, onReset }) => {
                     style={{ flexDirection: 'row', alignItems: 'center' }} 
                     onPress={() => onChange(1)}
                 >
-                    <Entypo name='dot-single' size={32} color={ address.selected === 1 ? violet : '#969696' } />
-                    <Text style={{ color: address.selected === 1 ? violet : '#969696' }}>{ address.province ? address.province.name : 'Province/ City' }</Text>
+                    <Entypo name='dot-single' size={32} color={ address.selected === 1 ? COLORS.primary : COLORS.gray } />
+                    <Text style={{ color: address.selected === 1 ? COLORS.primary : COLORS.gray }}>{ address.province ? address.province.name : 'Province/ City' }</Text>
                 </TouchableOpacity>
-                <View style={{ borderLeftWidth: 1, borderLeftColor: '#969696', height: 24, marginLeft: 16 }} />
+                <View style={{ borderLeftWidth: 1, borderLeftColor: COLORS.gray, height: 24, marginLeft: 16 }} />
                 <TouchableOpacity
                     disabled={ !address.province }
                     style={{ flexDirection: 'row', alignItems: 'center' }} 
                     onPress={() => onChange(2)}
                 >
-                    <Entypo name='dot-single' size={32} color={ address.selected === 2 ? violet : '#969696' } />
-                    <Text style={{ color: address.selected === 2 ? violet : '#969696' }}>{ address.district ? address.district.name : 'Country/ District' }</Text>
+                    <Entypo name='dot-single' size={32} color={ address.selected === 2 ? COLORS.primary : COLORS.gray } />
+                    <Text style={{ color: address.selected === 2 ? COLORS.primary : COLORS.gray }}>{ address.district ? address.district.name : 'Country/ District' }</Text>
                 </TouchableOpacity>
-                <View style={{ borderLeftWidth: 1, borderLeftColor: '#969696', height: 24, marginLeft: 16 }} />
+                <View style={{ borderLeftWidth: 1, borderLeftColor: COLORS.gray, height: 24, marginLeft: 16 }} />
                 <TouchableOpacity 
                     disabled={ !address.district }
                     style={{ flexDirection: 'row', alignItems: 'center' }} 
                     onPress={() => onChange(3)}
                 >
-                    <Entypo name='dot-single' size={32} color={ address.selected >= 3 ? violet : '#969696' } />
-                    <Text style={{ color: address.selected === 3 ? violet : '#969696' }}>{ address.ward ? address.ward.name : 'Ward/ Commune' }</Text>
+                    <Entypo name='dot-single' size={32} color={ address.selected >= 3 ? COLORS.primary : COLORS.gray } />
+                    <Text style={{ color: address.selected === 3 ? COLORS.primary : COLORS.gray }}>{ address.ward ? address.ward.name : 'Ward/ Commune' }</Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
 })
 
-const Item = React.memo(({ item, onPress, selected }) => {
+const Item = React.memo(({ item, handleSelect, selected }) => {
     return (
-        <TouchableOpacity style={ styles.itemButton } activeOpacity={ 0.8 } onPress={ onPress }>
+        <TouchableOpacity style={ styles.itemButton } activeOpacity={ 0.8 } onPress={() => handleSelect(item)}>
             <Text style={ styles.itemText }>{ item.name }</Text>
             {
                 selected &&
-                <Feather name='check' size={24} color={ violet } />
+                <Feather name='check' size={24} color={ COLORS.primary } />
             }
         </TouchableOpacity>
     )
@@ -131,15 +131,15 @@ const SelectAddress = ({ navigation }) => {
         }
     }
 
-    const changeData = (index) => {
+    const changeData = React.useCallback((index) => {
         dispatch(addAddress({
             ...address,
             selected: index
         }))
-    }
+    }, [address])
 
     const handleSelect = React.useCallback((item) => {
-        setIsLoading(true)
+        // setIsLoading(true)
         if(address.selected === 1) {
             dispatch(addAddress({
                 province: item,
@@ -180,7 +180,6 @@ const SelectAddress = ({ navigation }) => {
                         if(Object.values(address).some(item => item === null)) {
                             handleReset()
                         }
-                        // dispatch(deleteVoucher())
                         navigation.goBack()
                     }
                 }
@@ -193,7 +192,16 @@ const SelectAddress = ({ navigation }) => {
                 keyExtractor={item => item.codename}
                 renderItem={({ item }) => 
                     (
-                        <Item item={ item } selected={item.codename === address.province?.codename ? true : item.codename === address.district?.codename ? true : item.codename === address.ward?.codename ? true : false }  onPress={() => handleSelect(item)}/>
+                        <Item 
+                            item={ item } 
+                            selected={
+                                item.codename === address.province?.codename ? true : 
+                                item.codename === address.district?.codename ? true : 
+                                item.codename === address.ward?.codename ? true : 
+                                false 
+                            }  
+                            handleSelect={ handleSelect }
+                        />
                     )
                 }
             />

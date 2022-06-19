@@ -11,13 +11,13 @@ import {
 } from 'react-native'
 import CartHeader from '../../components/cartscreen/CartHeader'
 import Fontisto from 'react-native-vector-icons/Fontisto'
-import { COLOR } from '../../helpers/configs'
-import { convertVND, handleDate } from '../../helpers/validation'
+import { convertVND, handleDate } from '../../utils/validation'
 import Separator from '../../components/Separator'
 import { useSelector } from 'react-redux'
 import { detailOrder } from '../../api/orderApi'
 import LoadingModal from '../../components/modal/LoadingModal'
-import { doMain } from '../../helpers/configs'
+import { doMain } from '../../utils/configs'
+import { COLORS } from '../../utils'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -119,7 +119,7 @@ const DetailOrder = ({ route, navigation }) => {
                         <Item title={'Price'} value={ order?.price } />
                         <Item title={'Shipping fee'} value={ order?.transportFee } />
                         <Item title={'Discount'} value={ order?.discount } />
-                        <Item title={'Total'} value={ order?.total } bold />
+                        <Item title={'Total'} value={ order?.total } />
                     </View>
 
                     <View style={ styles.billContainer }>
@@ -128,30 +128,17 @@ const DetailOrder = ({ route, navigation }) => {
                             <Text style={ styles.orderText }>#{ order?.code }</Text>
                         </View>
                         <View style={ styles.order }>
-                            <Text style={[ styles.orderText, { color: '#969696', fontWeight: '500' } ]}>Time order</Text>
-                            <Text style={[ styles.orderText, { color: '#969696', fontWeight: '500' } ]}>{ handleDate(order?.createdAt) }</Text>
+                            <Text style={[ styles.orderText, { color: '#969696', fontWeight: null } ]}>Time order</Text>
+                            <Text style={[ styles.orderText, { color: '#969696', fontWeight: null } ]}>{ handleDate(order?.createdAt) }</Text>
                         </View>
                         {
                             status === 2 &&
                             <View style={ styles.order }>
-                                <Text style={[ styles.orderText, { color: '#969696', fontWeight: '500' } ]}>Time delivery</Text>
-                                <Text style={[ styles.orderText, { color: '#969696', fontWeight: '500' } ]}>{ handleDate(order?.deliveryTime) }</Text>
+                                <Text style={[ styles.orderText, { color: '#969696', fontWeight: null } ]}>Time delivery</Text>
+                                <Text style={[ styles.orderText, { color: '#969696', fontWeight: null } ]}>{ handleDate(order?.deliveryTime) }</Text>
                             </View>
                         }
                     </View>
-
-                    <TouchableOpacity 
-                        disabled={ status !== 0 }
-                        style={ styles.btnCancel }
-                    >
-                        <Text style={ styles.txtCancel }>
-                            {
-                                status === 0 ? 'Cancel order'
-                                : status === 1 ? 'Delivering'
-                                : 'Delivered'
-                            }
-                        </Text>
-                    </TouchableOpacity>
                 </ScrollView>
             }
             
@@ -187,13 +174,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     change: {
-        color: COLOR.violet,
+        color: COLORS.primary,
         fontSize: 16,
         fontWeight: 'bold'
     },
     addressText: {
         fontSize: 16,
-        fontWeight: '500',
+        // fontWeight: '500',
         paddingVertical: 2,
         color: '#969696'
     },
@@ -247,22 +234,6 @@ const styles = StyleSheet.create({
     orderText: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#000'
-    },
-    btnCancel: {
-        width: '75%',
-        alignSelf: 'center',
-        marginHorizontal: 6,
-        padding: 12,
-        marginVertical: 30,
-        borderWidth: 0.5,
-        borderColor: COLOR.violet
-    },
-    txtCancel: {
-        textAlign: 'center',
-        color: COLOR.violet,
-        fontSize: 16,
-        fontWeight: 'bold'
     }
 })
 

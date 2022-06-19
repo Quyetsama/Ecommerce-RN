@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useDispatch, useSelector } from 'react-redux'
 
 import HeaderStore from '../../components/storescreen/HeaderStore'
-import { violet } from '../../helpers/configs'
+import { violet } from '../../utils/configs'
 import Dialog from 'react-native-dialog'
 import UnderLineSection from '../../components/UnderLineSection'
 import NoName from '../../components/storescreen/NoName'

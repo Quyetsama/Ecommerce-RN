@@ -6,8 +6,8 @@ import {
     Image,
     Dimensions
 } from "react-native"
-import { doMain, SCREEN } from "../helpers/configs"
-import { violet } from "../helpers/configs"
+import { doMain, SCREEN } from "../utils/configs"
+import { violet } from "../utils/configs"
 
 
 const WIDTH = Dimensions.get('window').width

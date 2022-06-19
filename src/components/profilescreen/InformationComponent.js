@@ -2,43 +2,37 @@ import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Text, Image, Dimensions } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { violet } from '../../helpers/configs'
+import { violet } from '../../utils/configs'
+import { COLORS, WINDOW_WIDTH , WINDOW_HEIGHT} from '../../utils'
 
 
 const WIDTH = Dimensions.get('window').width
 
 const Information = ({ isLogin, fullName, email, onSignIn, onSignUp }) => {
 
-    console.log(email)
     return (
         <View style={ styles.container }>
-            <View style={ styles.topContainer }>
-                <View style={ styles.avatarContainer }>
-                    <Image 
-                        style={ styles.avatar }
-                        source={{ uri: 'https://static.vecteezy.com/system/resources/previews/004/815/058/non_2x/cute-astronaut-wearing-spacesuit-and-helmet-free-vector.jpg' }}
-                    />
-                </View>
 
                 {isLogin
                     ?
-                    <View style={ styles.name_follow_Container }>
-                        <View style={ styles.nameContainer }>
-                            <Text style={ styles.txtName }>{ fullName }</Text>
+                    <View style={ styles.topContainer }>
+                        <View style={ styles.avatarContainer }>
+                            <Image 
+                                style={ styles.avatar }
+                                source={{ uri: 'https://static.vecteezy.com/system/resources/previews/004/815/058/non_2x/cute-astronaut-wearing-spacesuit-and-helmet-free-vector.jpg' }}
+                            />
                         </View>
-                        <View style={ styles.followContainer }>
-                            <View style={ styles.followerContainer }>
-                                <Text style={ styles.txtFollower }>Người theo dõi 21</Text>
+                        <View style={ styles.name_follow_Container }>
+                            <View style={ styles.nameContainer }>
+                                <Text style={ styles.txtName }>{ fullName }</Text>
                             </View>
-                            <View style={ styles.followingContainer }>
-                                <Text style={ styles.txtFollowing }>Đang theo dõi 28</Text>
-                            </View>
+                            <Text style={ styles.txtItemBot }>{ email }</Text>
                         </View>
                     </View>
                     :
                     <View style={ styles.authContainer }>
                         <TouchableOpacity 
-                            style={[ styles.authButton, { backgroundColor: violet, marginRight: 8 } ]}
+                            style={[ styles.authButton, { backgroundColor: COLORS.primary, marginRight: 8 } ]}
                             activeOpacity={0.8}
                             onPress={ onSignIn }
                         >
@@ -49,25 +43,10 @@ const Information = ({ isLogin, fullName, email, onSignIn, onSignUp }) => {
                             activeOpacity={0.8}
                             onPress={ onSignUp }
                         >
-                            <Text style={[ styles.authText, { color: violet } ]}>Sign Up</Text>
+                            <Text style={[ styles.authText, { color: COLORS.primary } ]}>Sign Up</Text>
                         </TouchableOpacity>
                     </View> 
                 }
-                
-            </View>
-
-            {isLogin &&
-                <View style={ styles.botContainer }>
-                    <View style={ styles.itemBot }>
-                        <MaterialCommunityIcons name={'phone-outline'} size={21} color={'#969696'} />
-                        <Text style={ styles.txtItemBot }>(84)-867-985-106</Text>
-                    </View>
-                    <View style={ styles.itemBot }>
-                        <MaterialCommunityIcons name={'email-outline'} size={21} color={'#969696'} />
-                        <Text style={ styles.txtItemBot }>{ email }</Text>
-                    </View>
-                </View>
-            }
         </View>
     )
 }
@@ -113,9 +92,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     authContainer: {
-        flex: 1,
+        height: WINDOW_HEIGHT - 300,
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     authButton: {
@@ -123,7 +102,7 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         borderRadius: 3,
         borderWidth: 1,
-        borderColor: violet
+        borderColor: COLORS.primary
     },
     authText: {
         
@@ -155,8 +134,7 @@ const styles = StyleSheet.create({
         paddingVertical: 3
     },
     txtItemBot: {
-        color: '#969696',
-        marginLeft: 20
+        color: '#969696'
     }
 })
 

@@ -6,21 +6,22 @@ const getAllUser = () => {
     return axiosClient.get(url)
 }
 
-const signInApi = (data, tokenDevice) => {
+const signInApi = (email, password, tokenDevice) => {
     const url = '/user/signin'
     return axiosClient.post(url, {
-        email: data.email,
-        password: data.password,
+        email: email,
+        password: password,
         tokenDevice: tokenDevice
     })
 }
 
-const signUpApi = (data) => {
+const signUpApi = (fullName, email, password, tokenDevice) => {
     const url = '/user/signup'
     return axiosClient.post(url, {
-        fullName: data.fullName,
-        email: data.email,
-        password: data.password
+        fullName: fullName,
+        email: email,
+        password: password,
+        tokenDevice: tokenDevice
     })
 }
 
@@ -47,6 +48,15 @@ const getCurrentUser = (token) => {
     })
 }
 
+const getCoin = (token) => {
+    const url = 'user/coin'
+    return axiosClient.get(url, {
+        headers: {
+            Authorization: token
+        }
+    })
+}
+
 const secretApi = (token) => {
     const url = '/user/secret'
     return axiosClient.get(url, {
@@ -57,4 +67,4 @@ const secretApi = (token) => {
 }
 
 
-export { getAllUser, signInApi, signUpApi, logoutApi, getCurrentUser, secretApi }
+export { getAllUser, signInApi, signUpApi, logoutApi, getCurrentUser, getCoin, secretApi }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Dimensions, TextInput, FlatList, KeyboardAvoidingView, Platform } from 'react-native'
 import HeaderStore from '../../components/storescreen/HeaderStore'
-import { violet } from '../../helpers/configs'
+import { violet } from '../../utils/configs'
 import { useDispatch, useSelector } from 'react-redux'
 import { addValueClassifyProduct, setValuePrice, setValueQuantity } from '../../redux/actions/myStoreAction'
 

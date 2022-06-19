@@ -61,6 +61,17 @@ const favoriteProduct = (token, query, product) => {
     )
 }
 
+const getFavorites = (token) => {
+    const url = `/user/favorite`
+    return axiosClient.get(url,
+        {
+            headers: {
+                Authorization: token
+            }
+        }
+    )
+}
+
 export { 
     createProduct,
     getDetailProduct,
@@ -69,5 +80,6 @@ export {
     relatedProduct,
     sellingProduct,
     sortPriceProduct,
-    favoriteProduct
+    favoriteProduct,
+    getFavorites
 }

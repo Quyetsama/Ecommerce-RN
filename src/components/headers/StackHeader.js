@@ -1,16 +1,19 @@
 import React from 'react'
-import { Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { StatusBar, StyleSheet, Text, View } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather'
-import { violet } from '../../utils/configs'
+import { useNavigation } from '@react-navigation/native'
 
 
 
 
-const CartHeader = ({ label, goBack, hideElevation }) => {
+const StackHeader = ({ label, hideElevation }) => {
+
+    const navigation = useNavigation()
+
     return (
         <View style={[ styles.container, { elevation: hideElevation ? 0 : 3 } ]}>
             <StatusBar translucent barStyle='dark-content' />
-            <Feather style={ styles.iconBack } name={'corner-down-left'} size={25} color={'#000'} onPress={ goBack } />
+            <Feather style={ styles.iconBack } name={'corner-down-left'} size={25} color={'#000'} onPress={() => navigation.goBack()} />
             <Text style={ styles.label }>{ label }</Text>
         </View>
     )
@@ -38,4 +41,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default React.memo(CartHeader)
+export default React.memo(StackHeader)

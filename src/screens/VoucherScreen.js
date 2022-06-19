@@ -13,7 +13,7 @@ import {
     Modal,
     TextInput
 } from 'react-native'
-import voucher from '../assets/img/voucher.png'
+import voucher from '../assets/images/voucher.png'
 import LinearGradient from 'react-native-linear-gradient'
 import CartHeader from '../components/cartscreen/CartHeader'
 import { useDispatch, useSelector } from 'react-redux'
@@ -22,10 +22,10 @@ import { getListVoucher, getVoucherByCode } from '../api/voucherApi'
 import SuccessModal from '../components/modal/SuccessModal'
 import LoadingModal from '../components/modal/LoadingModal'
 import AlertModal from '../components/modal/AlertModal'
-import { handleTime } from '../helpers/validation'
-import { SCREEN, COLOR } from '../helpers/configs'
-import discountImage from '../assets/img/discount.png'
-import { convertToDate } from '../helpers/validation'
+import { handleTime } from '../utils/validation'
+import { SCREEN } from '../utils/configs'
+import { COLORS, convertToDate } from '../utils'
+import discountImage from '../assets/images/discount.png'
 
 
 
@@ -52,7 +52,7 @@ const InputCoupon = React.memo(({ value, onchangeValue, onClick }) => {
             <TouchableOpacity
                 disabled={ !isValid() }
                 onPress={ onClick }
-                style={ [styles.applyBtn, { backgroundColor: !isValid() ? '#d2d8e4' : COLOR.violet } ]}
+                style={ [styles.applyBtn, { backgroundColor: !isValid() ? '#d2d8e4' : COLORS.primary } ]}
             >
                 <Text style={ styles.applyTxt }>Apply</Text>
             </TouchableOpacity>
@@ -120,6 +120,7 @@ const ItemCoupon = React.memo(({ item, isSelected, onCLick }) => {
                     />
                     <View style={ styles.txtCouponContainer }>
                         <Text numberOfLines={ 2 } style={ styles.titleCoupon }>{ item.title }</Text>
+                        <Text numberOfLines={ 1 }>{ item.code }</Text>
                         <Text numberOfLines={ 1 } style={ styles.expiryCoupon }>EXP: { convertToDate(item.expired) }</Text>
                     </View>
                 </View>
@@ -359,7 +360,7 @@ const styles = StyleSheet.create({
     borderLeft: {
         width: 8,
         height: '100%',
-        backgroundColor: COLOR.primary1
+        backgroundColor: COLORS.primary
     },
     borderSolid: {
         height: '100%',
@@ -379,7 +380,7 @@ const styles = StyleSheet.create({
         elevation: 3
     },
     txtButtonCoupon: {
-        color: COLOR.primary1,
+        color: COLORS.primary,
         fontWeight: '500',
         textAlign: 'center'
     },

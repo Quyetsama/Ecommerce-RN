@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { violet } from '../../helpers/configs'
+import { violet } from '../../utils/configs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 

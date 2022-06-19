@@ -12,7 +12,7 @@ import {
 } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Carousel from 'react-native-snap-carousel'
-import { SCREEN } from "../helpers/configs"
+import { SCREEN } from "../utils/configs"
 import { SceneMap } from "react-native-tab-view"
 
 
@@ -29,116 +29,118 @@ const images = [
 
 const CarouselComponent = () => {
 
-    // const scrollRef = useRef()
-    // const [selectdIndex, setSelectedIndex] = useState(0)
+    const scrollRef = useRef()
+    const [selectdIndex, setSelectedIndex] = useState(0)
 
-    // useEffect(() => {
-    //     const time = setInterval(() => {
-    //         setSelectedIndex(prev => {
-    //             // console.log(prev)
-    //             const index = prev === images.length - 1 ? 0 : prev + 1
+    useEffect(() => {
+        const time = setInterval(() => {
+            setSelectedIndex(prev => {
+                // console.log(prev)
+                const index = prev === images.length - 1 ? 0 : prev + 1
 
-    //             scrollRef.current.scrollTo({
-    //                 animated: true,
-    //                 y: 0,
-    //                 x: ( widthScreen ) * (index)
-    //             })
+                scrollRef.current.scrollTo({
+                    animated: true,
+                    y: 0,
+                    x: ( widthScreen ) * (index)
+                })
 
-    //             return index
-    //         })
-    //     }, 5000)
+                return index
+            })
+        }, 5000)
 
-    //     return () => clearInterval(time)
-    // }, [])
+        return () => clearInterval(time)
+    }, [])
 
-    // const setImageSelected = (event) => {
-    //     const viewSize = event.nativeEvent.layoutMeasurement.width - 20
+    const setImageSelected = (event) => {
+        const viewSize = event.nativeEvent.layoutMeasurement.width - 20
 
-    //     const contentOffset = event.nativeEvent.contentOffset.x
+        const contentOffset = event.nativeEvent.contentOffset.x
 
-    //     const indexSelected = Math.floor(contentOffset / viewSize)
+        const indexSelected = Math.floor(contentOffset / viewSize)
 
-    //     // console.log('viewSize', viewSize)
-    //     // console.log('contentOffset', contentOffset)
-    //     // console.log('indexSelected', indexSelected)
-    //     // console.log('_____')
+        // console.log('viewSize', viewSize)
+        // console.log('contentOffset', contentOffset)
+        // console.log('indexSelected', indexSelected)
+        // console.log('_____')
 
-    //     setSelectedIndex(indexSelected)
-    // }
-
-    // // console.log('Carousel render')
-
-    // return (
-    //     <View style={ styles.carouselContainer }>
-    //         <ScrollView
-    //             ref={ scrollRef }
-    //             showsHorizontalScrollIndicator={false}
-    //             horizontal 
-    //             pagingEnabled 
-    //             onMomentumScrollEnd={ setImageSelected }
-    //         >
-    //             {images.map((image, index) => (
-    //                 <View style={ styles.itemContainer } key={ index }>
-    //                     <View style={ styles.imgContainer }>
-    //                         <Image
-    //                             style={styles.imgCarousel}
-    //                             source={{
-    //                                 uri: image
-    //                             }}
-    //                             resizeMode='cover'
-    //                         />
-    //                     </View>
-    //                     <View style={ styles.txtContainer }>
-    //                         <View>
-    //                             <Text style={ styles.txtTopic }>Introducing</Text>
-    //                             <Text numberOfLines={2} style={ styles.txtName }>Air Max 2090</Text>
-    //                         </View>
-    //                         <View>
-    //                             <TouchableOpacity style={ styles.btnContainer }>
-    //                                 <Text style={ styles.buyNow }>Buy Now</Text>
-    //                             </TouchableOpacity>
-    //                         </View>
-    //                     </View>
-    //                 </View>
-    //             ))}
-    //         </ScrollView>
-    //         <View style={ styles.circleDiv }>
-    //             {images.map((image, index) => (
-    //                 <View
-    //                     key={ index }
-    //                     style={[ styles.whiteCircle, {opacity: index === selectdIndex ? 1 : 0.3} ]}
-    //                 ></View>
-    //             ))}
-    //         </View>
-    //     </View>
-    // )
-
-    _renderItem = ({item, index}) => {
-        return (
-            <View style={styles.slide}>
-                <Image
-                    style={{
-                        width: SceneMap.WIDTH,
-                        height: SCREEN.WIDTH * 0.75
-                    }}
-                    source={{ uri: item }}
-                />
-            </View>
-        )
+        setSelectedIndex(indexSelected)
     }
 
+    // console.log('Carousel render')
+
     return (
-        <Carousel
-            // ref={(c) => { this._carousel = c; }}
-            data={ images }
-            renderItem={this._renderItem}
-            sliderWidth={SCREEN.WIDTH}
-            itemWidth={SCREEN.WIDTH}
-            loop={ true }
-            // autoplay={ true }
-            // autoplayInterval={ 5000 }
-        />
+        <View style={ styles.carouselContainer }>
+            <ScrollView
+                ref={ scrollRef }
+                showsHorizontalScrollIndicator={false}
+                horizontal 
+                pagingEnabled 
+                onMomentumScrollEnd={ setImageSelected }
+            >
+                {images.map((image, index) => (
+                    <View style={ styles.itemContainer } key={ index }>
+                        <View style={ styles.imgContainer }>
+                            <Image
+                                style={styles.imgCarousel}
+                                source={{
+                                    uri: image
+                                }}
+                                resizeMode='cover'
+                            />
+                        </View>
+                        <View style={ styles.txtContainer }>
+                            <View>
+                                <Text style={ styles.txtTopic }>Introducing</Text>
+                                <Text numberOfLines={2} style={ styles.txtName }>Air Max 2090</Text>
+                            </View>
+                            <View>
+                                <TouchableOpacity style={ styles.btnContainer }>
+                                    <Text style={ styles.buyNow }>Buy Now</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                ))}
+            </ScrollView>
+            <View style={ styles.circleDiv }>
+                {images.map((image, index) => (
+                    <View
+                        key={ index }
+                        style={[ styles.whiteCircle, {opacity: index === selectdIndex ? 1 : 0.3} ]}
+                    ></View>
+                ))}
+            </View>
+        </View>
     )
+
+    // _renderItem = ({item, index}) => {
+    //     return (
+    //         <View style={styles.slide}>
+    //             <Image
+    //                 style={{
+    //                     flex: 1,
+    //                     width: null,
+    //                     height: null,
+    //                 }}
+    //                 source={{ uri: item }}
+    //                 resizeMode='stretch'
+    //             />
+    //         </View>
+    //     )
+    // }
+
+    // return (
+    //     <Carousel
+    //         // ref={(c) => { this._carousel = c; }}
+    //         data={ images }
+    //         renderItem={this._renderItem}
+    //         sliderWidth={SCREEN.WIDTH}
+    //         itemWidth={SCREEN.WIDTH}
+    //         loop={ true }
+    //         autoplay={ true }
+    //         // autoplayInterval={ 10000 }
+    //     />
+    // )
 }
 
 const color = '#34A853'
@@ -226,6 +228,10 @@ const styles = StyleSheet.create({
         color: '#fff',
         paddingVertical: 7,
         paddingHorizontal: 10
+    },
+    slide: {
+        width: '100%',
+        height: 250
     }
 })
 

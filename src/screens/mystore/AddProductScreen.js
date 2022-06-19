@@ -8,7 +8,7 @@ import NameAndDes from '../../components/storescreen/NameAndDes'
 import NoName from '../../components/storescreen/NoName'
 import { isEmpty } from 'lodash'
 
-import { violet } from '../../helpers/configs'
+import { violet } from '../../utils/configs'
 import { useDispatch, useSelector } from 'react-redux'
 import { postProduct, clearProduct, setImageProduct, setValuePrice, setValueQuantity, setValueTransportFee } from '../../redux/actions/myStoreAction'
 

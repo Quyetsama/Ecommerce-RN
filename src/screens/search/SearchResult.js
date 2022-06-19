@@ -17,13 +17,14 @@ import {
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import { COLOR, doMain, SCREEN } from '../../helpers/configs'
+import { doMain, SCREEN } from '../../utils/configs'
+import { COLORS } from '../../utils'
 import ItemProduct from '../../components/ItemProduct'
 import { relatedProduct, sellingProduct, sortPriceProduct } from '../../api/productApi'
 import useBackButton from '../../hooks/useBackButton'
 import useFetchProducts from '../../hooks/useFetchProducts'
 import LoadingModal from '../../components/modal/LoadingModal'
-import notFoundIMG from '../../assets/img/notFound.png'
+import notFoundIMG from '../../assets/images/notFound.png'
 
 import Animated, { 
     useAnimatedGestureHandler,
@@ -36,11 +37,11 @@ import DrawerFilter from './DrawerFilter'
 
 
 const SPRING_CONFIG = {
-    damping: 80,
+    damping: 10,
     overshootClamping: true,
-    restDisplacementThreshold: 0.1,
-    restSpeedThreshold: 0.1,
-    stiffness: 500
+    restDisplacementThreshold: 0.01,
+    restSpeedThreshold: 2,
+    stiffness: 100
 }
 
 
@@ -52,7 +53,7 @@ const SearchBar = React.memo(({ value, onPress, onFilter, goBack }) => {
                 style={ styles.backButton }
                 onPress={ goBack }
             >
-                <Feather name={'corner-down-left'} size={24} color={ COLOR.violet } />
+                <Feather name={'corner-down-left'} size={24} color={ COLORS.primary } />
             </TouchableOpacity>
             <TouchableOpacity 
                 style={ styles.inputContainer }
@@ -70,7 +71,7 @@ const SearchBar = React.memo(({ value, onPress, onFilter, goBack }) => {
                 style={ styles.backButton }
                 onPress={ onFilter }
             >
-                <Feather name={'filter'} size={24} color={ COLOR.violet } />
+                <Feather name={'filter'} size={24} color={ COLORS.primary } />
             </TouchableOpacity>
         </View>
     )
@@ -85,7 +86,7 @@ const SectionFilter = React.memo(({ select, onPress }) => {
                 onPress={() => onPress(1)} 
                 activeOpacity={ 0.5 }
             >
-                <Text style={{ color: select === 1 ? COLOR.violet : '#969696' }}>Related</Text>
+                <Text style={{ color: select === 1 ? COLORS.primary : COLORS.gray }}>Related</Text>
                 {
                     select === 1 && <Indicator />
                 }
@@ -99,7 +100,7 @@ const SectionFilter = React.memo(({ select, onPress }) => {
                 onPress={() => onPress(2)} 
                 activeOpacity={ 0.5 }
             >
-                <Text style={{ color: select === 2 ? COLOR.violet : '#969696' }}>Selling</Text>
+                <Text style={{ color: select === 2 ? COLORS.primary : COLORS.gray }}>Selling</Text>
                 {
                     select === 2 && <Indicator />
                 }
@@ -123,13 +124,13 @@ const SectionFilter = React.memo(({ select, onPress }) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                 }}>
-                    <Text style={{ color: (select === 3 || select === 4) ? COLOR.violet : '#969696', paddingRight: 6 }}>Price</Text>
+                    <Text style={{ color: (select === 3 || select === 4) ? COLORS.primary : COLORS.gray, paddingRight: 6 }}>Price</Text>
                     {
                         select === 3
-                        ? <FontAwesome5 name={'long-arrow-alt-up'} size={14} color={ COLOR.violet } />
+                        ? <FontAwesome5 name={'long-arrow-alt-up'} size={14} color={ COLORS.primary } />
                         : select === 4
-                        ? <FontAwesome5 name={'long-arrow-alt-down'} size={14} color={ COLOR.violet } />
-                        : <FontAwesome5 name={'sort'} size={14} color={ '#969696' } />
+                        ? <FontAwesome5 name={'long-arrow-alt-down'} size={14} color={ COLORS.primary } />
+                        : <FontAwesome5 name={'sort'} size={14} color={ COLORS.gray } />
                     }
                 </View>
                 {
@@ -242,7 +243,7 @@ const SearchResult = ({ route, navigation }) => {
                 category
             })
             handleFilterSection(1)
-        }, 50)   
+        }, 100)   
     }, [filters])
 
     const dimensions = useWindowDimensions()
@@ -441,7 +442,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: SCREEN.WIDTH / 3,
         height: 2.6,
-        backgroundColor: COLOR.violet
+        backgroundColor: COLORS.primary
     },
     productContainer: {
         flex: 1,

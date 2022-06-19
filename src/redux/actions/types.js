@@ -1,9 +1,25 @@
+// Home
+export const SET_REFRESHING = 'SET_REFRESHING'
+export const SET_CATEGORY = 'SET_CATEGORY'
+export const INCREASE_PAGE = 'INCREASE_PAGE'
+
 // Auth
 export const RETRIEVE_TOKEN = 'RETRIEVE_TOKEN'
 export const LOGIN = 'LOGIN'
 export const LOGOUT = 'LOGOUT'
 export const REGISTER = 'REGISTER'
 export const SETCOIN = 'SETCOIN'
+
+// Saga Login & SignUp
+export const HANDLE_LOGIN = 'HANDLE_LOGIN'
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
+export const LOGIN_FAILURE = 'LOGIN_FAILURE'
+export const CLEAR_ERROR_AUTH = 'CLEAR_ERROR_AUTH'
+
+
+export const HANDLE_SIGNUP = 'HANDLE_SIGNUP'
+export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
+export const SIGNUP_FAILURE = 'SIGNUP_FAILURE'
 
 // myStore
 export const POST_PRODUCT = 'POST_PRODUCT'

@@ -9,8 +9,8 @@ import {
 } from 'react-native'
 import FlatCart from '../FlatCard'
 import { useNavigation } from '@react-navigation/native'
-import { SCREEN, COLOR } from '../../helpers/configs'
-import notFoundIMG from '../../assets/img/notFound.png'
+import { SCREEN, COLOR } from '../../utils/configs'
+import notFoundIMG from '../../assets/images/notFound.png'
 import { COLORS } from '../../theme'
 
 

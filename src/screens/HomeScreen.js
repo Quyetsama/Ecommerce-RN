@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import {
     StyleSheet,
     Text,
@@ -7,8 +7,11 @@ import {
     Animated,
     Dimensions,
     StatusBar,
-    Modal
+    Modal,
+    RefreshControl
 } from "react-native"
+import { useSelector, useDispatch } from 'react-redux'
+import { setRefreshing, setCategory, inceasePage } from "../redux/actions/homeAction"
 import UnderLineSection from "../components/UnderLineSection"
 import HeaderHomeComponent from "../components/HeaderHomeComponent"
 import CarouselComponent from "../components/CarouselComponent"
@@ -21,7 +24,7 @@ import Products from "../components/ProductsComponent"
 
 import ViewHeader from "../components/test/ViewHeader"
 import Header from "../components/test/Header"
-import { COLOR } from "../helpers/configs"
+import { COLOR } from "../utils/configs"
 import { COLORS } from "../theme"
 
 
@@ -31,21 +34,32 @@ export const SearchContext = React.createContext({})
 
 const HomeScreen = ({ navigation }) => {
 
+    const { refreshing } = useSelector(state => state.homeReducer)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if(refreshing) {
+            dispatch(setRefreshing())
+        }
+    }, [refreshing])
+
+    const reFreshData = async () => {
+        dispatch(setRefreshing())
+    }
+
     const offset = useRef(new Animated.Value(0)).current
     const refCategories = useRef()
-    const [index, setIndex] = useState()
-    const [category, setCategory] = useState({
-        id: 'all',
-        page: 1
-    })
+    const [scrollY, setScrollY] = useState()
+
 
     const executeScroll = (idCategory) => {
         refCategories.current.scrollTo({
-            y: index.y,
+            y: scrollY,
             animated: true
         })
-        console.log(idCategory)
-        setCategory({id: idCategory, page: 1})
+        
+        dispatch(setCategory(idCategory, 1))
+        // setCategory({id: idCategory, page: 1})
     }
 
     const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
@@ -68,57 +82,45 @@ const HomeScreen = ({ navigation }) => {
                 showsVerticalScrollIndicator={ false }
                 removeClippedSubviews
                 nestedScrollEnabled={true}
-                stickyHeaderIndices={[5]}
+                stickyHeaderIndices={[2]}
                 scrollEventThrottle={0.5}
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: offset } } }],
                     {
                         listener: ({nativeEvent}) => {
                             if (isCloseToBottom(nativeEvent)) {
-                                setCategory({...category, page: category.page + 1})
+                                dispatch(inceasePage())
+                                // setCategory({...category, page: category.page + 1})
                             }
                         },
                         useNativeDriver: false 
                     }
                 )}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={ refreshing }
+                        onRefresh={ reFreshData }
+                    />
+                }
             >
                 
-                {/* <View style={ styles.bodyContainer }> */}
-                {/* CarouselImage */}
-                
-                <ViewHeader />
-                {/* <CarouselComponent /> */}
+                {/* <ViewHeader /> */}
+                <CarouselComponent />
 
-                {/* Features */}
-                {/* <FeaturesComponent /> */}
-                {/* <UnderLineSection /> */}
 
                 <ProductRecommend />
-                <ProductRecommend />
-                <ProductRecommend />
-                {/* <UnderLineSection /> */}
-
-                {/* ProductLimit */}
-                {/* <ProductLimit />
-                <UnderLineSection /> */}
-
-                {/* Discount */}
-                {/* <ProductDiscount />
-                <UnderLineSection /> */}
-
-                {/* CarouselImage */}
-                {/* <CarouselComponent /> */}
-                {/* <UnderLineSection /> */}
+                {/* <ProductRecommend />
+                <ProductRecommend /> */}
 
                 {/* Categories */}
-                <Text style={{ padding: 5, fontSize: 15, fontWeight: 'bold', color: COLORS.dark, marginLeft: 5 }}>Danh Mục Sản Phẩm</Text>
+                {/* <Text style={{ padding: 5, fontSize: 15, fontWeight: 'bold', color: COLORS.dark, marginLeft: 5 }}>Danh Mục Sản Phẩm</Text> */}
                 <Categories onLayout={(event) => {
                     const {x, y, width, height} = event.nativeEvent.layout;
-                    setIndex({x, y, width, height})
+                    setScrollY(y)
                 }} onPress={executeScroll} />
 
                 {/* Product */}
-                <Products category={ category } navigation={navigation} />
+                <Products navigation={navigation} />
                 
             </ScrollView>
         </View>

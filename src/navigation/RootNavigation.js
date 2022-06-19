@@ -14,6 +14,13 @@ export function navigate(name, params) {
         }
     }, 100)
 }
+
+export function reset(name, params) {
+    navigationRef.reset({
+        index: 0,
+        routes: [{name: name}]
+    })
+}
 // https://stackoverflow.com/questions/69099279/react-native-how-to-navigate-on-push-notification-click
 // https://reactnavigation.org/docs/navigating-without-navigation-prop/
 // https://github.com/zo0r/react-native-push-notification/issues/1548

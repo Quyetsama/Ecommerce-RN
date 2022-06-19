@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { NAME } from '../../helpers/configs'
+import { NAME } from '../../utils/configs'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -22,8 +22,8 @@ const CoinVoucher = ({ coin, onCLickVoucher }) => {
                 <View style={ styles.contentContainer }>          
                     <ICON icon={ 'skype' } color={ '#ffe600' } />
                     <View style={ styles.textContainer }>
-                        <Text style={ styles.title }>{ NAME } Xu</Text>
-                        <Text style={{ color: 'tomato', fontSize: 13, fontWeight: '500' }}>{ coin } Xu</Text>
+                        <Text style={ styles.title }>{ NAME } Coin</Text>
+                        <Text style={{ color: 'tomato', fontSize: 13, fontWeight: '500' }}>{ coin } Coin</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -35,8 +35,8 @@ const CoinVoucher = ({ coin, onCLickVoucher }) => {
                 <View style={ styles.contentContainer }>          
                     <ICON icon={ 'ticket-percent' } color={ '#00a6ff' } />
                     <View style={ styles.textContainer }>
-                        <Text style={ styles.title }>Kho Voucher</Text>
-                        <Text style={{ color: '#969696', fontSize: 13 }}>Tìm thêm</Text>
+                        <Text style={ styles.title }>Voucher</Text>
+                        <Text style={{ color: '#969696', fontSize: 13 }}>Find more</Text>
                     </View>
                 </View>
             </TouchableOpacity>

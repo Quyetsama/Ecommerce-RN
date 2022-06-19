@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     Image
 } from 'react-native'
-import { doMain } from '../helpers/configs'
+import { doMain } from '../utils/configs'
 
 
 

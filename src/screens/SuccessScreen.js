@@ -6,8 +6,8 @@ import {
     Text,
     TouchableOpacity
 } from 'react-native'
-import success from '../assets/img/success.png'
-import { violet } from '../helpers/configs'
+import success from '../assets/images/success.png'
+import { COLORS } from '../utils'
 
 
 
@@ -116,10 +116,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around'
     },
     button: {
-        backgroundColor: '#9087e8',
+        backgroundColor: COLORS.primary,
         borderRadius: 6,
         borderWidth: 1,
-        borderColor: '#9087e8',
         paddingVertical: 8,
         paddingHorizontal: 24
     },

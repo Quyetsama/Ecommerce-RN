@@ -16,21 +16,25 @@ import {
     Modal,
     Keyboard
 } from 'react-native'
-import loginBG from '../../assets/img/login.png'
+import loginBG from '../../assets/images/login.png'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
-import { violet } from '../../helpers/configs'
 import LinearGradient from 'react-native-linear-gradient'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Formik } from 'formik'
-import { SignUpSchema } from '../../helpers/validation'
+import { SignUpSchema } from '../../utils/validation'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { login } from '../../redux/actions/authAction'
 import { signUpApi } from '../../api/authApi'
 import LoadingModal from '../../components/modal/LoadingModal'
 import AlertModal from '../../components/modal/AlertModal'
+import { COLORS, SIZE } from '../../utils'
+
+import { getTokenDevice } from '../../utils/notification'
+import { actionSignUp } from '../../redux/actions/signUpAction'
+import { CLEAR_ERROR_AUTH } from '../../redux/actions/types'
 
 
 
@@ -42,40 +46,27 @@ const HEIGHT = Dimensions.get('window').height
 const FieldAuth = ({ iconRight, iconLeft, children, onShowPassword }) => {
     return (
         <View style={ styles.fieldContainer }>
-            <MaterialCommunityIcons name={ iconLeft } size={ 22 } color={ '#969696' } />
+            <MaterialCommunityIcons name={ iconLeft } size={ 22 } color={ COLORS.gray } />
             {children}
-            <Ionicons onPress={ onShowPassword } name={ iconRight } size={ 22 } color={ violet } />
+            <Ionicons onPress={ onShowPassword } name={ iconRight } size={ 22 } color={ COLORS.primary } />
         </View>
     )
 }
 
 const SignUpScreen = ({ navigation }) => {
 
+    const { isLoading, error } = useSelector(state => state.authReducer)
     const dispatch = useDispatch()
     const [hidePass, setHidePass] = useState(true)
-    const [isModalVisible, setIsModalVisible] = useState(false)
-    const [signUpFailed, setSignUpFailed] = useState(false)
+
 
     const handleSignUp = async (values) => {
-
-        console.log(values)
-        // fetch api => token
         try{
-            setIsModalVisible(true)
-            const res = await signUpApi(values)
-            if(res.data.success) {
-                setIsModalVisible(false)
-                navigation.reset({
-                    index: 0,
-                    routes: [{name: 'SignIn'}]
-                })
-            }
+            const tokenDevice = await getTokenDevice()
+            dispatch(actionSignUp(values.fullName, values.email, values.password, tokenDevice))
         }
         catch(error) {
-            setIsModalVisible(false)
-            if(error.response.status === 403){
-                setSignUpFailed(true)
-            }
+            console.log(error)
         }
     }
 
@@ -85,10 +76,9 @@ const SignUpScreen = ({ navigation }) => {
 
     return (
         <ImageBackground
-            style={ styles.loginScreen }
-            source={ loginBG }
+            style={ styles.SignUpScreen }
+            // source={ loginBG }
         >
-            <StatusBar translucent barStyle='dark-content' />
             <Feather style={ styles.iconBack } name={'corner-down-left'} size={28} color={'#000'} onPress={() => navigation.goBack()} />
             <KeyboardAwareScrollView
                 scrollEnabled={false}
@@ -178,7 +168,7 @@ const SignUpScreen = ({ navigation }) => {
                                     >
                                         <LinearGradient
                                             style={ styles.gradientBtn }
-                                            colors={['#d57dff', '#8240ff']}
+                                            colors={[COLORS.primary, COLORS.primary]}
                                             start={{ x: 0, y: 1 }}
                                             end={{ x: 1, y: 1 }}
                                         >
@@ -193,17 +183,17 @@ const SignUpScreen = ({ navigation }) => {
                         )}
                     </Formik>
                 </View>
+            </KeyboardAwareScrollView>
+
             <Text style={ styles.registerText }>
                 Already have a account?
-                <Text style={{ color: violet }} onPress={() => navigation.navigate('SignIn')}> Sign In</Text>
+                <Text style={{ color: COLORS.primary }} onPress={() => navigation.navigate('SignIn')}> Sign In</Text>
             </Text>
-            </KeyboardAwareScrollView>
 
             <Modal
                 transparent={ true }
                 animationType='fade'
-                visible={ isModalVisible }
-                onRequestClose={() => setIsModalVisible(false) }
+                visible={ isLoading }
             >
                 <LoadingModal />
             </Modal>
@@ -211,13 +201,13 @@ const SignUpScreen = ({ navigation }) => {
                 statusBarTranslucent
                 transparent={ true }
                 animationType='fade'
-                visible={ signUpFailed }
-                onRequestClose={() => setSignUpFailed(false)}
+                visible={ error ? true : false }
+                onDismiss
             >
                 <AlertModal 
-                    title={'SignUp Failed'} 
-                    content={'Email is already in use. Please try again.'}
-                    changeModalVisible={(bool) => setSignUpFailed(bool)}
+                    title={'Sign Up Failed'} 
+                    content={`${ error }\nPlease try again.`}
+                    changeModalVisible={() => dispatch({ type: CLEAR_ERROR_AUTH })}
                 />
             </Modal>
         </ImageBackground>
@@ -225,24 +215,18 @@ const SignUpScreen = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-    loginScreen: {
+    SignUpScreen: {
         flex: 1,
         width: '100%',
         backgroundColor: 'white',
-        height: HEIGHT + StatusBar.currentHeight
+        paddingHorizontal: 24
     },
     iconBack: {
-        position: 'absolute',
-        top: 32,
-        left: 24,
-        zIndex: 100
+        paddingVertical: 24
     },
     container: {
         flex: 1,
-        // height: HEIGHT,
-        justifyContent: 'center',
-        paddingHorizontal: 24,
-        marginBottom: 24
+        marginTop: 100,
     },
     topContainer: {
         marginBottom: 24
@@ -250,10 +234,10 @@ const styles = StyleSheet.create({
     loginText: {
         color: '#000',
         fontWeight: '800',
-        fontSize: 40
+        fontSize: 50
     },
     registerText: {
-        color: '#969696',
+        color: COLORS.gray,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 18

@@ -1,25 +1,40 @@
 import React, { useEffect, useState, useCallback } from "react"
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Modal, StatusBar } from "react-native"
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Modal, StatusBar, RefreshControl } from "react-native"
 import { useSelector, useDispatch } from 'react-redux'
-import { logout } from '../redux/actions/authAction'
+import { logout, setCoin } from '../redux/actions/authAction'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Information from "../components/profilescreen/InformationComponent"
 import CoinVoucher from "../components/profilescreen/CoinVoucherComponent"
 import OrderComponent from "../components/profilescreen/OrderComponent"
 import ItemProfile from "../components/profilescreen/ItemProfileComponent"
 import LoadingModal from '../components/modal/LoadingModal'
-import { logoutApi } from "../api/authApi"
-import { getTokenDevice } from "../helpers/notification"
+import { logoutApi, getCoin } from "../api/authApi"
+import { getTokenDevice } from "../utils/notification"
 import TabHeader from "../components/headers/TabHeader"
 
 
 
 const ProfileScreen = ({ navigation }) => {
-
-    const [isLoading, setIsLoading] = useState(false)
-
+    
     const { userToken, fullName, coin, email } = useSelector(state => state.authReducer)
     const dispatch = useDispatch()
+    const [isLoading, setIsLoading] = useState(false)
+    const [refreshing, setRefreshing] = useState(false)
+
+    const fetchCoin = useCallback(async () => {
+        try {
+            setRefreshing(true)
+            const res = await getCoin(userToken)
+            if(res?.data?.success) {
+                dispatch(setCoin(+res.data.data))
+                setRefreshing(false)
+            }
+        }
+        catch(error) {
+            console.log(error)
+            setRefreshing(false)
+        }       
+    }, [userToken])
 
     const handleSignIn = useCallback(() => {
         navigation.navigate('stackAuth', { screen: 'SignIn' })
@@ -58,6 +73,10 @@ const ProfileScreen = ({ navigation }) => {
         userToken ? navigation.navigate('HistoryStack') : handleSignIn()
     }, [userToken])
 
+    const goToFavorite = useCallback(() => {
+        userToken ? navigation.navigate('Favorite') : handleSignIn()
+    }, [userToken])
+
     return (
         <View style={ styles.container }>
             {/*  */}
@@ -67,6 +86,12 @@ const ProfileScreen = ({ navigation }) => {
             <ScrollView
                 contentContainerStyle={{ justifyContent: 'center', paddingBottom: 100 }}
                 showsVerticalScrollIndicator={ false }
+                refreshControl={
+                    <RefreshControl
+                        refreshing={ refreshing }
+                        onRefresh={ fetchCoin }
+                    />
+                }
             >
 
                 <Information 
@@ -77,17 +102,19 @@ const ProfileScreen = ({ navigation }) => {
                     onSignUp={ handleSignUp } 
                 />
         
-                <CoinVoucher coin={ coin } onCLickVoucher={ goToStoreVoucher } />
 
-                <OrderComponent onHistory={ goToHistory } />
-
-                <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} chevron onPress={goToStore} />
-                <ItemProfile icon={'heart-outline'} label={'Yêu thích'} txtDetail={'21 Likes'} chevron />
+                {/* <OrderComponent onHistory={ goToHistory } /> */}
 
                 {userToken &&
-                    <TouchableOpacity style={ styles.logoutBtn }>
-                        <ItemProfile icon={'logout'} color={'red'} label={'Log out'} onPress={handleLogout} />
-                    </TouchableOpacity>
+                    <>
+                        <CoinVoucher coin={ coin } onCLickVoucher={ goToStoreVoucher } />
+                        <ItemProfile icon={'history'} label={'Order history'} txtDetail={'See more'} onPress={ goToHistory } chevron />
+                        {/* <ItemProfile icon={'storefront-outline'} label={'Cửa hàng'} txtDetail={'Đăng kí miễn phí'} chevron onPress={goToStore} /> */}
+                        <ItemProfile icon={'heart-outline'} label={'Favorites'} onPress={ goToFavorite } chevron />
+                        <TouchableOpacity style={ styles.logoutBtn }>
+                            <ItemProfile icon={'logout'} color={'red'} label={'Log out'} onPress={handleLogout} />
+                        </TouchableOpacity>
+                    </>
                 }
             </ScrollView>
             

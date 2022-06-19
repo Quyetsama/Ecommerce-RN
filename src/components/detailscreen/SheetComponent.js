@@ -4,15 +4,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Animated from 'react-native-reanimated'
 import { PanGestureHandler, ScrollView as ScrollView2 } from 'react-native-gesture-handler'
-import { violet, doMain, SCREEN, SIZE } from '../../helpers/configs'
+import { violet, doMain, SCREEN, SIZE } from '../../utils/configs'
 import SuccessModal from '../modal/SuccessModal'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../../redux/actions/cartAction'
-import { theme } from '../../theme'
+import { COLORS } from '../../utils'
 
 
-const color = ['Black', 'White', 'yellow', 'Pink', 'Brown', 'pink']
 
 const ItemSheet = React.memo(({ classify, selected, onSelect }) => {
 
@@ -58,13 +57,13 @@ const ItemSheet = React.memo(({ classify, selected, onSelect }) => {
                         style={{
                             paddingVertical: 12,
                             paddingHorizontal: 18,
-                            backgroundColor: item === isSelect ? theme.primary : theme.dark,
+                            backgroundColor: item === isSelect ? COLORS.secondary : COLORS.primary,
                             borderRadius: 30,
                             marginRight: 10,
                             marginVertical: 5
                         }}
                     >
-                        <Text style={{ color: item === isSelect ? theme.dark : 'white', fontWeight: 'bold' }}>{ item }</Text>
+                        <Text style={{ color: item === isSelect ? COLORS.primary : 'white', fontWeight: 'bold' }}>{ item }</Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -94,7 +93,7 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
                     borderRadius: 100
                 }}>
                     <TouchableOpacity onPress={ onDecrease }>
-                        <Entypo name={ 'minus' } size={20} color={ theme.dark } />
+                        <Entypo name={ 'minus' } size={20} color={ COLORS.primary } />
                     </TouchableOpacity>
                 </View>
                 <View style={{
@@ -120,7 +119,7 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
 
                 }}>
                     <TouchableOpacity onPress={ onIncrease }>
-                        <Entypo name={ 'plus' } size={20} color={ theme.dark } />
+                        <Entypo name={ 'plus' } size={20} color={ COLORS.primary } />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -233,7 +232,7 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                             resizeMode='contain'
                         />
                     </View>
-                    <View style={{ flex: 1, alignSelf: 'center', marginLeft: 10 }}>
+                    <View style={{ flex: 1, marginLeft: 10 }}>
                         <Text style={ styles.nameProduct }>{ product?.name }</Text>
                         <Text style={ styles.priceProduct }>{ (+product?.price).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
                         {
@@ -281,7 +280,7 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                     >
                         <Text
                             style={{
-                                color: theme.dark,
+                                color: COLORS.primary,
                                 fontSize: 18,
                                 fontWeight: '800'
                             }}
@@ -358,7 +357,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '70%',
-        backgroundColor: theme.primary,
+        backgroundColor: COLORS.secondary,
         paddingVertical: 18,
         borderRadius: 30,
         marginBottom: 18
@@ -371,8 +370,8 @@ const styles = StyleSheet.create({
     },
     nameProduct: {
         fontSize: SIZE(16),
-        fontWeight: 'bold',
-        color: theme.dark
+        // fontWeight: 'bold',
+        // color: COLORS.primary
     },
     priceProduct: {
         fontSize: SIZE(22),

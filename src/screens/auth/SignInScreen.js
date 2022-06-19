@@ -8,73 +8,54 @@ import {
     StatusBar,
     TextInput,
     Dimensions,
-    KeyboardAvoidingView,
-    Platform,
-    TouchableWithoutFeedback,
-    ScrollView,
-    Alert,
     Modal,
-    Keyboard
 } from 'react-native'
-import loginBG from '../../assets/img/login.png'
+import loginBG from '../../assets/images/login.png'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
-import { violet } from '../../helpers/configs'
 import LinearGradient from 'react-native-linear-gradient'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Formik } from 'formik'
-import { SignInSchema } from '../../helpers/validation'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useDispatch } from 'react-redux'
-import { login } from '../../redux/actions/authAction'
-import { signInApi } from '../../api/authApi'
+import { SignInSchema } from '../../utils/validation'
+import { useSelector, useDispatch } from 'react-redux'
 import LoadingModal from '../../components/modal/LoadingModal'
 import AlertModal from '../../components/modal/AlertModal'
-import { getTokenDevice } from '../../helpers/notification'
+import { getTokenDevice } from '../../utils/notification'
+
+import { actionLogin } from '../../redux/actions/loginAction'
+import { CLEAR_ERROR_AUTH } from '../../redux/actions/types'
+import { COLORS, SIZE } from '../../utils'
 
 
 
 
-const WIDTH = Dimensions.get('window').width
-const HEIGHT = Dimensions.get('window').height
+
 
 
 const FieldAuth = ({ iconRight, iconLeft, children, onShowPassword }) => {
     return (
         <View style={ styles.fieldContainer }>
-            <MaterialCommunityIcons name={ iconLeft } size={ 22 } color={ '#969696' } />
+            <MaterialCommunityIcons name={ iconLeft } size={ 22 } color={ COLORS.gray } />
             {children}
-            <Ionicons onPress={ onShowPassword } name={ iconRight } size={ 22 } color={ violet } />
+            <Ionicons onPress={ onShowPassword } name={ iconRight } size={ 22 } color={ COLORS.primary } />
         </View>
     )
 }
 
 const SignInScreen = ({ navigation }) => {
 
+    const { isLoading, error } = useSelector(state => state.authReducer)
     const dispatch = useDispatch()
     const [hidePass, setHidePass] = useState(true)
-    const [isModalVisible, setIsModalVisible] = useState(false)
-    const [loginFailed, setLoginFailed] = useState(false)
 
     const handleSignIn = async (values) => {
-        // fetch api => token
         try{
             const tokenDevice = await getTokenDevice()
-            setIsModalVisible(true)
-            const res = await signInApi(values, tokenDevice)
-
-            // console.log(res.data)
-            await AsyncStorage.setItem('userToken', res.headers.authorization)
-            setIsModalVisible(false)
-            dispatch(login(res.data.profile.fullName, res.headers.authorization, res.data.profile.coin, res.data.profile.email))
+            dispatch(actionLogin(values.email, values.password, tokenDevice))
         }
         catch(error) {
-            // console.log(error.response.data)
-            setIsModalVisible(false)
-            if(error.response.data === 'Unauthorized'){
-                setLoginFailed(true)
-            }
+            console.log(error)
         }
     }
 
@@ -85,14 +66,13 @@ const SignInScreen = ({ navigation }) => {
     return (
         <ImageBackground
             style={ styles.loginScreen }
-            source={ loginBG }
+            // source={ loginBG }
         >
-            <StatusBar translucent barStyle='dark-content' />
             <Feather style={ styles.iconBack } name={'corner-down-left'} size={28} color={'#000'} onPress={() => navigation.goBack()} />
             <KeyboardAwareScrollView
                 scrollEnabled={false}
                 showsVerticalScrollIndicator={ false }
-                contentContainerStyle={{ height: HEIGHT }}
+                contentContainerStyle={{ flex: 1 }}
             >
                 <View style={ styles.container }>
                     <View style={ styles.topContainer }>
@@ -160,7 +140,7 @@ const SignInScreen = ({ navigation }) => {
                                     >
                                         <LinearGradient
                                             style={ styles.gradientBtn }
-                                            colors={['#d57dff', '#8240ff']}
+                                            colors={[COLORS.primary, COLORS.primary]}
                                             start={{ x: 0, y: 1 }}
                                             end={{ x: 1, y: 1 }}
                                         >
@@ -173,18 +153,17 @@ const SignInScreen = ({ navigation }) => {
                         )}
                     </Formik>
                 </View>
+            </KeyboardAwareScrollView>
+            
             <Text style={ styles.registerText }>
                 Don't have an account?
-                <Text style={{ color: violet }} onPress={() => navigation.navigate('SignUp')}> Sign Up</Text>
+                <Text style={{ color: COLORS.primary }} onPress={() => navigation.navigate('SignUp')}> Sign Up</Text>
             </Text>
-            </KeyboardAwareScrollView>
-
 
             <Modal
                 transparent={ true }
                 animationType='fade'
-                visible={ isModalVisible }
-                onRequestClose={() => setIsModalVisible(false) }
+                visible={ isLoading }
             >
                 <LoadingModal />
             </Modal>
@@ -192,13 +171,13 @@ const SignInScreen = ({ navigation }) => {
                 statusBarTranslucent
                 transparent={ true }
                 animationType='fade'
-                visible={ loginFailed }
-                onRequestClose={() => setLoginFailed(false)}
+                visible={ error ? true : false }
+                onDismiss
             >
                 <AlertModal 
                     title={'Login Failed'} 
-                    content={'Your email or password is incorrect.\nPlease try again.'}
-                    changeModalVisible={(bool) => setLoginFailed(bool)}
+                    content={`${ error }\nPlease try again.`}
+                    changeModalVisible={() => dispatch({ type: CLEAR_ERROR_AUTH })}
                 />
             </Modal>
         </ImageBackground>
@@ -208,22 +187,15 @@ const SignInScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     loginScreen: {
         flex: 1,
-        width: '100%',
         backgroundColor: 'white',
-        height: HEIGHT + StatusBar.currentHeight
+        paddingHorizontal: 24
     },
     iconBack: {
-        position: 'absolute',
-        top: 32,
-        left: 24,
-        zIndex: 100
+        paddingVertical: 24
     },
     container: {
         flex: 1,
-        // height: HEIGHT,
-        justifyContent: 'center',
-        paddingHorizontal: 24,
-        marginBottom: 24
+        marginTop: 100,
     },
     topContainer: {
         marginBottom: 24
@@ -231,7 +203,7 @@ const styles = StyleSheet.create({
     loginText: {
         color: '#000',
         fontWeight: '800',
-        fontSize: 40
+        fontSize: 50
     },
     pleaseText: {
         color: '#969696',
@@ -254,7 +226,6 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         borderBottomWidth: 1,
         borderBottomColor: '#f2f2f2',
-        // elevation: 2
     },
     input: {
         flex: 1,

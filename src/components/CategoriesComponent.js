@@ -1,50 +1,65 @@
 import React, { useState, useRef, useEffect, forwardRef } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity, ScrollView, FlatList, Dimensions } from "react-native"
+import { useSelector } from 'react-redux'
+import { setCategory } from "../redux/actions/homeAction"
 import ItemCategories from "./ItemCategories"
-import { doMain } from "../helpers/configs"
+import { doMain } from "../utils/configs"
 import { getAllCategory } from "../api/categoriesApi"
 import useFetchCategories from "../hooks/useFetchCategories"
+import { COLORS } from "../utils"
 
+
+const ItemCategory = React.memo(({ item, isSelect, onSelect }) => {
+
+    const [width, setWidth] = useState(0)
+    // const itemRef = useRef()
+
+    // itemRef?.current?.measure((ox, oy, width, height, px, py) => {
+    //     console.log('measure ' + item.name + ' - ' + width)
+    // })
+
+    return (
+        <TouchableOpacity
+            // ref={ itemRef }
+            onLayout={ e => {
+                // console.log('WIDTH', e.nativeEvent.layout.width)
+                // console.log('WIDTH ' + item.name + ' - ' + e.nativeEvent.layout.width)
+                setWidth(e.nativeEvent.layout.width)
+            }}
+            style={[ styles.itemCategoryBtn, { backgroundColor: isSelect ? COLORS.primary : COLORS.white } ]}
+            onPress={() => {
+                onSelect(width)
+            }}
+        >
+            <Text style={[ styles.itemCategoryTxt, { color: isSelect ? COLORS.white : COLORS.gray } ]}>{ item.name }</Text>
+        </TouchableOpacity>
+    )
+})
 
 const Categories = ({ onLayout, onPress }) => {
 
-    const categories = useFetchCategories([
-        {
-            _id: 'all',
-            name: 'All',
-            image: 'all.png'
-        }
-    ])
-    const [indexSelected, setIndexSelected] = useState(0)
+    const { refreshing, category } = useSelector(state => state.homeReducer)
+
+    const categories = useFetchCategories()
     const Flatlist = useRef()
 
-    // useEffect(() => {
-    //     getAllCategory().then(res => {
-    //         setCategories([{
-    //             _id: 'all',
-    //             name: 'Tất cả',
-    //             image: 'all.png'
-    //         }, 
-    //             ...res.data.categories
-    //         ])
-    //     })
-    //     .catch(error => console.log(error))
-    // }, [])
+    useEffect(() => {
+        if(refreshing && categories.length) {
+            handleScrollCategory(0, 0)
+        }
+    }, [refreshing, categories])
 
-    const handleScrollCategory = (index) => {
+    const handleScrollCategory = (index, width) => {
+        // console.log(width)
         Flatlist.current.scrollToIndex({
             animated: true,
             index: index,
             // viewPosition: 1,
 
             // -40 vi item width = 80
-            viewOffset: (Dimensions.get('window').width / 2) - 40
+            viewOffset: (Dimensions.get('window').width / 2) - (width / 2)
           })
-          
-          setIndexSelected(index)
     }
-
-    // console.log('Categories render')
 
     return (
         <View onLayout={onLayout} style={ styles.container }>
@@ -56,14 +71,13 @@ const Categories = ({ onLayout, onPress }) => {
                 data={categories}
                 keyExtractor={(item) => item._id}
                 renderItem={({item, index}) => (
-                    <ItemCategories
-                        onPress={() => {
-                            handleScrollCategory(index)
-                            onPress(item._id)        
+                    <ItemCategory 
+                        item={ item }
+                        isSelect={ item._id === category.id ? true : false }
+                        onSelect={(width) => {
+                            onPress(item._id)  
+                            handleScrollCategory(index, width)
                         }}
-                        image={ doMain + '/image/' + item.image }
-                        text={ item.name }
-                        indexSelected={ index === indexSelected ? true : false }
                     />
                 )}
             />
@@ -79,8 +93,12 @@ const styles = StyleSheet.create({
     },
     flatlistContainer: {
         // backgroundColor: 'red',
-        paddingVertical: 5,
-        paddingLeft: 5
+        // paddingVertical: 5,
+        // paddingLeft: 5
+        backgroundColor: COLORS.white,
+        paddingTop: 6,
+        paddingBottom: 18,
+        paddingLeft: 18
     },
     itemContainer: {
         width: 80,
@@ -105,6 +123,19 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 12,
         textAlign: 'center'
+    },
+
+    itemCategoryBtn: {
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 25,
+        backgroundColor: COLORS.white,
+        marginRight: 18,
+        elevation: 5
+    },
+    itemCategoryTxt: {
+        color: COLORS.primary,
+        fontWeight: 'bold'
     }
 })
 

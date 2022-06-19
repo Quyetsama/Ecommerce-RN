@@ -1,8 +1,9 @@
 import React from 'react'
 import {
-    StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, TextInput
+    StyleSheet, Text, View, Modal, TouchableOpacity, Dimensions, TextInput, StatusBar
 } from 'react-native'
-import { violet } from '../../helpers/configs'
+import { COLORS } from '../../utils'
+import { violet } from '../../utils/configs'
 
 const HEIGHT = Dimensions.get('window').height
 const WIDTH = Dimensions.get('window').width
@@ -18,9 +19,10 @@ const AlertModal = ({ title, content, changeModalVisible, setData }) => {
             disabled={ true }
             style={ styles.container }
         >
+            <StatusBar backgroundColor="rgba(0,0,0,0.5)"/>
             <View style={ styles.modal }>
                 <View style={ styles.textView }>
-                    <Text style={[ styles.text, { fontSize: 22, color: '#000' } ]}>
+                    <Text style={[ styles.text, { fontWeight: 'bold', fontSize: 22, color: '#000' } ]}>
                         { title }
                     </Text>
                     <Text style={ styles.text }>
@@ -33,7 +35,7 @@ const AlertModal = ({ title, content, changeModalVisible, setData }) => {
                         onPress={() => okModal()}
                         style={ styles.touchableOpacity }
                     >
-                        <Text style={[ styles.text, { color: violet } ]}>OK</Text>
+                        <Text style={[ styles.text, { color: COLORS.primary, fontWeight: 'bold' } ]}>OK</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -67,8 +69,8 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         marginHorizontal: 15,
         // fontSize: 16,
-        fontWeight: 'bold',
-        color: 'grey'
+        // fontWeight: 'bold',
+        color: COLORS.gray
     },
     buttonsView: {
         width: '100%',

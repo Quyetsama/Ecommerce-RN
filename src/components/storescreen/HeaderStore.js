@@ -1,7 +1,7 @@
 import React from 'react'
 import { Platform, StatusBar, StyleSheet, Text, View } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather'
-import { violet } from '../../helpers/configs'
+import { violet } from '../../utils/configs'
 
 
 

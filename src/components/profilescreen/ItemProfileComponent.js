@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { violet } from '../../helpers/configs'
+import { COLORS } from '../../utils'
 
 
 
@@ -10,7 +10,7 @@ const ItemProfile = ({ icon, color, label, txtDetail, chevron, onPress }) => {
     return (
         <TouchableOpacity style={ styles.container } activeOpacity={0.5} onPress={ onPress }>
             <View style={ styles.leftContainer }>
-                <MaterialCommunityIcons name={ icon } size={25} color={ color ? color : violet} />
+                <MaterialCommunityIcons name={ icon } size={25} color={ color ? color : COLORS.primary} />
                 <Text style={[ styles.label, { color: color } ]}>{ label }</Text>
             </View>
             <View style={ styles.rightContainer }>
@@ -28,8 +28,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'row',
-        paddingHorizontal: 15,
-        paddingVertical: 10,
+        padding: 15,
         alignItems: 'center',
     },
     leftContainer: {

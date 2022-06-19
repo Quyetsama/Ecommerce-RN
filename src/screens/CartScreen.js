@@ -15,17 +15,17 @@ import {
 import { SwipeListView } from 'react-native-swipe-list-view'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { violet } from '../helpers/configs'
+import { violet } from '../utils/configs'
 import HeaderStore from '../components/storescreen/HeaderStore'
 import CartHeader from '../components/cartscreen/CartHeader'
 import DeleteProductModal from '../components/modal/DeleteProductModal'
 import { isEmpty } from 'lodash'
-import { doMain } from '../helpers/configs'
+import { doMain } from '../utils/configs'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteFromCart, inCrease, deCrease } from '../redux/actions/cartAction'
 import LinearGradient from 'react-native-linear-gradient'
-import emptyCart from '../assets/img/emptyCart.png'
-import { COLORS } from '../theme'
+import emptyCart from '../assets/images/emptyCart.png'
+import { COLORS } from '../utils'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -75,11 +75,11 @@ const VisibleItem = memo((props) => {
             </View>
             <View style={ styles.quantityContainer }>
                 <TouchableOpacity style={ styles.plusBtn } onPress={ onIncrease } activeOpacity={ 0.8 }>
-                    <Entypo name="plus" size={18} color={ COLORS.dark } />
+                    <Entypo name="plus" size={18} color={ COLORS.white } />
                 </TouchableOpacity>
                 <Text style={ styles.quantityText }>{ data.item.quantity }</Text>
                 <TouchableOpacity style={ styles.minusBtn } onPress={ onDecrease } activeOpacity={ 0.8 }>
-                    <Entypo name="minus" size={18} color={ COLORS.dark  } />
+                    <Entypo name="minus" size={18} color={ COLORS.white  } />
                 </TouchableOpacity>
             </View>
         </Animated.View>
@@ -409,7 +409,7 @@ const CartScreen = ({ navigation }) => {
                                     onPress={ handleCheckout }
                                     style={ styles.checkOutBtn }
                                 >
-                                    <Text style={{ color: COLORS.dark, fontWeight: 'bold', fontSize: 16 }}>Check Out</Text>
+                                    <Text style={{ color: COLORS.white, fontWeight: 'bold', fontSize: 16 }}>Check Out</Text>
                                 </TouchableOpacity>
                             </>
                         }
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
         elevation: 3
     },
     minusBtn: {
-        backgroundColor: 'white',
+        backgroundColor: COLORS.primary,
         borderRadius: 90,
         padding: 2,
         elevation: 3
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
     },
     backRightBtnLeft: {
         right: 0,
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.secondary,
         borderRadius: 15,
     },
     backRightBtnRight: {
@@ -617,7 +617,7 @@ const styles = StyleSheet.create({
         borderRadius: 30
     },
     shopNow: {
-        color: COLORS.dark,
+        color: COLORS.white,
         fontSize: 16,
         fontWeight: 'bold'
     }

@@ -12,14 +12,14 @@ import {
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { COLOR, SCREEN, SIZE } from '../helpers/configs'
-import orderImage from '../assets/img/order.png'
-import discountImage from '../assets/img/discount.png'
+import { COLOR, SCREEN, SIZE } from '../utils/configs'
+import orderImage from '../assets/images/order.png'
+import discountImage from '../assets/images/discount.png'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCountNotify, decreaseNotify } from '../redux/actions/notifyAction'
 import useNotify from '../hooks/useNotify'
 import { getNotify, readNotify, countNotify } from '../api/notifyApi'
-import { timeSince } from '../helpers/validation'
+import { timeSince } from '../utils/validation'
 import { COLORS } from '../theme'
 import TabHeader from '../components/headers/TabHeader'
 
@@ -38,17 +38,19 @@ const ItemNotify = React.memo(({ item, navigation }) => {
 
     const handleClick = async () => {
         try {
-            navigation.navigate('HistoryStack', {
-                screen: 'History',
-                params: {
-                    index: item.type
+            if(userToken) {
+                navigation.navigate('HistoryStack', {
+                    screen: 'History',
+                    params: {
+                        index: item.type
+                    }
+                })
+                if(!read) {
+                    readNotify(userToken, item._id)
+                    dispatch(decreaseNotify())
+                    setRead(true)
                 }
-            })
-            if(!item.read) {
-                readNotify(userToken, item._id)
-                dispatch(decreaseNotify())
             }
-            setRead(true)
         }
         catch(error) {
             console.log(error)
@@ -70,7 +72,7 @@ const ItemNotify = React.memo(({ item, navigation }) => {
                 <View style={ styles.itemTime }>
                     <Text style={ styles.itemTitle } numberOfLines={ 1 }>{ item.title }</Text>
                     <Text style={{ fontSize: 12 }}>
-                        <Entypo name={'back-in-time'} size={12} /> { timeSince(item.time) }
+                        <Entypo name={'back-in-time'} size={12} /> { timeSince(item.createdAt) }
                     </Text>
                 </View>
                 <Text numberOfLines={2} style={ styles.itemMessage }>{ item.body }</Text>
@@ -93,21 +95,28 @@ const NotificationScreen = ({ navigation }) => {
         fetchNotify()
     }, [])
 
+    useEffect(() => {
+        if(!userToken) {
+            setNotifies([])
+            dispatch(setCountNotify(0))
+        }
+    }, [userToken])
+
     const fetchNotify = React.useCallback(async () => {
         try {
             setRefreshing(true)
             const res = await getNotify(userToken)
-            if(res.data.success) {
+            if(res?.data?.success) {
                 setNotifies(res.data.data)
                 setRefreshing(false)
                 dispatch(setCountNotify(res.data.count ? res.data.count : 0))
             }
         }
         catch(error) {
-            console.log(error.response.data)
+            console.log(error)
             setRefreshing(false)
         }            
-    }, [refreshing])
+    }, [userToken, refreshing])
 
     return (
         <View style={ styles.container }>

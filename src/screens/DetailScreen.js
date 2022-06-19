@@ -544,19 +544,19 @@ import {
     LogBox,
     useWindowDimensions
 } from 'react-native'
-import { COLOR, SCREEN, SIZE } from '../helpers/configs'
-import { COLORS, theme } from '../theme'
+import { SCREEN, SIZE } from '../utils/configs'
+import { COLORS } from '../utils'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
 import { getDetailProduct } from '../api/productApi'
 import useBackButton from '../hooks/useBackButton'
-import { doMain } from '../helpers/configs'
+import { doMain } from '../utils/configs'
 import CarouselProduct from '../components/CarouselProduct'
 import LinearGradient from 'react-native-linear-gradient'
-import { kFormatter, convertVND } from '../helpers/validation'
+import { kFormatter, convertVND } from '../utils/validation'
 import LoadingModal from '../components/modal/LoadingModal'
-import logoQ from '../assets/img/Q.png'
+import logoQ from '../assets/images/Q.png'
 import AnimatedHeart from '../components/detailscreen/AnimatedHeart'
 import { useSelector } from 'react-redux'
 import { favoriteProduct } from '../api/productApi'
@@ -660,7 +660,9 @@ const InfoProduct = React.memo(({ navigation, product }) => {
             await favoriteProduct(userToken, !heart, product?._id)
         }
         catch(error) {
-            console.log(error.response.data)
+            console.log(error.response?.data)
+            setHeart(false)
+            navigation.navigate('stackAuth')
         }
 
     }
@@ -669,10 +671,10 @@ const InfoProduct = React.memo(({ navigation, product }) => {
         <View style={ styles.infoProductContainer }>
             <Animated1.View style={ styles.header }>
                 <TouchableOpacity style={ styles.iconBack } onPress={() => navigation.goBack()}>
-                    <MaterialCommunityIcons style={{ borderRadius: 100, backgroundColor: COLORS.primary, padding: 4 }} name={ 'keyboard-backspace' } size={ SIZE(24) } color={'#000'} />
+                    <MaterialCommunityIcons style={{ borderRadius: 100, backgroundColor: COLORS.secondary, padding: 4 }} name={ 'keyboard-backspace' } size={ SIZE(24) } color={'#000'} />
                 </TouchableOpacity>
                 <TouchableOpacity style={ styles.iconCart } onPress={() => navigation.navigate('Order')}>
-                    <MaterialCommunityIcons style={{ borderRadius: 100, backgroundColor: COLORS.primary, padding: 4 }} name={ 'cart-outline' } size={ SIZE(24) } color={'#000'} />
+                    <MaterialCommunityIcons style={{ borderRadius: 100, backgroundColor: COLORS.secondary, padding: 4 }} name={ 'cart-outline' } size={ SIZE(24) } color={'#000'} />
                     <View style={ styles.iconBage }>
                         <Text style={{ color: 'white' }}>{ lengthCart }</Text>
                     </View>
@@ -994,7 +996,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         bottom: 10,
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.secondary,
         paddingVertical: 3,
         paddingHorizontal: 12,
         borderTopLeftRadius: 12,
@@ -1075,7 +1077,7 @@ const styles = StyleSheet.create({
     addToCartBtn: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.secondary,
         paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 8

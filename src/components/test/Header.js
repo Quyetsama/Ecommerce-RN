@@ -3,10 +3,10 @@ import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View, Status
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Feather from 'react-native-vector-icons/Feather'
-import { NAME } from "../../helpers/configs"
-import name from '../../assets/img/name.png'
+import { NAME } from "../../utils/configs"
+import name from '../../assets/images/name.png'
 import { COLORS } from "../../theme"
-import { SIZE } from "../../helpers/configs"
+import { SIZE } from "../../utils/configs"
 import LinearGradient from 'react-native-linear-gradient'
 import { useSelector } from 'react-redux'
 

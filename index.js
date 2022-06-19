@@ -18,7 +18,7 @@
  import rootSaga from './src/redux/sagas/rootSaga'
  import messaging from '@react-native-firebase/messaging';
  import PushNotification from "react-native-push-notification"
- import { createChannel, showNotification } from './src/helpers/notification'
+ import { createChannel, showNotification } from './src/utils/notification'
 
  
 

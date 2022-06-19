@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { StyleSheet, View, Image, Text, TouchableOpacity, ScrollView } from "react-native"
+import { COLORS } from "../utils"
 
 
 
@@ -11,7 +12,7 @@ const ItemCategories = ({ onPress, image, text, indexSelected }) => {
                 styles.itemContainer,
                 {
                     borderWidth: indexSelected ? 1 : null,
-                    borderColor: indexSelected ? color : null
+                    borderColor: indexSelected ? COLORS.primary : null
                 }
             ]} 
             activeOpacity={1}

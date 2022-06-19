@@ -4,8 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import Feather from 'react-native-vector-icons/Feather'
 import { HomeStack, NotificationStack, OrderStack, ProfileStack, SearchStack, AuthStack } from './StackNavigator'
-import { COLOR, SIZE } from '../helpers/configs'
-import { COLORS } from '../theme'
+import { SIZE } from '../utils/configs'
+import { COLORS } from '../utils'
 import { useSelector } from 'react-redux'
 
 
@@ -23,7 +23,7 @@ const BottomTabNavigator = () => {
         const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed'
         // console.log(routeName)
 
-        const routes = ['Detail', 'Cart', 'Checkout', 'myStore', 'Voucher', 'HistoryStack', 'Success', 'stackSearch']
+        const routes = ['Detail', 'Cart', 'Checkout', 'myStore', 'Voucher', 'Favorite', 'HistoryStack', 'Success', 'stackSearch']
 
         if(routes.includes(routeName)) return 'none'
         return 'flex'
@@ -45,7 +45,7 @@ const BottomTabNavigator = () => {
                 }
                 
                 // You can return any component that you like here!
-                return <Feather name={ iconName } size={ SIZE(20) } color={ color } />
+                return <Feather name={ iconName } size={ SIZE(size - 5) } color={ color } />
             },
             tabBarStyle: {
                 display: getTabBarVisibility(route),
@@ -56,18 +56,18 @@ const BottomTabNavigator = () => {
                 bottom: 0,
                 // padding: 10,
                 width: WIDTH,
-                height: HEIGHT / 15,
-                zIndex: 8
+                // height: HEIGHT / 15,
+                zIndex: 1000
             },
-            tabBarActiveTintColor: COLORS.dark,
-            tabBarInactiveTintColor: 'gray',
+            tabBarActiveTintColor: COLORS.primary,
+            tabBarInactiveTintColor: COLORS.gray,
             headerShown: false,
             tabBarLabelStyle: {
                 // fontSize: SIZE(13),
                 paddingBottom: 6,
                 fontWeight: '500'
-            }
-            // tabBarLabel: () => null
+            },
+            tabBarLabel: () => null
         })}>
             <Tab.Screen name="tabHome" component={ HomeStack } options={{ title: 'Home' }} />
             {/* <Tab.Screen name="tabOrder" component={ OrderStack } options={{ title: 'Đơn hàng'}} /> */}

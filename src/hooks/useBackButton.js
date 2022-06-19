@@ -9,8 +9,8 @@ const useBackButton = (func) => {
         const backAction = func
     
         const backHandler = BackHandler.addEventListener(
-          "hardwareBackPress",
-          backAction
+            "hardwareBackPress",
+            backAction
         )
     
         return () => backHandler.remove()

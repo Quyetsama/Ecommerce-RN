@@ -16,12 +16,12 @@ const ViewHeader = () => {
                 <Header />
             </View> */}
 
-            <View style={ styles.topContainer }></View>
-            <View style={ styles.botContainer }></View>
+            {/* <View style={ styles.topContainer }></View>
+            <View style={ styles.botContainer }></View> */}
 
-            <View style={ styles.imageCarousel }>
+            {/* <View style={ styles.imageCarousel }> */}
                 <CarouselComponent />
-            </View>
+            {/* </View> */}
         </View>
     )
 }
@@ -30,11 +30,10 @@ const HEIGHT_COMPONENT = HEIGHT / 4
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         width: WIDTH,
         height: HEIGHT_COMPONENT,
-        backgroundColor: '#fff',
-        marginBottom: 20
+        backgroundColor: 'red',
+        marginBottom: 1000
     },
     topContainer: {
         flex: 2,

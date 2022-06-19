@@ -10,8 +10,7 @@ import {
     Image
 } from "react-native"
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { NAME } from "../helpers/configs"
-// import grabee from '../assets/img/grabee.png'
+import { NAME } from "../utils/configs"
 
 
 const WIDTH = Dimensions.get('window').width

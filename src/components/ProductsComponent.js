@@ -1,42 +1,47 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, View, Dimensions, Image, Text, FlatList, ScrollView, ActivityIndicator } from 'react-native'
+import { useSelector } from 'react-redux'
 import ItemProduct from './ItemProduct'
 import ProductItem from '../components/homescreen/ProductItem'
 import { getAllProduct, getProductByCategory } from '../api/categoriesApi'
-import { doMain } from '../helpers/configs'
+import { doMain } from '../utils/configs'
+import { COLORS } from '../utils'
 
 
 const WIDTH = Dimensions.get('window').width
 
 const Loading = () => {
     return (
-        <ActivityIndicator style={{  width: WIDTH, margin: 10 }} />
+        <ActivityIndicator color={ COLORS.primary } style={{  width: WIDTH, margin: 10 }} />
     )
 }
 
-const Products = ({ category, navigation }) => {
+const Products = ({ navigation }) => {
+
+    const { category } = useSelector(state => state.homeReducer)
 
     const [products, setProducts] = useState([])
 
     useEffect(() => {
-        console.log(category.page)
-
-        getProductByCategory(category.id, category.page).then(res => {
-            if(category.page === 1) {
-                setProducts(res.data.products)
-            }
-            else {
-                setProducts([...products, ...res.data.products])
-            }
-        })
-        .catch(error => console.log(error))
-        
+        fetchData()
     }, [category])
 
-    const goToDetail = (_id) => {
-        navigation.navigate('Detail', {
-            _id
-        })
+    const fetchData = async () => {
+        try {
+            const res = await getProductByCategory(category.id, category.page)
+
+            if(res?.data.success) {
+                if(category.page === 1) {
+                    setProducts(res.data.data)
+                }
+                else {
+                    setProducts([...products, ...res.data.data])
+                }
+            }
+        }
+        catch(error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -51,10 +56,6 @@ const Products = ({ category, navigation }) => {
                     keyExtractor={(item) => item._id}
                     renderItem={({item}) => (
                         <ItemProduct item={ item } />
-                        // <ItemProduct 
-                        //     data={ item }
-                        //     navigation={navigation}
-                        // />
                     )}
                     ListFooterComponent={
                         // isLoading ? <Loading /> : <></>
@@ -62,17 +63,6 @@ const Products = ({ category, navigation }) => {
                     }
                 />
             </ScrollView>
-            
-            {/* {products.map((item, index) => (
-                <ItemProduct 
-                    key={ index }
-                    image={ doMain + item.image[0] }
-                    name={ item.name }
-                    sold={ item.sold }
-                    price={ item.price }
-                />
-            ))} */}
-            {/* <Text style={{ color: 'tomato', textAlign: 'center' }}>Đang tải thêm</Text> */}
         </View>
     )
 }

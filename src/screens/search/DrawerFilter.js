@@ -10,7 +10,8 @@ import {
 } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { FlatList, PanGestureHandler } from 'react-native-gesture-handler'
-import { COLOR, SCREEN } from '../../helpers/configs'
+import { SCREEN } from '../../utils/configs'
+import { COLORS } from '../../utils'
 import useFetchCategories from '../../hooks/useFetchCategories'
 
 
@@ -26,7 +27,7 @@ const ItemCategory = React.memo(({ item, onPress, isSelect }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderWidth: 1,
-                borderColor: isSelect ? COLOR.violet : '#f2f2f2'
+                borderColor: isSelect ? COLORS.primary : '#f2f2f2'
             }}
             onPress={ onPress }
         >
@@ -71,8 +72,8 @@ const DrawerFilter = React.memo(({ onGestureEvent, style, onChangeFilter, value 
                 // )
                 || (filters.price.max === 0 && filters.price.min === 0)
             )
-            && filters.category !== ''
-            || JSON.stringify(filters) !== JSON.stringify(value)
+            // && filters.category !== ''
+            && JSON.stringify(filters) !== JSON.stringify(value)
         )
     }
 
@@ -242,15 +243,15 @@ const styles = StyleSheet.create({
         marginRight: 3,
         backgroundColor: 'white',
         borderWidth: 0.5,
-        borderColor: COLOR.violet
+        borderColor: COLORS.primary
     },
     applyButton: {
         ...button,
         marginLeft: 3,
-        backgroundColor: COLOR.violet
+        backgroundColor: COLORS.primary
     },
     resetText: {
-        color: COLOR.violet,
+        color: COLORS.primary,
     },
     applyText: {
         color: 'white'

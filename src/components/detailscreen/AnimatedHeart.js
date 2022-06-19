@@ -3,8 +3,8 @@ import {
     Animated,
     Image
 } from 'react-native'
-import heart from '../../assets/img/heart.png'
-import { SCREEN, SIZE } from '../../helpers/configs'
+import heart from '../../assets/images/heart.png'
+import { SCREEN, SIZE } from '../../utils/configs'
 
 
 const getRandomSignedNumber = () => (Math.random() < 0.5 ? -1 : 1)

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import firebase from '@react-native-firebase/app'
 import messaging from '@react-native-firebase/messaging'
-import { createChannel, showNotification } from '../helpers/notification'
+import { createChannel, showNotification } from '../utils/notification'
 
 
 const useNotification = () => {
