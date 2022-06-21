@@ -885,8 +885,8 @@ const DetailScreen = ({ route, navigation }) => {
     }, [])
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <>
+        // <GestureHandlerRootView style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
                 {
                     !isLoading &&
                     <View style={ styles.container }>
@@ -951,8 +951,8 @@ const DetailScreen = ({ route, navigation }) => {
                 >
                     <LoadingModal />
                 </Modal>
-            </>
-        </GestureHandlerRootView>
+            </View>
+        // </GestureHandlerRootView>
     )
 }
 

@@ -43,7 +43,7 @@ const data = [
     },
 ]
 
-const ProductRecommend = () => {
+const ProductRecommend = ({ onAddToCart }) => {
 
     const products = useFetchSuggest()
 
@@ -66,6 +66,7 @@ const ProductRecommend = () => {
                         renderItem={({ item }) => (
                             <ProductItem 
                                 item={ item }
+                                onAddToCart={ onAddToCart }
                             />
                         )}
                     />

@@ -22,6 +22,11 @@ const getDetailProduct = (id, token) => {
     })
 }
 
+const getClassifyProduct = (id) => {
+    const url = `/product/classify/${ id }`
+    return axiosClient.get(url)
+}
+
 const searchProduct = (query) => {
     const url = `/product/search/?name=${ query }`
     return axiosClient.get(url)
@@ -75,6 +80,7 @@ const getFavorites = (token) => {
 export { 
     createProduct,
     getDetailProduct,
+    getClassifyProduct,
     searchProduct,
     suggestProduct,
     relatedProduct,

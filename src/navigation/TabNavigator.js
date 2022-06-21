@@ -29,6 +29,10 @@ const BottomTabNavigator = () => {
         return 'flex'
     }
 
+    const onClick = () => {
+        console.log(123)
+    }
+
     return (
         <Tab.Navigator screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -57,7 +61,7 @@ const BottomTabNavigator = () => {
                 // padding: 10,
                 width: WIDTH,
                 // height: HEIGHT / 15,
-                zIndex: 1000
+                // zIndex: 1000
             },
             tabBarActiveTintColor: COLORS.primary,
             tabBarInactiveTintColor: COLORS.gray,

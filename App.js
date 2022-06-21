@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import RNBootSplash from 'react-native-bootsplash'
 import { NavigationContainer  } from '@react-navigation/native'
@@ -16,14 +16,16 @@ import { getCurrentUser } from "./src/api/authApi"
 import { countNotify } from "./src/api/notifyApi"
 import { setCountNotify } from "./src/redux/actions/notifyAction"
 import useNotification from "./src/hooks/useNotification"
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 
 const Stack = createNativeStackNavigator()
 
 const App = () => {
 
-    const dispatch = useDispatch()
     const userToken = useSelector(state => state.authReducer.userToken)
+    const dispatch = useDispatch()
     // console.log('token', userToken)
     useNotification()
 
@@ -57,18 +59,22 @@ const App = () => {
     }, [])
 
     return (
-        <NavigationContainer ref={ navigationRef }>
-            <Stack.Navigator 
-                screenOptions={{
-                    headerShown: false,
-                }}
-            >    
-                {/* <Stack.Screen name='stackAuth' component={ AuthStack }/>  */}
-                <Stack.Screen name='Root' component={ Root }/>
-                {/* <Stack.Screen name='stackSearch' component={ SearchStack } /> */}
-                { userToken === null && <Stack.Screen name='stackAuth' component={ AuthStack } options={{ animation: 'slide_from_right' }}/> }
-            </Stack.Navigator>
-        </NavigationContainer>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <BottomSheetModalProvider>
+                <NavigationContainer ref={ navigationRef }>
+                    <Stack.Navigator 
+                        screenOptions={{
+                            headerShown: false,
+                        }}
+                    >    
+                        {/* <Stack.Screen name='stackAuth' component={ AuthStack }/>  */}
+                        <Stack.Screen name='Root' component={ Root } />
+                        {/* <Stack.Screen name='stackSearch' component={ SearchStack } /> */}
+                        { userToken === null && <Stack.Screen name='stackAuth' component={ AuthStack } options={{ animation: 'slide_from_right' }}/> }
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </BottomSheetModalProvider>
+        </GestureHandlerRootView>
     )
 }
 

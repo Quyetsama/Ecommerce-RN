@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import {
     StyleSheet,
     View,
@@ -9,12 +9,16 @@ import {
 } from 'react-native'
 import StackHeader from '../../components/headers/StackHeader'
 import { getFavorites } from '../../api/productApi'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import ItemProduct from '../../components/ItemProduct'
+import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
+import SheetContent from '../../components/bottomsheet/SheetContent'
+import { actionOpenBottomSheet, clearBottomSheet } from '../../redux/actions/bottomSheetAction'
 
 
 const FavoriteScreen = ({ navigation }) => {
 
+    const dispatch = useDispatch()
     const { userToken } = useSelector(state => state.authReducer)
     const [products, setProdcuts] = useState([])
     const [refreshing, setRefreshing] = useState(false)
@@ -38,6 +42,39 @@ const FavoriteScreen = ({ navigation }) => {
         }
     }, [userToken])
 
+     // ref
+     const bottomSheetRef = useRef(null);
+
+     // variables
+     // const snapPoints = useMemo(() => ['50%'], []);
+     const snapPoints = useMemo(() => ['70%', '70%'], []);
+ 
+     // callbacks
+     const handleSheetChanges = useCallback((index) => {
+         // console.log('handleSheetChanges', index);
+         // if(index === 1) {
+         //     dispatch(actionSetLoadingBottomSheet())
+         // }
+         if(index === -1) {
+             dispatch(clearBottomSheet())
+         }
+     }, [])
+ 
+     // renders
+     const renderBackdrop = useCallback(props => (
+         <BottomSheetBackdrop
+             {...props}
+             disappearsOnIndex={-1}
+             appearsOnIndex={1}
+             pressBehavior={'close'}
+         />
+     ), [])
+ 
+     const handleOpenSheet = useCallback((_id) => {
+         bottomSheetRef.current?.present()
+         dispatch(actionOpenBottomSheet(_id))
+     }, [])
+
     return (
         <View style={ styles.container }>
             <StackHeader 
@@ -55,6 +92,7 @@ const FavoriteScreen = ({ navigation }) => {
                     renderItem={({item}) => (
                         <ItemProduct
                             item={ item }
+                            onAddToCart={ handleOpenSheet }
                         />
                     )}
                     refreshControl={
@@ -65,6 +103,18 @@ const FavoriteScreen = ({ navigation }) => {
                     }
                 />
             </View>
+
+            <BottomSheetModal
+                ref={bottomSheetRef}
+                index={1}
+                snapPoints={snapPoints}
+                // enableOverDrag={ false }
+                enablePanDownToClose
+                backdropComponent={renderBackdrop}
+                onChange={handleSheetChanges}
+            >
+                <SheetContent />
+            </BottomSheetModal>
         </View>
     )
 }

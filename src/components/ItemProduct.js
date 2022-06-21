@@ -12,7 +12,7 @@ const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
 
-const ItemProduct = ({ item }) => {
+const ItemProduct = ({ item, onAddToCart }) => {
     
     const navigation = useNavigation()
 
@@ -44,7 +44,10 @@ const ItemProduct = ({ item }) => {
                 </View>
                 <View style={ styles.price_add }>
                     <Text style={ styles.price }>{ convertVND(+item?.price) }</Text>
-                    <TouchableOpacity style={ styles.buttonADD }>
+                    <TouchableOpacity 
+                        style={ styles.buttonADD }
+                        onPress={() => onAddToCart(item._id)}
+                    >
                         <MaterialIcons name='add' size={24} color={ COLORS.gray } />
                     </TouchableOpacity>
                 </View>

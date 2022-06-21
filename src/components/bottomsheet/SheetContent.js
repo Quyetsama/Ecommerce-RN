@@ -1,15 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions, TextInput, Modal } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import {
+    StyleSheet,
+    View,
+    ActivityIndicator,
+    Text,
+    TouchableOpacity,
+    Image,ScrollView,
+    TextInput,
+    Modal
+} from 'react-native'
+import { COLORS, WINDOW_WIDTH, WINDOW_HEIGHT, doMain } from '../../utils'
+import { useSelector, useDispatch } from 'react-redux'
+import { actionSetLoadingBottomSheet, clearBottomSheet } from '../../redux/actions/bottomSheetAction'
+import { addToCart } from '../../redux/actions/cartAction'
+import { BottomSheetScrollView, useBottomSheet } from '@gorhom/bottom-sheet'
+import { getClassifyProduct } from '../../api/productApi'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import Animated from 'react-native-reanimated'
-import { PanGestureHandler, ScrollView as ScrollView2 } from 'react-native-gesture-handler'
-import { violet, doMain, SCREEN, SIZE } from '../../utils/configs'
+import LoadingModal from '../modal/LoadingModal'
 import SuccessModal from '../modal/SuccessModal'
-
-import { useDispatch, useSelector } from 'react-redux'
-import { addToCart } from '../../redux/actions/cartAction'
-import { COLORS } from '../../utils'
 
 
 
@@ -99,8 +108,10 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
                     paddingHorizontal: 30
                 }}>
                     <TextInput
+                        editable={false}
                         style={{
-                            fontSize: SIZE(18),
+                            color: COLORS.primary,
+                            fontSize: 18,
                             fontWeight: 'bold'
                         }}
                         value={ value + '' }
@@ -126,14 +137,39 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
     )
 })
 
-const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
-    // const { products } = useSelector(state => state.cartReducer)
-    // console.log(product?.discount)
+const SheetContent = ({}) => {
+
+    const { _id, isLoading } = useSelector(state => state.bottomSheetReducer)
     const dispatch = useDispatch()
+
+    const { close } = useBottomSheet()
+    const [product, setProduct] = useState(null)
     const [selected, setSelected] = useState([])
     const [quantity, setQuantity] = useState(1)
     // SuccessModal
     const [isModalVisible, setIsModalVisible] = useState(false)
+
+    useEffect(() => {
+        if(_id) {
+            fetchData(_id)
+        }
+    }, [_id])
+
+    const fetchData = useCallback(async (_id) => {
+        try {
+            const res = await getClassifyProduct(_id)
+
+            if(res?.data.success) {
+                setProduct({
+                    ...res.data.data
+                })
+                dispatch(actionSetLoadingBottomSheet())
+            }
+        }
+        catch(error) {
+            console.log(error)
+        }
+    }, [])
 
     useEffect(() => {
         if(isModalVisible) {
@@ -141,15 +177,13 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                 setSelected([])
                 setQuantity(1)
                 setIsModalVisible(false)
-                onClose()
+                close()
             }, 1500)
         }
     }, [isModalVisible])
 
 
     const handleOnSelect = React.useCallback((index, prev, item) => {
-        // console.log(prev)
-        // console.log(index)
         const newSelected = selected.filter(item => item !==prev)
         if(prev !== item) {
             // newSelected.push(item)
@@ -161,7 +195,7 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
 
     const handleChangeQuantity = React.useCallback((value) => {
         !isNaN(value) && (+value > -1 && +value < 1000) && setQuantity(prev => {
-            return +value < 1 ? 0 : +value
+            return +value < 1 ? 1 : +value
         })
     }, [])
 
@@ -175,17 +209,16 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
 
     const getPriceClassify = React.useCallback(() => {
         product?.classify?.detailClassification?.map(item => {
-            if(item.type.includes(...selected)) {
+            if(item.type.includes([...selected])) {
                 return item.price
             }
         })
         return null
-    }, [selected])
+    }, [product, selected])
 
     const handleAddToCart = React.useCallback(() => {
-        // onClose()
         const price = getPriceClassify()
-        
+
         dispatch(addToCart(
             {
                 _id: product?._id,
@@ -201,7 +234,7 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
         ))
 
         setIsModalVisible(true)
-    })
+    }, [product, quantity, selected])
 
     const isValid = () => {
         return (
@@ -212,95 +245,90 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
     }
 
     return (
-        <PanGestureHandler
-            onGestureEvent={ onGestureEvent }
-        >
-            <Animated.View
-                style={[ 
-                    styles.sheet,
-                    style
-                ]}
-            >
-                
-                <View style={ styles.headerSheet }>
-                    <View style={{ width: SCREEN.HEIGHT / 6, height: SCREEN.HEIGHT / 6 }}>
-                        <Image 
-                            source={{ uri: product?.image && (doMain + '/image/' + product?.image[0]) }}
-                            style={ styles.imageSheet }
-                            resizeMode='contain'
-                        />
+        <View style={{ flex: 1 }}>
+            {
+                !isLoading && _id &&
+                <>
+                    <View style={ styles.headerSheet }>
+                        <View style={{ width: WINDOW_HEIGHT / 6, height: WINDOW_HEIGHT / 6 }}>
+                            <Image 
+                                source={{ uri: product?.image && (doMain + '/image/' + product?.image[0]) }}
+                                style={ styles.imageSheet }
+                                resizeMode='contain'
+                            />
+                        </View>
+                        <View style={{ flex: 1, marginLeft: 10 }}>
+                            <Text style={ styles.nameProduct }>{ product?.name }</Text>
+                            <Text style={ styles.priceProduct }>{ (+product?.price).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
+                            {
+                                product?.discount &&
+                                <Text style={ styles.discountProduct }>{ product?.discount }% off</Text>
+                            }
+                            
+                        </View>
                     </View>
-                    <View style={{ flex: 1, marginLeft: 10 }}>
-                        <Text style={ styles.nameProduct }>{ product?.name }</Text>
-                        <Text style={ styles.priceProduct }>{ (+product?.price).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
-                        {
-                            product?.discount &&
-                            <Text style={ styles.discountProduct }>{ product?.discount }% off</Text>
-                        }
+                        
+                    <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                        <View style={{ flex: 1 }}>
+                            <BottomSheetScrollView
+                                contentContainerStyle={{ flexGrow: 1 }}
+                                showsVerticalScrollIndicator={ false }
+                                keyboardShouldPersistTaps='handled'
+                            >
+                                {product?.classify?.generalClassification.map((item, index) => (
+                                    <ItemSheet 
+                                        key={ item.id } 
+                                        classify={ item } 
+                                        selected={ selected } 
+                                        onSelect={(prev, item) => handleOnSelect(index, prev, item) } 
+                                    />
+                                ))}
+
+                                <Quantity 
+                                    value={ quantity } 
+                                    onChangeQuantity={ handleChangeQuantity } 
+                                    onIncrease={ handleIncrease } 
+                                    onDecrease={ handleDecrease } 
+                                />
+                            </BottomSheetScrollView>
+                        </View>
+
+                        <TouchableOpacity 
+                            disabled={ !isValid() }
+                            style={[ styles.buttonAddToCart, { opacity: isValid() ? 1 : 0.5 } ]}
+                            onPress={ handleAddToCart }
+                        >
+                            <Text
+                                style={{
+                                    color: COLORS.primary,
+                                    fontSize: 18,
+                                    fontWeight: '800'
+                                }}
+                            >ADD TO CART</Text>
+                        </TouchableOpacity>
                         
                     </View>
-                    <TouchableOpacity 
-                        activeOpacity={0.5} 
-                        onPress={ onClose }
-                    >
-                        <Ionicons name={ 'md-close-outline' } size={30} color="#969696" />
-                    </TouchableOpacity>
-                </View>
-                    
-                <View style={{ flex: 1, justifyContent: 'space-between' }}>
-                    <View style={{ flex: 1 }}>
-                        <ScrollView2
-                            contentContainerStyle={{ paddingBottom: 100 }}
-                            showsVerticalScrollIndicator={ false }
-                            keyboardShouldPersistTaps='handled'
-                        >
-                            {product?.classify?.generalClassification.map((item, index) => (
-                                <ItemSheet 
-                                    key={ item.id } 
-                                    classify={ item } 
-                                    selected={ selected } 
-                                    onSelect={(prev, item) => handleOnSelect(index, prev, item) } 
-                                />
-                            ))}
+                </>
+            }
 
-                            <Quantity 
-                                value={ quantity } 
-                                onChangeQuantity={ handleChangeQuantity } 
-                                onIncrease={ handleIncrease } 
-                                onDecrease={ handleDecrease } 
-                            />
-                        </ScrollView2>
-                    </View>
+            <Modal
+                transparent={ true }
+                animationType='fade'
+                visible={ isLoading }
+            >
+                <LoadingModal />
+            </Modal>
 
-                    <TouchableOpacity 
-                        disabled={ !isValid() }
-                        style={[ styles.buttonAddToCart, { opacity: isValid() ? 1 : 0.5 } ]}
-                        onPress={ handleAddToCart }
-                    >
-                        <Text
-                            style={{
-                                color: COLORS.primary,
-                                fontSize: 18,
-                                fontWeight: '800'
-                            }}
-                        >ADD TO CART</Text>
-                    </TouchableOpacity>
-                       
-                </View>
-
-                <Modal
-                    transparent={ true }
-                    animationType='fade'
-                    visible={ isModalVisible }
-                    onRequestClose={() => setIsModalVisible(false) }
-                >
-                    <SuccessModal 
-                        text={'Add to cart successfully'}
-                    />
-                </Modal>
-            </Animated.View>
-            {/* </Animated.View> */}
-        </PanGestureHandler>
+            <Modal
+                transparent={ true }
+                animationType='fade'
+                visible={ isModalVisible }
+            >
+                <SuccessModal 
+                    text={'Add to cart successfully'}
+                />
+            </Modal>
+        </View>
     )
 }
 
@@ -346,20 +374,18 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.secondary,
         paddingVertical: 18,
         borderRadius: 30,
-        marginBottom: 18
+        marginVertical: 18
     },
     nameProduct: {
         flex: 1,
         fontSize: 16,
         color: COLORS.primary,
         fontWeight: '500'
-        // color: COLORS.primary
     },
     priceProduct: {
         fontSize: 22,
         fontWeight: '800',
         color: '#000'
-        // paddingVertical: 18
     },
     discountProduct: {
         fontSize: 16,
@@ -373,4 +399,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default React.memo(SheetComponent)
+export default React.memo(SheetContent)

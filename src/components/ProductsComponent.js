@@ -16,7 +16,7 @@ const Loading = () => {
     )
 }
 
-const Products = ({ navigation }) => {
+const Products = ({ navigation, onAddToCart }) => {
 
     const { category } = useSelector(state => state.homeReducer)
 
@@ -55,7 +55,7 @@ const Products = ({ navigation }) => {
                     numColumns={2}
                     keyExtractor={(item) => item._id}
                     renderItem={({item}) => (
-                        <ItemProduct item={ item } />
+                        <ItemProduct item={ item } onAddToCart={ onAddToCart } />
                     )}
                     ListFooterComponent={
                         // isLoading ? <Loading /> : <></>

@@ -6,7 +6,7 @@ import { COLORS, doMain, WINDOW_WIDTH } from '../../utils'
 import { useNavigation } from '@react-navigation/native'
 
 
-const ProductItem = ({ item }) => {
+const ProductItem = ({ item, onAddToCart }) => {
 
     const navigation = useNavigation()
 
@@ -37,7 +37,10 @@ const ProductItem = ({ item }) => {
                 </View>
                 <View style={ styles.price_add }>
                     <Text style={ styles.price }>{ (+item.price).toLocaleString('vi', {style : 'currency', currency : 'VND'}) }</Text>
-                    <TouchableOpacity style={ styles.buttonADD }>
+                    <TouchableOpacity 
+                        style={ styles.buttonADD }
+                        onPress={() => onAddToCart(item._id)}
+                    >
                         <MaterialIcons name='add' size={24} color='#969696' />
                     </TouchableOpacity>
                 </View>
