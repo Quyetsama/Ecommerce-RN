@@ -1,12 +1,11 @@
 import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Text, Image, Dimensions } from 'react-native'
+import { COLORS, WINDOW_WIDTH , WINDOW_HEIGHT } from '../../utils'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import { violet } from '../../utils/configs'
-import { COLORS, WINDOW_WIDTH , WINDOW_HEIGHT} from '../../utils'
+import { navigationRef } from '../../navigation/RootNavigation'
 
 
-const WIDTH = Dimensions.get('window').width
+
 
 const Information = ({ isLogin, fullName, email, onSignIn, onSignUp }) => {
 
@@ -25,6 +24,7 @@ const Information = ({ isLogin, fullName, email, onSignIn, onSignUp }) => {
                         <View style={ styles.name_follow_Container }>
                             <View style={ styles.nameContainer }>
                                 <Text style={ styles.txtName }>{ fullName }</Text>
+                                <MaterialCommunityIcons name='square-edit-outline' color={ COLORS.primary } size={ 20 } onPress={() => navigationRef.navigate('EditProfile')} />
                             </View>
                             <Text style={ styles.txtItemBot }>{ email }</Text>
                         </View>
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
         marginVertical: 20
     },
     avatarContainer: {
-        width: (WIDTH / 3) - 40,
-        height: (WIDTH / 3) - 40,
+        width: (WINDOW_WIDTH / 3) - 40,
+        height: (WINDOW_WIDTH / 3) - 40,
         borderRadius: 90,
         overflow: 'hidden'
     },
@@ -84,12 +84,15 @@ const styles = StyleSheet.create({
         marginLeft: 20
     },
     nameContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
         paddingBottom: 10
     },
     txtName: {
         color: color,
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginRight: 10
     },
     authContainer: {
         height: WINDOW_HEIGHT - 300,

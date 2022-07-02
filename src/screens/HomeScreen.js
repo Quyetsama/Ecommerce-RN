@@ -24,12 +24,12 @@ import SheetContent from "../components/bottomsheet/SheetContent"
 
 import ViewHeader from "../components/test/ViewHeader"
 import Header from "../components/test/Header"
+import CarouselHome from "../components/CarouselHome"
+
+import BottomSheetProduct from '../components/bottomsheet/BottomSheetProduct'
+import { COLORS } from "../utils"
 
 
-
-const WIDTH = Dimensions.get('window').width
-
-// export const SearchContext = React.createContext({})
 
 const HomeScreen = ({ navigation, route }) => {
 
@@ -101,6 +101,12 @@ const HomeScreen = ({ navigation, route }) => {
         dispatch(actionOpenBottomSheet(_id))
     }, [])
 
+    // const refBottomSheet = React.createRef()
+
+    // const handleOpenSheet = (_id) => {
+    //     refBottomSheet.current?.handleOpenSheet(_id)
+    // }
+
     return (
         <View style={styles.container}>
             {/* <StatusBar hidden /> */}
@@ -136,8 +142,7 @@ const HomeScreen = ({ navigation, route }) => {
                     />
                 }
             >
-                {/* <ViewHeader /> */}
-                <CarouselComponent />
+                <CarouselHome />
 
                 <ProductRecommend onAddToCart={ handleOpenSheet }/>
 
@@ -164,6 +169,8 @@ const HomeScreen = ({ navigation, route }) => {
                 <SheetContent />
             </BottomSheetModal>
 
+            {/* <BottomSheetProduct ref={ refBottomSheet } /> */}
+
         </View>
     )
 }
@@ -173,7 +180,7 @@ const HomeScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff'
+        backgroundColor: COLORS.white
     },
     contentContainer: {
         flex: 1,

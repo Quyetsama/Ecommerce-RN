@@ -1,6 +1,7 @@
 import PushNotification, { Importance } from "react-native-push-notification"
 import messaging from '@react-native-firebase/messaging'
 import { doMain } from "./configs"
+import { URL_API } from "."
 
 
 
@@ -29,11 +30,11 @@ const showNotification = (channelId, options) => {
     PushNotification.localNotification({
         /* Android Only Properties */
         channelId: channelId, // (required) channelId, if the channel doesn't exist, notification will not trigger.
-        largeIconUrl: doMain + '/image/' + 'logo.png', // (optional) default: undefined
+        largeIconUrl: URL_API + '/image/' + 'logo.png', // (optional) default: undefined
         smallIcon: "ic_notification", // (optional) default: "ic_notification" with fallback for "ic_launcher". Use "" for default small icon.
         subText: 'Mở app nào', // (optional) default: none
         bigPictureUrl: options.bigImage, // (optional) default: undefined
-        bigLargeIconUrl: doMain + '/image/' + 'logo.png', // (optional) default: undefined
+        bigLargeIconUrl: URL_API + '/image/' + 'logo.png', // (optional) default: undefined
         color: options.color, // (optional) default: system default
         vibrate: true, // (optional) default: true
         vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000

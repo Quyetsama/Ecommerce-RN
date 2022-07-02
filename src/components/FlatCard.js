@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     Image
 } from 'react-native'
-import { doMain } from '../utils/configs'
+import { URL_API } from '../utils'
 
 
 
@@ -19,7 +19,7 @@ const FlatCart = ({ item, onPress }) => {
             <View style={ styles.imageContainer }>
                 <Image
                     style={ styles.image }
-                    source={{ uri: doMain + 'image/' + item.image }}
+                    source={{ uri: URL_API + 'image/' + item.image }}
                 />
             </View>
             <Text numberOfLines={ 1 } style={ styles.text }>{ item.name }</Text>

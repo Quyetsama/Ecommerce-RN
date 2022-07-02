@@ -9,7 +9,7 @@ import {
     TextInput,
     Modal
 } from 'react-native'
-import { COLORS, WINDOW_WIDTH, WINDOW_HEIGHT, doMain } from '../../utils'
+import { COLORS, WINDOW_WIDTH, WINDOW_HEIGHT, URL_API } from '../../utils'
 import { useSelector, useDispatch } from 'react-redux'
 import { actionSetLoadingBottomSheet, clearBottomSheet } from '../../redux/actions/bottomSheetAction'
 import { addToCart } from '../../redux/actions/cartAction'
@@ -238,7 +238,7 @@ const SheetContent = ({}) => {
 
     const isValid = () => {
         return (
-            selected.length === (product?.classify?.generalClassification?.length || 0)
+            selected.length === (product?.classify?.length || 0)
             &&
             quantity > 0
         )  
@@ -252,7 +252,7 @@ const SheetContent = ({}) => {
                     <View style={ styles.headerSheet }>
                         <View style={{ width: WINDOW_HEIGHT / 6, height: WINDOW_HEIGHT / 6 }}>
                             <Image 
-                                source={{ uri: product?.image && (doMain + '/image/' + product?.image[0]) }}
+                                source={{ uri: product?.image && (URL_API + '/image/' + product?.image[0]) }}
                                 style={ styles.imageSheet }
                                 resizeMode='contain'
                             />
@@ -275,9 +275,9 @@ const SheetContent = ({}) => {
                                 showsVerticalScrollIndicator={ false }
                                 keyboardShouldPersistTaps='handled'
                             >
-                                {product?.classify?.generalClassification.map((item, index) => (
+                                {product?.classify?.map((item, index) => (
                                     <ItemSheet 
-                                        key={ item.id } 
+                                        key={ index } 
                                         classify={ item } 
                                         selected={ selected } 
                                         onSelect={(prev, item) => handleOnSelect(index, prev, item) } 

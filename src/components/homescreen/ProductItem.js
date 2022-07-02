@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { COLORS, doMain, WINDOW_WIDTH } from '../../utils'
+import { COLORS, URL_API, WINDOW_WIDTH } from '../../utils'
 import { useNavigation } from '@react-navigation/native'
 
 
@@ -17,7 +17,7 @@ const ProductItem = ({ item, onAddToCart }) => {
         >
             <View style={ styles.imageContainer }>
                 <Image 
-                    source={{ uri: doMain + '/image/' + item.image }}
+                    source={{ uri: URL_API + '/image/' + item.image }}
                     style={ styles.image }
                 />
                 {/* <Ionicons style={ styles.iconHeart } name='heart' size={24} color='red' /> */}

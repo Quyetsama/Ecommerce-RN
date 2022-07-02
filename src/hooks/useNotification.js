@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import firebase from '@react-native-firebase/app'
 import messaging from '@react-native-firebase/messaging'
 import { createChannel, showNotification } from '../utils/notification'
+import { store } from '../..'
+import { increaseNotify } from '../redux/actions/notifyAction'
 
 
 const useNotification = () => {
@@ -42,6 +44,7 @@ const useNotification = () => {
                 title: remoteMsg.data.title,
                 message: remoteMsg.data.body
             })
+            store.dispatch(increaseNotify())
         })
 
 

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import ItemProduct from './ItemProduct'
 import ProductItem from '../components/homescreen/ProductItem'
 import { getAllProduct, getProductByCategory } from '../api/categoriesApi'
-import { doMain } from '../utils/configs'
 import { COLORS } from '../utils'
 
 
@@ -70,11 +69,11 @@ const Products = ({ navigation, onAddToCart }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f0f1f2',
+        backgroundColor: '#f2f2f2',
         flexDirection: 'row',
         flexWrap: 'wrap',
         overflow: 'hidden',
-        marginBottom: 60
+        paddingBottom: 60
     }
 })
 

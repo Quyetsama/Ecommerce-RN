@@ -1,47 +1,10 @@
 import React from 'react'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native'
 import ProductItem from './ProductItem'
-import { COLORS } from '../../theme'
+import { COLORS } from '../../utils'
 import useFetchSuggest from '../../hooks/useFetchSuggest'
 
 
-const data = [
-    {
-        id: 1,
-        name: 'Giày thể thao',
-        image: 'https://images.unsplash.com/photo-1605348532760-6753d2c43329?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-        price: 500000,
-        sold: 1200
-    },
-    {
-        id: 2,
-        name: 'Giày thể thao Trắng',
-        image: 'https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
-        price: 450000,
-        sold: 700
-    },
-    {
-        id: 3,
-        name: 'Giày thể thao',
-        image: 'https://images.unsplash.com/photo-1603787081207-362bcef7c144?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=765&q=80',
-        price: 500000,
-        sold: 1200
-    },
-    {
-        id: 4,
-        name: 'Giày thể thao',
-        image: 'https://images.unsplash.com/photo-1588484628369-dd7a85bfdc38?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=735&q=80',
-        price: 500000,
-        sold: 1200
-    },
-    {
-        id: 5,
-        name: 'Giày thể thao',
-        image: 'https://images.unsplash.com/photo-1597045566677-8cf032ed6634?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-        price: 500000,
-        sold: 1200
-    },
-]
 
 const ProductRecommend = ({ onAddToCart }) => {
 
@@ -80,11 +43,7 @@ const ProductRecommend = ({ onAddToCart }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: '#f7f7f7',
         backgroundColor: COLORS.white,
-        marginTop: 16,
-        // borderTopLeftRadius: 30,
-        // borderTopRightRadius: 30
         borderRadius: 30
     },
     headerContainer: {
@@ -102,7 +61,7 @@ const styles = StyleSheet.create({
     button: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: COLORS.dark,
+        backgroundColor: COLORS.primary,
         borderRadius: 6,
         paddingVertical: 8,
         paddingHorizontal: 12

@@ -4,12 +4,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { convertVND } from '../utils/validation'
 import { useNavigation } from '@react-navigation/native'
-import { doMain, SCREEN } from '../utils/configs'
-import { COLORS } from '../utils'
+import { COLORS, URL_API, WINDOW_WIDTH } from '../utils'
+import { AirbnbRating } from 'react-native-ratings'
 
 
-const WIDTH = Dimensions.get('window').width
-const HEIGHT = Dimensions.get('window').height
+
 
 
 const ItemProduct = ({ item, onAddToCart }) => {
@@ -24,7 +23,7 @@ const ItemProduct = ({ item, onAddToCart }) => {
         >
             <View style={ styles.imageContainer }>
                 <Image 
-                    source={{ uri: doMain + '/image/' + item?.image }}
+                    source={{ uri: URL_API + '/image/' + item?.image }}
                     style={ styles.image }
                     // resizeMode='stretch'
                 />
@@ -39,9 +38,19 @@ const ItemProduct = ({ item, onAddToCart }) => {
 
             <View style={ styles.footerContainer }>
                 <Text numberOfLines={ 1 } style={ styles.name }>{ item?.name }</Text>
+                
                 <View style={ styles.soldContainer }>
                     <Text style={ styles.soldText }>{ item?.sold } Sold</Text>
                 </View>
+
+                <AirbnbRating
+                    isDisabled={ true }
+                    defaultRating={ Math.round(item?.rate.star / item?.rate.count) }
+                    showRating={ false }
+                    size={ 15 }
+                    starContainerStyle={{ alignSelf: 'flex-start', paddingVertical: 6 }}
+                />
+
                 <View style={ styles.price_add }>
                     <Text style={ styles.price }>{ convertVND(+item?.price) }</Text>
                     <TouchableOpacity 
@@ -59,15 +68,15 @@ const ItemProduct = ({ item, onAddToCart }) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: COLORS.white,
-        width: (SCREEN.WIDTH / 2) - 8,
-        height: (SCREEN.WIDTH / 2) + 100,
+        width: (WINDOW_WIDTH / 2) - 8,
+        // height: (SCREEN.WIDTH / 2) + 100,
         padding: 8,
         margin: 4,
         borderRadius: 14
     },
     imageContainer: {
-        width: (SCREEN.WIDTH / 2) - 24,
-        height: (SCREEN.WIDTH / 2)
+        width: (WINDOW_WIDTH / 2) - 24,
+        height: (WINDOW_WIDTH / 2)
     },
     image: {
         flex: 1,
@@ -95,6 +104,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ededed',
         paddingVertical: 3,
         paddingHorizontal: 6,
+        marginVertical: 6,
         borderRadius: 6
     },
     soldText: {

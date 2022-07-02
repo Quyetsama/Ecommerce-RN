@@ -32,8 +32,6 @@ const App = () => {
     useEffect(() => {
         const init = async () => {
             const token = await AsyncStorage.getItem('userToken')
-            // token !== null ? dispatch(retrieveToken(token)) : dispatch(logout())
-            // console.log('token: ', token)
 
             if(token) {
                 try{
@@ -43,9 +41,7 @@ const App = () => {
                     dispatch(setCountNotify(user.data.countNotify))
                 }
                 catch(error) {
-                    // if(error.response.data) {
-                    //     dispatch(logout())
-                    // }
+                    console.log(error)
                 }
             }
             else {
@@ -67,9 +63,7 @@ const App = () => {
                             headerShown: false,
                         }}
                     >    
-                        {/* <Stack.Screen name='stackAuth' component={ AuthStack }/>  */}
                         <Stack.Screen name='Root' component={ Root } />
-                        {/* <Stack.Screen name='stackSearch' component={ SearchStack } /> */}
                         { userToken === null && <Stack.Screen name='stackAuth' component={ AuthStack } options={{ animation: 'slide_from_right' }}/> }
                     </Stack.Navigator>
                 </NavigationContainer>

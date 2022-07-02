@@ -23,7 +23,7 @@ const BottomTabNavigator = () => {
         const routeName = getFocusedRouteNameFromRoute(route) ?? 'Feed'
         // console.log(routeName)
 
-        const routes = ['Detail', 'Cart', 'Checkout', 'myStore', 'Voucher', 'Favorite', 'HistoryStack', 'Success', 'stackSearch']
+        const routes = ['Detail', 'Cart', 'Checkout', 'myStore', 'Voucher', 'Favorite', 'EditProfile', 'HistoryStack', 'Success', 'stackSearch']
 
         if(routes.includes(routeName)) return 'none'
         return 'flex'

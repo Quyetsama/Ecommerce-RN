@@ -4,23 +4,18 @@ import {
     View,
     TouchableOpacity,
     Text,
-    StatusBar,
-    ScrollView,
     Image,
     FlatList,
     RefreshControl
 } from 'react-native'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { COLOR, SCREEN, SIZE } from '../utils/configs'
+import { WINDOW_HEIGHT } from '../utils'
 import orderImage from '../assets/images/order.png'
-import discountImage from '../assets/images/discount.png'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCountNotify, decreaseNotify } from '../redux/actions/notifyAction'
 import useNotify from '../hooks/useNotify'
 import { getNotify, readNotify, countNotify } from '../api/notifyApi'
 import { timeSince } from '../utils/validation'
-import { COLORS } from '../theme'
 import TabHeader from '../components/headers/TabHeader'
 
 
@@ -93,7 +88,7 @@ const NotificationScreen = ({ navigation }) => {
 
     useEffect(() => {
         fetchNotify()
-    }, [])
+    }, [userToken])
 
     useEffect(() => {
         if(!userToken) {
@@ -104,12 +99,14 @@ const NotificationScreen = ({ navigation }) => {
 
     const fetchNotify = React.useCallback(async () => {
         try {
-            setRefreshing(true)
-            const res = await getNotify(userToken)
-            if(res?.data?.success) {
-                setNotifies(res.data.data)
-                setRefreshing(false)
-                dispatch(setCountNotify(res.data.count ? res.data.count : 0))
+            if(userToken) {
+                setRefreshing(true)
+                const res = await getNotify(userToken)
+                if(res?.data?.success) {
+                    setNotifies(res.data.data)
+                    setRefreshing(false)
+                    dispatch(setCountNotify(res.data.count ? res.data.count : 0))
+                }
             }
         }
         catch(error) {
@@ -152,7 +149,6 @@ const styles = StyleSheet.create({
     },
     notifyHeader: {
         justifyContent: 'center',
-        // alignItems: 'center',
         backgroundColor: 'white',
         paddingTop: 28,
         paddingBottom: 12,
@@ -188,16 +184,15 @@ const styles = StyleSheet.create({
     itemNotify: {
         flexDirection: 'row',
         width: '100%',
-        // image : margin: 12
-        height: SCREEN.HEIGHT / 10 + 24,
+        height: WINDOW_HEIGHT / 10 + 24,
         backgroundColor: 'white',
         borderRadius: 12,
         marginTop: 12,
         elevation: 3
     },
     image: {
-        width: SCREEN.HEIGHT / 10,
-        height: SCREEN.HEIGHT / 10,
+        width: WINDOW_HEIGHT / 10,
+        height: WINDOW_HEIGHT / 10,
         margin: 12,
         borderRadius: 12,
     },
@@ -207,7 +202,6 @@ const styles = StyleSheet.create({
         marginTop: 12
     },
     itemTime: {
-        // flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
@@ -227,8 +221,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 12,
         right: 12,
-        width: SIZE(6),
-        height: SIZE(6),
+        width: 6,
+        height: 6,
         borderRadius: 100,
         backgroundColor: 'skyblue'
     }

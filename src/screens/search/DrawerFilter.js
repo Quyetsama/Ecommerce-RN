@@ -13,6 +13,7 @@ import { FlatList, PanGestureHandler } from 'react-native-gesture-handler'
 import { SCREEN } from '../../utils/configs'
 import { COLORS } from '../../utils'
 import useFetchCategories from '../../hooks/useFetchCategories'
+import { getAllCategory } from '../../api/categoriesApi'
 
 
 const ItemCategory = React.memo(({ item, onPress, isSelect }) => {
@@ -39,11 +40,26 @@ const ItemCategory = React.memo(({ item, onPress, isSelect }) => {
 const DrawerFilter = React.memo(({ onGestureEvent, style, onChangeFilter, value }) => {
 
     const [filters, setFilters] = useState(value)
-    const categories = useFetchCategories()
+    const [categories, setCategories] = useState([])
+    // const categories = useFetchCategories()
 
     useEffect(() => {
         setFilters(value)
     }, [value])
+
+    useEffect(() => {
+        fetchCategories()
+    }, [])
+
+    const fetchCategories = React.useCallback(async () => {
+        try {
+            const res = await getAllCategory()
+            setCategories([...res.data.categories])
+        }
+        catch(error) {
+            console.log(error.response.data)
+        }
+    }, [])
 
     const handleSelectCategory = React.useCallback((_id) => {
         if(_id !== filters.category) {
@@ -64,13 +80,13 @@ const DrawerFilter = React.memo(({ onGestureEvent, style, onChangeFilter, value 
 
         return (
             (
-                +filters.price.max > +filters.price.min
+                +filters.max > +filters.min
                 || 
                 // (
-                    (filters.price.max === '' && filters.price.min === '')
+                    (filters.max === '' && filters.min === '')
                     // || (filters.price.max !== 0 && filters.price.min !== 0)
                 // )
-                || (filters.price.max === 0 && filters.price.min === 0)
+                || (filters.max === 0 && filters.min === 0)
             )
             // && filters.category !== ''
             && JSON.stringify(filters) !== JSON.stringify(value)
@@ -98,13 +114,10 @@ const DrawerFilter = React.memo(({ onGestureEvent, style, onChangeFilter, value 
                             style={ styles.filterInPut }
                             placeholder='MIN'
                             keyboardType='numeric'
-                            value={ filters.price.min.toString() }
+                            value={ filters.min.toString() }
                             onChangeText={text => setFilters({
                                 ...filters,
-                                price: {
-                                    ...filters.price,
-                                    min: +text.replace(/[^0-9]/g, '')
-                                }
+                                min: +text.replace(/[^0-9]/g, '')
                             })}
                         />
 
@@ -114,13 +127,10 @@ const DrawerFilter = React.memo(({ onGestureEvent, style, onChangeFilter, value 
                             style={ styles.filterInPut }
                             placeholder='MAX'
                             keyboardType='numeric'
-                            value={ filters.price.max.toString() }
+                            value={ filters.max.toString() }
                             onChangeText={text => setFilters({
                                 ...filters,
-                                price: {
-                                    ...filters.price,
-                                    max: +text.replace(/[^0-9]/g, '')
-                                }
+                                max: +text.replace(/[^0-9]/g, '')
                             })}
                         />
                     </View>
@@ -148,10 +158,8 @@ const DrawerFilter = React.memo(({ onGestureEvent, style, onChangeFilter, value 
                         style={ styles.resetButton }
                         onPress={() => {
                             onChangeFilter({
-                                price: {
-                                    "min": '',
-                                    "max": ''
-                                },
+                                min: '',
+                                max: '',
                                 category: ''
                             })
                         }}

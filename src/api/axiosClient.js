@@ -1,12 +1,12 @@
 import axios from "axios"
-import { doMain } from "../utils/configs"
+import { URL_API } from "../utils"
 import { store } from '../../index'
 import { logout } from '../redux/actions/authAction'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const axiosClient = axios.create({
-    baseURL: `${doMain}api/v1`,
+    baseURL: `${URL_API}/api/v1`,
     headers: {
         'Content-Type': 'application/json'
     }

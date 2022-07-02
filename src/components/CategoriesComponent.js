@@ -1,10 +1,6 @@
-import React, { useState, useRef, useEffect, forwardRef } from "react"
-import { StyleSheet, View, Image, Text, TouchableOpacity, ScrollView, FlatList, Dimensions } from "react-native"
+import React, { useState, useRef, useEffect } from "react"
+import { StyleSheet, View, Image, Text, TouchableOpacity, FlatList, Dimensions } from "react-native"
 import { useSelector } from 'react-redux'
-import { setCategory } from "../redux/actions/homeAction"
-import ItemCategories from "./ItemCategories"
-import { doMain } from "../utils/configs"
-import { getAllCategory } from "../api/categoriesApi"
 import useFetchCategories from "../hooks/useFetchCategories"
 import { COLORS } from "../utils"
 

@@ -16,7 +16,6 @@ import {
 import CartHeader from '../components/cartscreen/CartHeader'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
-import { doMain, SCREEN } from '../utils/configs'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteVoucher, clearCart } from '../redux/actions/cartAction'
 import { setCoin } from '../redux/actions/authAction'
@@ -24,7 +23,7 @@ import { orderApi } from '../api/orderApi'
 import { getCurrentUser } from '../api/authApi'
 import LoadingModal from '../components/modal/LoadingModal'
 import { convertVND } from '../utils/validation'
-import { COLORS } from '../utils'
+import { COLORS, URL_API, WINDOW_WIDTH } from '../utils'
 
 
 
@@ -120,7 +119,7 @@ const ExpandableProduct = React.memo(({ data, onClick }) => {
                             >
                                 <Image 
                                     style={ styles.imageProduct }
-                                    source={{ uri: doMain + 'image/' + item.image  }}
+                                    source={{ uri: URL_API + '/image/' + item.image  }}
                                 />
                                 <View style={ styles.detailContainer }>
                                     <Text style={ styles.nameProduct } numberOfLines={ 1 }>{ item.name }</Text>
@@ -526,7 +525,7 @@ const styles = StyleSheet.create({
         zIndex: 100
     },
     productContainer: {
-        width: SCREEN.WIDTH,
+        width: WINDOW_WIDTH,
         flexDirection: 'row',
         paddingVertical: 18,
         borderBottomWidth: 1,

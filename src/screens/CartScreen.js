@@ -20,12 +20,12 @@ import HeaderStore from '../components/storescreen/HeaderStore'
 import CartHeader from '../components/cartscreen/CartHeader'
 import DeleteProductModal from '../components/modal/DeleteProductModal'
 import { isEmpty } from 'lodash'
-import { doMain } from '../utils/configs'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteFromCart, inCrease, deCrease } from '../redux/actions/cartAction'
 import LinearGradient from 'react-native-linear-gradient'
 import emptyCart from '../assets/images/emptyCart.png'
-import { COLORS } from '../utils'
+import { COLORS, URL_API, WINDOW_WIDTH } from '../utils'
+import StackHeader from '../components/headers/StackHeader'
 
 
 const WIDTH = Dimensions.get('window').width
@@ -52,13 +52,14 @@ const VisibleItem = memo((props) => {
                 styles.rowFront,
                 {
                     height: rowAnimatedValues[rowKey].rowHeigt,
-                    opacity: rowAnimatedValues[rowKey].rowOpacity
+                    opacity: rowAnimatedValues[rowKey].rowOpacity,
+                    marginBottom: rowAnimatedValues[rowKey].marginBottom,
                 }
             ]}
         >
             <Image 
                 style={[ styles.imageContainer ]}
-                source={{ uri: doMain + 'image/' + data.item.image }}
+                source={{ uri: URL_API + '/image/' + data.item.image }}
             />
             <View style={ styles.name_price_Container }>
                 <Text numberOfLines={ 1 } style={ styles.nameText }>{ data.item.name }</Text>
@@ -88,7 +89,6 @@ const VisibleItem = memo((props) => {
 
 const HiddenItemWithActions = memo((props) => {
     const { rightActionActivated, swipeAnimatedValue, data, rowAnimatedValues, onDelete } = props
-
     const rowKey = data.item.timestamp
 
     if(rightActionActivated) {
@@ -99,24 +99,24 @@ const HiddenItemWithActions = memo((props) => {
         // }).start()
         Animated.timing(rowAnimatedValues[rowKey].rightBtnWidth, {
             toValue: Math.abs(swipeAnimatedValue.__getValue()) - 100,
-            duration: 200,
+            duration: 0,
             useNativeDriver: false,
         }).start()
         Animated.timing(rowAnimatedValues[rowKey].deleteBtnWidth, {
             toValue: Math.abs(swipeAnimatedValue.__getValue()),
-            duration: 250,
+            duration: 200,
             useNativeDriver: false
         }).start()
     }
     else {
         Animated.timing(rowAnimatedValues[rowKey].rightBtnWidth, {
             toValue: 100,
-            duration: 200,
+            duration: 0,
             useNativeDriver: false,
         }).start()
         Animated.timing(rowAnimatedValues[rowKey].deleteBtnWidth, {
             toValue: 100,
-            duration: 250,
+            duration: 200,
             useNativeDriver: false
         }).start()
     }
@@ -216,6 +216,7 @@ const CartScreen = ({ navigation }) => {
         let newRowAnimatedValues = {}
         products.forEach((item, i) => {
             newRowAnimatedValues[`${item.timestamp}`] = {
+                marginBottom: new Animated.Value(28),
                 rowHeigt: new Animated.Value(128),
                 rightBtnWidth: new Animated.Value(100),
                 deleteBtnWidth: new Animated.Value(100),
@@ -246,10 +247,6 @@ const CartScreen = ({ navigation }) => {
     const showModal = (rowKey) => {
         changeModalVisible(true, rowKey)
     }
-
-    //
-
-    const { width: screenWidth } = useWindowDimensions()
 
     const renderItem = useCallback((data, rowMap) => (
         <VisibleItem 
@@ -283,11 +280,12 @@ const CartScreen = ({ navigation }) => {
         // }).start()
         if(data.translateX < -250) {
             Animated.timing(rowAnimatedValues[rowKey].deleteBtnWidth, {
-                toValue: screenWidth,
-                duration: 200,
+                toValue: WINDOW_WIDTH,
+                // duration: 100,
                 useNativeDriver: false,
-            }).start()
-            handleDelete(rowKey)
+            }).start(() => {
+                handleDelete(rowKey)
+            })
         }
     }, [products, rowAnimatedValues])
 
@@ -295,7 +293,7 @@ const CartScreen = ({ navigation }) => {
         // console.log(-data.value)
         Animated.timing(rowAnimatedValues[data.key].rightBtnWidth, {
             toValue: (-data.value) > 200 ? (-data.value) - 100 : 100,
-            duration: 200,
+            duration: 0,
             useNativeDriver: false,
         }).start()
     }, [products, rowAnimatedValues])
@@ -303,16 +301,21 @@ const CartScreen = ({ navigation }) => {
     const handleDelete = (rowKey) => {
         Animated.timing(rowAnimatedValues[rowKey].rowOpacity, {
             toValue: 0,
-            duration: 200,
+            duration: 0,
             useNativeDriver: false
-        }).start()
-        Animated.timing(rowAnimatedValues[rowKey].rowHeigt, {
-            toValue: 0,
-            duration: 200,
-            delay: 200,
-            useNativeDriver: false,
         }).start(() => {
-            dispatch(deleteFromCart(rowKey))
+            Animated.timing(rowAnimatedValues[rowKey].marginBottom, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: false,
+            }).start()
+            Animated.timing(rowAnimatedValues[rowKey].rowHeigt, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: false,
+            }).start(() => {
+                dispatch(deleteFromCart(rowKey))
+            })
         })
     }
 
@@ -356,14 +359,7 @@ const CartScreen = ({ navigation }) => {
 
     return (
         <View style={ styles.container }>
-            <CartHeader 
-                label={'My cart'} 
-                goBack={() => {
-                        // rowAnimatedValues = {}
-                        navigation.goBack()
-                    }
-                }
-            />
+            <StackHeader label={'My cart'} />
             {/* cartEmpty === false chớp image */}
             {!isEmpty(rowAnimatedValues) && cartEmpty === false
                 ?
@@ -385,7 +381,7 @@ const CartScreen = ({ navigation }) => {
                             stopRightSwipe={-251}
                             // -250
                             rightActivationValue={-250}
-                            rightActionValue={-screenWidth}
+                            rightActionValue={-WINDOW_WIDTH}
                             onRightActionStatusChange={onRightActionStatusChange}
                             swipeGestureEnded={swipeGestureEnded}
                             onSwipeValueChange={onSwipeValueChange}
@@ -462,10 +458,10 @@ const styles = StyleSheet.create({
         // height: 60,
         alignItems: 'center',
         // justifyContent: 'center',
-        backgroundColor: 'white',
+        backgroundColor: COLORS.white,
         borderRadius: 15,
         paddingHorizontal: 20,
-        marginBottom: 28,
+        // marginBottom: 28,
         elevation: 3
     },
     rowBack: {
@@ -599,7 +595,7 @@ const styles = StyleSheet.create({
     },
     emptyImage: {
         width: '100%',
-        height: WIDTH / 2
+        height: WINDOW_WIDTH / 2
     },
     ohhhText: {
         color: '#000',

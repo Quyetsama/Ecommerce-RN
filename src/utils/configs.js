@@ -2,7 +2,7 @@ import { Dimensions } from 'react-native'
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize'
 const NAME = 'Astronaut'
 // const NAME = 'ＳpaceX'
-const doMain = 'http://192.168.32.107:3000/'
+
 const violet = '#8141ff'
 
 const COLOR = {
@@ -24,7 +24,6 @@ const SIZE = (value) => RFValue(value, HEIGHT)
 
 export {
     NAME,
-    doMain,
     violet,
     COLOR,
     SCREEN,

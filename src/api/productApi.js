@@ -38,17 +38,18 @@ const suggestProduct = () => {
 }
 
 const relatedProduct = (query, page, filters) => {
-    const url = `/product/related?name=${ query }&page=${ page }&filters=${ JSON.stringify(filters) }`
+    // const url = `/product/related?name=${ query }&page=${ page }&filters=${ JSON.stringify(filters) }`
+    const url = `/product/related?name=${ query }&page=${ page }&min=${ filters.min }&max=${ filters.max }&category=${ filters.category }`
     return axiosClient.get(url)
 }
 
 const sellingProduct = (query, page, filters) => {
-    const url = `/product/selling?name=${ query }&page=${ page }&filters=${ JSON.stringify(filters) }`
+    const url = `/product/selling?name=${ query }&page=${ page }&min=${ filters.min }&max=${ filters.max }&category=${ filters.category }`
     return axiosClient.get(url)
 }
 
 const sortPriceProduct = (query, page, sort, filters) => {
-    const url = `/product/price?name=${ query }&page=${ page }&sort=${ sort }&filters=${ JSON.stringify(filters) }`
+    const url = `/product/price?name=${ query }&page=${ page }&sort=${ sort }&min=${ filters.min }&max=${ filters.max }&category=${ filters.category }`
     return axiosClient.get(url)
 }
 

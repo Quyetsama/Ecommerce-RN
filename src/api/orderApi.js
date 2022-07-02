@@ -36,8 +36,24 @@ const detailOrder = (token, id) => {
     )
 }
 
+const ratingOrder = (token, _id, products) => {
+    const url = `/order/rating`
+    return axiosClient.post(url, 
+        {
+            _id,
+            products
+        },
+        {
+            headers: {
+                Authorization: token
+            }
+        }
+    )
+}
+
 export { 
     orderApi,
     getListOrder,
-    detailOrder
+    detailOrder,
+    ratingOrder
 }

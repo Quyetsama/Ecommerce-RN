@@ -1,17 +1,12 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useState } from "react"
 import { 
     StyleSheet,
     View,
     ScrollView,
     Image,
-    Dimensions
 } from "react-native"
-import { doMain, SCREEN } from "../utils/configs"
-import { violet } from "../utils/configs"
+import { URL_API, WINDOW_WIDTH, WINDOW_HEIGHT } from "../utils"
 
-
-const WIDTH = Dimensions.get('window').width
-const HEIGHT = Dimensions.get('window').height
 
 const CarouselProduct = ({ images }) => {
 
@@ -40,7 +35,7 @@ const CarouselProduct = ({ images }) => {
                     <Image
                         key={ index }
                         style={styles.imgCarousel}
-                        source={{ uri: doMain + '/image/' + image }}
+                        source={{ uri: URL_API + '/image/' + image }}
                         resizeMode='center'
                     />
                 ))}
@@ -57,15 +52,13 @@ const CarouselProduct = ({ images }) => {
     )
 }
 
-const color = '#34A853'
-
 const styles = StyleSheet.create({
     carouselContainer: {
-        height: SCREEN.HEIGHT * 0.5,
+        height: WINDOW_HEIGHT * 0.5,
     },
     imgCarousel: {
         // paddingHorizontal: 18 => -36
-        width: SCREEN.WIDTH - 36,
+        width: WINDOW_WIDTH - 36,
         height: null
     },
     circleDiv: {

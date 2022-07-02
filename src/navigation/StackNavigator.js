@@ -15,10 +15,12 @@ import SuccessScreen from '../screens/SuccessScreen'
 import HistoryScreen from '../../src/screens/history/HistoryScreen'
 import ListOrderScreen from '../screens/history/ListOrderScreen'
 import DetailOrder from '../screens/history/DetailOrder'
+import RatingOrder from '../screens/history/RatingOrder'
 
 import ProfileScreen from '../screens/ProfileScreen'
 import VoucherScreen from '../screens/VoucherScreen'
 import FavoriteScreen from '../screens/profile/FavoriteScreen'
+import EditProfile from '../screens/profile/EditProfile'
 
 import StoreScreen from '../screens/mystore/StoreScreen'
 import AddProductScreen from '../screens/mystore/AddProductScreen'
@@ -33,6 +35,8 @@ import SignInScreen from '../screens/auth/SignInScreen'
 import SignUpScreen from '../screens/auth/SignUpScreen'
 
 import BottomTabNavigator from './TabNavigator'
+
+import { useSelector } from 'react-redux'
 
 
 
@@ -105,17 +109,27 @@ const OrderStack = () => {
 }
 
 const ProfileStack = () => {
+
+    const { userToken } = useSelector(state => state.authReducer)
+
     return(
         <Stack.Navigator screenOptions={ screenOptionStyle }>
             <Stack.Screen name="Profile" component={ ProfileScreen } />
-            <Stack.Screen name="Voucher" component={ VoucherScreen } />
-            <Stack.Screen name="Favorite" component={ FavoriteScreen } />
-            <Stack.Screen name="myStore" component={ StoreStack } />
-            {/* <Stack.Screen name="Order" component={ OrderStack } /> */}
-            {/* <Stack.Screen name="Cart" component={ CartScreen } />
-            <Stack.Screen name="Checkout" component={ CheckOutScreen } />
-            <Stack.Screen name="Success" component={ SuccessScreen } /> */}
-            <Stack.Screen name="HistoryStack" component={ HistoryStack } />
+            {
+                userToken && 
+                <>
+                    <Stack.Screen name="Voucher" component={ VoucherScreen } />
+                    <Stack.Screen name="Favorite" component={ FavoriteScreen } />
+                    <Stack.Screen name="EditProfile" component={ EditProfile } />
+                    {/* options={{ presentation: 'modal' }} */}
+                    <Stack.Screen name="myStore" component={ StoreStack } />
+                    {/* <Stack.Screen name="Order" component={ OrderStack } /> */}
+                    {/* <Stack.Screen name="Cart" component={ CartScreen } />
+                    <Stack.Screen name="Checkout" component={ CheckOutScreen } />
+                    <Stack.Screen name="Success" component={ SuccessScreen } /> */}
+                    <Stack.Screen name="HistoryStack" component={ HistoryStack } />
+                </>
+            }
         </Stack.Navigator>
     )
 }
@@ -125,6 +139,7 @@ const HistoryStack = () => {
             <Stack.Screen name="History" component={ HistoryScreen } />
             <Stack.Screen name="ListOrderScreen" component={ ListOrderScreen } />
             <Stack.Screen name="DetailOrder" component={ DetailOrder } />
+            <Stack.Screen name="RatingOrder" component={ RatingOrder } />
         </Stack.Navigator>
     )
 }

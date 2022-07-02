@@ -14,6 +14,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Carousel from 'react-native-snap-carousel'
 import { SCREEN } from "../utils/configs"
 import { SceneMap } from "react-native-tab-view"
+import useFetchCarousel from "../hooks/useFetchCarousel"
+import { URL_API } from "../utils"
 
 
 const widthScreen = Dimensions.get('window').width
@@ -29,6 +31,7 @@ const images = [
 
 const CarouselComponent = () => {
 
+    const products = useFetchCarousel()
     const scrollRef = useRef()
     const [selectdIndex, setSelectedIndex] = useState(0)
 
@@ -77,15 +80,15 @@ const CarouselComponent = () => {
                 pagingEnabled 
                 onMomentumScrollEnd={ setImageSelected }
             >
-                {images.map((image, index) => (
+                {products.map((item, index) => (
                     <View style={ styles.itemContainer } key={ index }>
                         <View style={ styles.imgContainer }>
                             <Image
                                 style={styles.imgCarousel}
                                 source={{
-                                    uri: image
+                                    uri: URL_API + '/image/' + item.image
                                 }}
-                                resizeMode='cover'
+                                resizeMode='contain'
                             />
                         </View>
                         <View style={ styles.txtContainer }>

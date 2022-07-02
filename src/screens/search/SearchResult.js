@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import {
     StyleSheet,
     View,
@@ -17,8 +17,7 @@ import {
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import { doMain, SCREEN } from '../../utils/configs'
-import { COLORS } from '../../utils'
+import { COLORS, URL_API, WINDOW_WIDTH, WINDOW_HEIGHT } from '../../utils'
 import ItemProduct from '../../components/ItemProduct'
 import { relatedProduct, sellingProduct, sortPriceProduct } from '../../api/productApi'
 import useBackButton from '../../hooks/useBackButton'
@@ -34,6 +33,11 @@ import Animated, {
 } from 'react-native-reanimated'
 import { PanGestureHandler, GestureHandlerRootView, ScrollView as ScrollView2 } from 'react-native-gesture-handler'
 import DrawerFilter from './DrawerFilter'
+
+import { useDispatch } from 'react-redux'
+import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
+import { actionOpenBottomSheet, clearBottomSheet } from '../../redux/actions/bottomSheetAction'
+import SheetContent from '../../components/bottomsheet/SheetContent'
 
 
 const SPRING_CONFIG = {
@@ -153,7 +157,7 @@ const Coating = ({ styleWidth, handleCloseSheet }) => {
             style={[
                 {
                     position: 'absolute',
-                    height: SCREEN.HEIGHT,
+                    height: WINDOW_HEIGHT,
                     backgroundColor: 'rgba(52, 52, 52, 0.3)',
                     zIndex: 10
                 },
@@ -167,15 +171,18 @@ const Coating = ({ styleWidth, handleCloseSheet }) => {
 
 const SearchResult = ({ route, navigation }) => {
 
+    const dispatch = useDispatch()
     const [select, setSelect] = useState(1)
     const [products, setProducts] = useState([])
     const [page, setPage] = useState(1)
     const [stop, setStop] = useState(false)
     const [filters, setFilters] = useState({
-        price: {
-            "min": '',
-            "max": ''
-        },
+        // price: {
+        //     "min": '',
+        //     "max": ''
+        // },
+        min: '',
+        max: '',
         category: ''
     })
     const [isLoading, setIsLoading] = useState(true)
@@ -203,7 +210,7 @@ const SearchResult = ({ route, navigation }) => {
                 ? await sellingProduct(route.params.query, page, filters)
                 : await sortPriceProduct(route.params.query, page, select === 3 ? 'asc' : 'desc', filters)
             )
-            if(res.data.data.length <= 0) {
+            if(res?.data.data.length <= 0) {
                 setIsLoading(false)
                 setStop(true)
                 return
@@ -234,12 +241,13 @@ const SearchResult = ({ route, navigation }) => {
         })
     }, [])
 
-    const handleChangeFilter = React.useCallback(({ price, category }) => {
+    const handleChangeFilter = React.useCallback(({ min, max, category }) => {
         handleCloseSheet()
         setTimeout(() => {
             setFilters({
                 ...filters,
-                price,
+                min,
+                max,
                 category
             })
             handleFilterSection(1)
@@ -260,7 +268,7 @@ const SearchResult = ({ route, navigation }) => {
     
     const styleCoating = useAnimatedStyle(() => {
         return {
-            width: left.value === SCREEN.WIDTH ? 0 : SCREEN.WIDTH
+            width: left.value === WINDOW_WIDTH ? 0 : WINDOW_WIDTH
         }
     })
 
@@ -309,79 +317,115 @@ const SearchResult = ({ route, navigation }) => {
     }, [])
 
 
-    // console.log({
-        // isLoading,
-        // select,
-        // page,
-        // stop,
-        // products: products.length,
-        // filters
-    // })
+
+    // ref
+    const bottomSheetRef = useRef(null);
+
+    // variables
+    // const snapPoints = useMemo(() => ['50%'], []);
+    const snapPoints = useMemo(() => ['70%', '70%'], []);
+
+    // callbacks
+    const handleSheetChanges = useCallback((index) => {
+        // console.log('handleSheetChanges', index);
+        // if(index === 1) {
+        //     dispatch(actionSetLoadingBottomSheet())
+        // }
+        if(index === -1) {
+            dispatch(clearBottomSheet())
+        }
+    }, [])
+
+    // renders
+    const renderBackdrop = useCallback(props => (
+        <BottomSheetBackdrop
+            {...props}
+            disappearsOnIndex={-1}
+            appearsOnIndex={1}
+            pressBehavior={'close'}
+        />
+    ), [])
+
+    const handleOpenSheet = useCallback((_id) => {
+        bottomSheetRef.current?.present()
+        dispatch(actionOpenBottomSheet(_id))
+    }, [])
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <View style={ styles.container }>
-                <StatusBar translucent barStyle='dark-content' />
-                <View style={ styles.headerContainer }>
-                    <SearchBar
-                        value={ route.params.query }
-                        onPress={() => navigation.push('Search', { query: route.params.query })}
-                        onFilter={ handleShowSheet }
-                        goBack={() => {
-                            navigation.navigate('Home')
-                        }}
-                    />
-                    <SectionFilter select={ select } onPress={ handleFilterSection } />
-                </View>
-                
-                {
-                    products.length === 0
-                    ?
-                    <Image
-                        style={ styles.notFound }
-                        source={ notFoundIMG }
-                    />
-                    :
-                    <View style={ styles.productContainer }>
-                        <FlatList
-                            removeClippedSubviews
-                            data={ products }
-                            numColumns={2}
-                            keyExtractor={(item, index) => item._id}
-                            renderItem={({item}) => (
-                                <ItemProduct
-                                    item={ item }
-                                />
-                            )}
-                            onEndReached={ handleOnEndReached }
-                            onEndReachedThreshold={ 0.3 }
-                        />
-                    </View>
-                }
-                
-
-                <Coating 
-                    styleWidth={ styleCoating }
-                    handleCloseSheet={ handleCloseSheet }
+        <View style={ styles.container }>
+            <StatusBar translucent barStyle='dark-content' />
+            <View style={ styles.headerContainer }>
+                <SearchBar
+                    value={ route.params.query }
+                    onPress={() => navigation.push('Search', { query: route.params.query })}
+                    onFilter={ handleShowSheet }
+                    goBack={() => {
+                        navigation.navigate('Home')
+                    }}
                 />
-
-                <DrawerFilter 
-                    onGestureEvent={ gestureHandler } 
-                    style={ style }
-                    onChangeFilter={ handleChangeFilter }
-                    value={ filters }
-                />
-
-                <Modal
-                    transparent={ true }
-                    animationType='fade'
-                    visible={ isLoading }
-                    onRequestClose={() => navigation.navigate('Home') }
-                >
-                    <LoadingModal />
-                </Modal>
+                <SectionFilter select={ select } onPress={ handleFilterSection } />
             </View>
-        </GestureHandlerRootView>
+            
+            {
+                products.length === 0
+                ?
+                <Image
+                    style={ styles.notFound }
+                    source={ notFoundIMG }
+                />
+                :
+                <View style={ styles.productContainer }>
+                    <FlatList
+                        removeClippedSubviews
+                        data={ products }
+                        numColumns={2}
+                        keyExtractor={(item, index) => item._id}
+                        renderItem={({item}) => (
+                            <ItemProduct
+                                item={ item }
+                                onAddToCart={ handleOpenSheet }
+                            />
+                        )}
+                        onEndReached={ handleOnEndReached }
+                        onEndReachedThreshold={ 0.3 }
+                    />
+                </View>
+            }
+            
+
+            <Coating 
+                styleWidth={ styleCoating }
+                handleCloseSheet={ handleCloseSheet }
+            />
+
+            <DrawerFilter 
+                onGestureEvent={ gestureHandler } 
+                style={ style }
+                onChangeFilter={ handleChangeFilter }
+                value={ filters }
+            />
+
+            <Modal
+                transparent={ true }
+                animationType='fade'
+                visible={ isLoading }
+                onRequestClose={() => navigation.navigate('Home') }
+            >
+                <LoadingModal />
+            </Modal>
+
+            <BottomSheetModal
+                ref={bottomSheetRef}
+                index={1}
+                snapPoints={snapPoints}
+                // enableOverDrag={ false }
+                enablePanDownToClose
+                backdropComponent={renderBackdrop}
+                onChange={handleSheetChanges}
+            >
+                <SheetContent />
+            </BottomSheetModal>
+        </View>
     )
 }
 
@@ -408,6 +452,7 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         flex: 1,
+        color: COLORS.primary,
         paddingHorizontal: 8,
         padding: 6
     },
@@ -440,7 +485,7 @@ const styles = StyleSheet.create({
     indicator: {
         position: 'absolute',
         bottom: 0,
-        width: SCREEN.WIDTH / 3,
+        width: WINDOW_WIDTH / 3,
         height: 2.6,
         backgroundColor: COLORS.primary
     },

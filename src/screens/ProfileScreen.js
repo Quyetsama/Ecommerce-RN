@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react"
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Modal, StatusBar, RefreshControl } from "react-native"
+import { 
+    ScrollView, 
+    StyleSheet, 
+    Text,
+    TouchableOpacity, 
+    View, 
+    Modal, 
+    RefreshControl 
+} from "react-native"
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, setCoin } from '../redux/actions/authAction'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -79,10 +87,8 @@ const ProfileScreen = ({ navigation }) => {
 
     return (
         <View style={ styles.container }>
-            {/*  */}
             <TabHeader title={ 'Account' } />
 
-            {/*  */}
             <ScrollView
                 contentContainerStyle={{ justifyContent: 'center', paddingBottom: 100 }}
                 showsVerticalScrollIndicator={ false }

@@ -4,12 +4,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Animated from 'react-native-reanimated'
 import { PanGestureHandler, ScrollView as ScrollView2 } from 'react-native-gesture-handler'
-import { violet, doMain, SCREEN, SIZE } from '../../utils/configs'
 import SuccessModal from '../modal/SuccessModal'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../../redux/actions/cartAction'
-import { COLORS } from '../../utils'
+import { COLORS, URL_API, WINDOW_HEIGHT } from '../../utils'
 
 
 
@@ -100,7 +99,7 @@ const Quantity = React.memo(({ value, onChangeQuantity, onIncrease, onDecrease }
                 }}>
                     <TextInput
                         style={{
-                            fontSize: SIZE(18),
+                            fontSize: 18,
                             fontWeight: 'bold'
                         }}
                         value={ value + '' }
@@ -205,7 +204,7 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
 
     const isValid = () => {
         return (
-            selected.length === (product?.classify?.generalClassification?.length || 0)
+            selected.length === (product?.classify?.length || 0)
             &&
             quantity > 0
         )  
@@ -223,9 +222,9 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
             >
                 
                 <View style={ styles.headerSheet }>
-                    <View style={{ width: SCREEN.HEIGHT / 6, height: SCREEN.HEIGHT / 6 }}>
+                    <View style={{ width: WINDOW_HEIGHT / 6, height: WINDOW_HEIGHT / 6 }}>
                         <Image 
-                            source={{ uri: product?.image && (doMain + '/image/' + product?.image[0]) }}
+                            source={{ uri: product?.image && (URL_API + '/image/' + product?.image[0]) }}
                             style={ styles.imageSheet }
                             resizeMode='contain'
                         />
@@ -254,9 +253,9 @@ const SheetComponent = ({ product, onGestureEvent, style, onClose }) => {
                             showsVerticalScrollIndicator={ false }
                             keyboardShouldPersistTaps='handled'
                         >
-                            {product?.classify?.generalClassification.map((item, index) => (
+                            {product?.classify?.map((item, index) => (
                                 <ItemSheet 
-                                    key={ item.id } 
+                                    key={ index } 
                                     classify={ item } 
                                     selected={ selected } 
                                     onSelect={(prev, item) => handleOnSelect(index, prev, item) } 
